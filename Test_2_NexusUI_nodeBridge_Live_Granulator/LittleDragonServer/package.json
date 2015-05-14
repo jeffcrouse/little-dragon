@@ -1,0 +1,14 @@
+{
+  "name": "MidiBridge",
+  "version": "1.0.0",
+  "description": "Accepts WebSocket messages and turns them into Midi messages",
+  "main": "bridge.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeff Crouse",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^0.7.1"
+  }
+}
