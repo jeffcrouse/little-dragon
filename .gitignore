@@ -1,0 +1,8 @@
+# Audio files
+*.aif
+
+# Dependency directory
+MidiBridge/node_modules
+
+.DS_Store
+
