@@ -29,10 +29,14 @@ app.get('/', function(req, res) {
 	res.render('index', data);
 });
 
-app.get('/gran', function(req, res) {
-	var data = {"title": 'Little Dragon Server: Ganular Synth Interface 1', 'ws_addr': ws_addr};
+app.get('/gran/:phone', function(req, res) {
+	var data = {"title": 'Little Dragon Server: Ganular Synth Interface 1, Phone 1', 'ws_addr': ws_addr, 'phone': req.params.phone};
 	res.render('gran', data);
 });
+
+function generatePage(req, res, phoneNumber){
+	
+}
 
 app.get('/drum', function(req, res) {
 	res.send('hello world');
@@ -80,26 +84,85 @@ wss.on('connection', function connection(ws) {
 
 		try {
 			var json = JSON.parse(message);
+			var midiMessage;
 			
-			if(json.event=="grab"){
-				console.log(json.data);	
-				var message;
-				if(json.data.press == 1) message = [NOTEON, 64, 127];
-				else message = [NOTEON, 64, 0];//note off
-				
-				output.sendMessage(message);
+			if(json.event=="gran_button_2"){
+				if(json.data.press == 1) 
+					midiMessage = [NOTEON, 64, 127];
+				else 
+					midiMessage = [NOTEON, 64, 0];//note off
+				output.sendMessage(midiMessage);
 			}
 
-			if(json.event=="grainWidthPos") {	
-				console.log(json.data);	
-				//filePos		
-				var message = [CONTROL, 22, json.data.start * 100];
-				output.sendMessage(message);
-				//grain
-				message = [CONTROL, 24, (json.data.stop - json.data.start) * 150];
-				console.log(json.data.stop - json.data.start);
-				output.sendMessage(message);
+			if(json.event=="gran_button_3"){
+				if(json.data.press == 1) 
+					midiMessage = [NOTEON, 66, 127];
+				else 
+					midiMessage = [NOTEON, 66, 0];//note off
+				output.sendMessage(midiMessage);
 			}
+
+			if(json.event=="gran_button_4"){
+				if(json.data.press == 1) 
+					midiMessage = [NOTEON, 67, 127];
+				else 
+					midiMessage = [NOTEON, 67, 0];//note off
+				output.sendMessage(midiMessage);
+			}
+
+			if(json.event=="gran_button_5"){
+				if(json.data.press == 1) 
+					midiMessage = [NOTEON, 69, 127];
+				else 
+					midiMessage = [NOTEON, 69, 0];//note off
+				output.sendMessage(midiMessage);
+			}
+
+			if(json.event=="gran_button_6"){
+				if(json.data.press == 1) 
+					midiMessage = [NOTEON, 71, 127];
+				else 
+					midiMessage = [NOTEON, 71, 0];//note off
+				output.sendMessage(midiMessage);
+			}
+
+			if(json.event=="gran_range_1") {
+				//filePos		
+				midiMessage = [CONTROL, 22, json.data.start * 100];
+				output.sendMessage(midiMessage);
+				//grain
+				midiMessage = [CONTROL, 24, (json.data.stop - json.data.start) * 150];
+				// console.log(json.data.stop - json.data.start);
+				output.sendMessage(midiMessage);
+			}
+
+			if(json.event=="gran_multislider_1") {	
+				var slider = Object.keys(json.data)[0];
+				var value = parseFloat(json.data[slider]);
+				var control;		
+
+				if(slider == "0"){//attack
+					control = 25;
+				}
+				else if(slider == "1"){//decay
+					control = 26;
+				}
+				else if(slider == "2"){//sustain
+					control = 27;
+				}
+				else if(slider == "3"){//release
+					control = 28;
+				}
+				midiMessage = [CONTROL, control, value * 127];
+				output.sendMessage(midiMessage);
+			}
+
+			if(json.event=="pan") {	
+				//TODO: use x, y and z.	
+				midiMessage = [CONTROL, 29, json.data.y];
+				output.sendMessage(midiMessage);
+			}
+
 		} catch(e){
        		console.error("Invalid message from WebSocket client.")
    		}
