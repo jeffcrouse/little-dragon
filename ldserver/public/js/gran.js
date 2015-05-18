@@ -1,50 +1,63 @@
 //INIT INTERFACE
+
 nx.onload = function() {
 		
   nx.sendsTo("js");
+  nx.colorize("#00ff00");
+  nx.colorize("accent", "#FF00FF");
+  nx.colorize("fill", "#00FFFF");  
+  
   nx.setViewport(0.5);
-  multislider1.setNumberOfSliders(5);
   
-  //grain width and pos selector
-  range1.on('*', function(data) {
-    console.log(data);
-    var eventObject = {"event":"grainWidthPos", 
-                        "data":data};
-    ws.send(JSON.stringify(eventObject));
-  });
-
-  //"grab"  (should be momentary button not toggle)
-  button1.on('*', function(data) {
-    console.log(data);
-    var eventObject = {"event":"grab", 
-                        "data":data};
-    ws.send(JSON.stringify(eventObject));
-  });
-  
-  //ADSR
-  envelope1.on('*', function(data) {
-    console.log(data);
-    var eventObject = {"event":"ADSR", 
-                        "data":data};
-    ws.send(JSON.stringify(eventObject));
-  });
-
-  //...what are the sliders for?   
-  multislider1.on('*', function(data) {
-    console.log(data);
-    ws.send(JSON.stringify(data));
-  });
-
-  tilt1.on('*', function(data) {
-    console.log(data);
-    ws.send(JSON.stringify(data));
-  });
-
-  // listen only to the 'x' parameter
-  // position1.on('x', function(data) {
-
-  // })
+  switch(window.phone){
+      case "1":
+        createControl("range", 1);
+        break;
+      case "2":
+        createControl("multislider", 1)
+          .setNumberOfSliders(5);
+        break;
+      case "3":
+        createControl("tilt", 1);
+        break;
+      case "4":
+        createControl("button", 2);
+        break;
+      case "5":
+        createControl("button", 3);
+        break;
+      case "6":
+        createControl("button", 4);
+        break;
+      case "7":
+        createControl("button", 5);
+        break;
+      case "8":
+        createControl("button", 6);
+        break;
+  }
 	
+}
+
+function createControl(controlType, controlNumber){
+  var id = "gran_" + controlType + "_" + controlNumber;
+  var settings = {
+                    "id": id, 
+                    "parent":"controls",
+                    "w":"1280px",
+                    "h":"800px"
+                  }
+  var widget = nx.add(controlType, settings)
+    .on('*', function(data) {
+      console.log(data);
+      var eventObject = {"event":id, 
+                          "data":data};
+      ws.send(JSON.stringify(eventObject));
+    });
+    // widget.colors.fill("#F0F0F0");
+    // widget.colorize("#F0F0F0"); 
+    console.log(widget.colors.fill);
+    return widget;
 }
 
 
