@@ -122,12 +122,16 @@ function APP( _debug )
 
 
 		//RIBBON
-		var points = LittleDragon.getTubeProfile( 200, 10 );
+		var points = LittleDragon.getTubeProfile( 200, 30 );
+
+		var profilePoints = LittleDragon.getTubeProfile( 40, 6 );
+
+ 		for(var i in profilePoints)	profilePoints[i].y *= Math.min( 5 / Math.abs(profilePoints[i].y), 1);
 
 		var ribbon = new LittleDragon.Ribbon({
 			points: points,
-			profile: LittleDragon.getTubeProfile( 50, 7 ),
-			subdivisions: (points.length) * 2
+			profile: profilePoints,
+			subdivisions: 30
 		});
 		scene.add( ribbon );
 
@@ -136,7 +140,7 @@ function APP( _debug )
 		var lineGeometry = new THREE.Geometry();
 		var normalGeometry = new THREE.Geometry();
 
-		var subd = points.length, step = 1 / (subd - 1);
+		var subd = 100, step = 1 / (subd - 1);
 		for(var i = 0; i < subd; i++)
 		{
 			var u = i * step;

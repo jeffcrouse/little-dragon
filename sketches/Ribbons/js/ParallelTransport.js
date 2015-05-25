@@ -87,8 +87,8 @@ ParallelTransport.prototype = {
 	},
 
 	getScaleTwistTransform: function( m, u ){
-		var twist = u * Math.PI;
-		var scl = Math.sin(u * Math.PI) * 2 + 1;
+		var twist = u * Math.PI * 2;
+		var scl = 1;//Math.sin(u * Math.PI) * 2 + 1;
 
 		m.makeRotationZ( twist );
 		m.scale( new THREE.Vector3( scl,scl,scl ) );
