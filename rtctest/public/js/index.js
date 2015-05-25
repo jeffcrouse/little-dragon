@@ -68,12 +68,13 @@ socket.on('answer', function(data){
 channel.onopen = function() {
 	console.log('!!! Send channel state is: ' + channel.readyState);
 
-
 	// Start off a little loop sending "tick" messages
+	var i = 0;
 	setInterval(function(){
-		var message = {"message": "tick", "value": Math.floor(Math.random() * 100)};
+		var message = {"message": "tick", "time": new Date(), "number": i};
 		channel.send(JSON.stringify(message));
-	}, 1000);			
+		i++;
+	}, 500);			
 }
 
 
@@ -86,3 +87,41 @@ channel.onmessage = function(event) {
 	receiveDiv.innerHTML += event.data;
 	receiveDiv.innerHTML +=  "<br />";
 }
+
+
+document.body.addEventListener('touchmove', function(event) {
+
+	if (event.targetTouches.length == 1) {
+		var touch = event.targetTouches[0];
+		var message = {"message": "touch"};
+		channel.send(JSON.stringify(message));
+	}
+
+}, false);
+
+
+var offset = 0;
+function calcOffset() {
+
+	$.ajax({ url: "/blank" }).success(function(res, status, xhr) {
+	
+		var dateStr = xhr.getResponseHeader("Date");
+		var serverTimeMillisGMT = Date.parse(new Date(Date.parse(dateStr)).toUTCString());
+		var localMillisUTC = Date.parse(new Date().toUTCString());
+
+		offset = serverTimeMillisGMT -  localMillisUTC;
+	});
+
+}
+calcOffset();
+
+function getServerTime() {
+    var date = new Date();
+    date.setTime(date.getTime() + offset);
+    return date;
+}
+
+var timeDiv = document.querySelector("#time");
+setInterval(function(){
+	timeDiv.innerHTML = moment( getServerTime() ).format('h:mm:ss:SSSS a');
+}, 10);

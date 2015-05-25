@@ -29,11 +29,14 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-	var data = {"title": 'Little Dragon Server', 'ws_addr': ws_addr};
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	var data = {"title": 'Little Dragon Server', 'ws_addr': ws_addr, "client": ip};
 	res.render('index', data);
 });
 
-
+app.get('/blank', function (req, res) {
+	res.send("-");
+});
 
 
 /**************************************************
@@ -49,6 +52,12 @@ var RTCPeerConnection = wrtc.RTCPeerConnection;
 // The Socket.io connection will be used for "signaling" with the client, which is basically just
 // the handshaking stuff. The real interesting stuff happens with the RTCPeerConnection
 io.on('connection', function (socket) {
+	var socketId = socket.id
+	var clientIp = socket.request.connection.remoteAddress
+
+	console.log("New connection from", clientIp)
+
+	var i_expected = 0;
 
 	var pc = new wrtc.RTCPeerConnection();
 	var channel = null;
@@ -97,10 +106,20 @@ io.on('connection', function (socket) {
 	// Handle incoming WebRTC messages!
 	// Also send one back whenever we receive one.
 	var handleMessage = function(event) {
-		console.log('Received message: ' + event.data);
+		
 		var json = JSON.parse( event.data );
-		var message = {"message": "tock", "value": json.value};
-		channel.send(JSON.stringify(message));
+		var time = new Date(json.time);
+		var now = new Date();
+		var elapsed = now - time;
+		var i = json.number;
+
+		console.log(clientIp, "time", elapsed, "number", i );
+
+		if(i != i_expected) {
+			console.error("Missed a message!");
+		}
+		i_expected++;
+		//channel.send(JSON.stringify(message));
 	}
 
 });
