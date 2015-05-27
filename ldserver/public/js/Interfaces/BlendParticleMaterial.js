@@ -24,6 +24,7 @@ var BlendParticleMaterial = function( params ) {
 			opacity: {type: 'f', value: params.opacity || 1.},
 			size: { type: 'f', value: params.size || 10},
 			time: {type: 'f', value: 0},
+			noiseScale: {type: 'f', value: params.noiseScale || 0 }
 		},
 
 		vertexShader: [
@@ -31,6 +32,7 @@ var BlendParticleMaterial = function( params ) {
 		'uniform float size;',
 		'uniform float scale;',
 		'uniform float time;',
+		'uniform float noiseScale;',
 
 
 		'uniform sampler2D pMap;',
@@ -82,7 +84,7 @@ var BlendParticleMaterial = function( params ) {
 		'	vColor = particleMap.xyz;',
 		'	vAlpha = pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
 
-		'	gl_PointSize =  size * vAlpha + pow(noise3( position + vec3(0., time, 0.) ),2.) * size;',
+		'	gl_PointSize =  size * vAlpha + (pow(noise3( position + vec3(0., time, 0.) ),2.) * size) * noiseScale;',
 
 		// '	vec4 q;',
 		'	float angle = vAlpha * sin(position.x * .5 ) * cos(position.y * .5 + time * .5) * 2.;',
