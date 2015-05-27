@@ -78,11 +78,12 @@ nx.onload = function() {
           controller: controls,
           spritePath: "/textures/sphereNormal.png",
           numSpritesX: 40,
-          spriteSize: 50,
+          spriteSize: 60,
           spriteBlending: 2,
           spriteOpacity: .45,
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
+          spriteNoiseAmount: 0
         });
 
         break;

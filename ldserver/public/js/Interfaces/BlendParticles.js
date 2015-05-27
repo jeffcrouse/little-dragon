@@ -15,6 +15,8 @@ function BlendParticles( options )
 
 	var spriteOpacity = options.spriteOpacity || .34;
 
+	var spriteNoiseAmount = options.spriteNoiseAmount || 1;
+
 	var controller = options.controller;
 
 	var NUM_SLIDERS = controller.sliders;
@@ -140,7 +142,8 @@ function BlendParticles( options )
 		opacity: spriteOpacity,
 		size: spriteSize,
 		blending: spriteBlending,
-		color: new THREE.Color( 0x0000FF )
+		color: new THREE.Color( 0x0000FF ),
+		noiseScale: spriteNoiseAmount
 	} )
 
 	var points = new THREE.PointCloud( geometry, particleMat );
