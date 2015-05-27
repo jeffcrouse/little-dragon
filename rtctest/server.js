@@ -7,6 +7,14 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+// Set up MIDI
+var midi = require('midi');
+var output = new midi.output();
+output.getPortCount();
+//output.getPortName(0);
+output.openPort(0);
+
+var CONTROL = 176;
 
 var ws_addr = null;
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
@@ -100,26 +108,33 @@ io.on('connection', function (socket) {
 		 	}, onError);
 		 }, onError);
 	});
-
-
-
+	
 	// Handle incoming WebRTC messages!
 	// Also send one back whenever we receive one.
 	var handleMessage = function(event) {
 		
 		var json = JSON.parse( event.data );
-		var time = new Date(json.time);
-		var now = new Date();
-		var elapsed = now - time;
-		var i = json.number;
 
-		console.log(clientIp, "time", elapsed, "number", i );
+		if(json.message=="tick")
+		{
+			var i = json.number;
 
-		if(i != i_expected) {
-			console.error("Missed a message!");
+			console.log(clientIp, "number", i);
+			channel.send( event.data );
+
+			if(i != i_expected) {
+				console.error("Missed a message!");
+			}
+			i_expected++;
 		}
-		i_expected++;
-		//channel.send(JSON.stringify(message));
+		else if(json.message=="touch")
+		{
+			
+			var message = [CONTROL, 22, 1];
+			console.log("!!!", message);
+			output.sendMessage(message);
+			console.log(message);
+		}
 	}
 
 });
