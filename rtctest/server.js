@@ -7,6 +7,14 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+// Set up MIDI
+var midi = require('midi');
+var output = new midi.output();
+output.getPortCount();
+//output.getPortName(0);
+output.openPort(0);
+
+var CONTROL = 176;
 
 var ws_addr = null;
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
@@ -29,11 +37,14 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-	var data = {"title": 'Little Dragon Server', 'ws_addr': ws_addr};
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	var data = {"title": 'Little Dragon Server', 'ws_addr': ws_addr, "client": ip};
 	res.render('index', data);
 });
 
-
+app.get('/blank', function (req, res) {
+	res.send("-");
+});
 
 
 /**************************************************
@@ -49,6 +60,12 @@ var RTCPeerConnection = wrtc.RTCPeerConnection;
 // The Socket.io connection will be used for "signaling" with the client, which is basically just
 // the handshaking stuff. The real interesting stuff happens with the RTCPeerConnection
 io.on('connection', function (socket) {
+	var socketId = socket.id
+	var clientIp = socket.request.connection.remoteAddress
+
+	console.log("New connection from", clientIp)
+
+	var i_expected = 0;
 
 	var pc = new wrtc.RTCPeerConnection();
 	var channel = null;
@@ -91,16 +108,33 @@ io.on('connection', function (socket) {
 		 	}, onError);
 		 }, onError);
 	});
-
-
-
+	
 	// Handle incoming WebRTC messages!
 	// Also send one back whenever we receive one.
 	var handleMessage = function(event) {
-		console.log('Received message: ' + event.data);
+		
 		var json = JSON.parse( event.data );
-		var message = {"message": "tock", "value": json.value};
-		channel.send(JSON.stringify(message));
+
+		if(json.message=="tick")
+		{
+			var i = json.number;
+
+			console.log(clientIp, "number", i);
+			channel.send( event.data );
+
+			if(i != i_expected) {
+				console.error("Missed a message!");
+			}
+			i_expected++;
+		}
+		else if(json.message=="touch")
+		{
+			
+			var message = [CONTROL, 22, 1];
+			console.log("!!!", message);
+			output.sendMessage(message);
+			console.log(message);
+		}
 	}
 
 });

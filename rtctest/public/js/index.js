@@ -64,25 +64,101 @@ socket.on('answer', function(data){
 	pc.setRemoteDescription( description, onSuccess, onError);
 });
 
+
+var messages = [];
+var i = 0;
+
+var loop = function() {
+	var now = new Date();
+	var message = {"message": "tick", "number": i, "date": now};
+	messages[i] = now;
+	channel.send(JSON.stringify(message));
+	i++;
+}
+
+
+
 // Whee! We're open!
 channel.onopen = function() {
 	console.log('!!! Send channel state is: ' + channel.readyState);
 
-
 	// Start off a little loop sending "tick" messages
-	setInterval(function(){
-		var message = {"message": "tick", "value": Math.floor(Math.random() * 100)};
-		channel.send(JSON.stringify(message));
-	}, 1000);			
+	setInterval(loop, 500);			
 }
 
 
 // This is where incoming messages will happen.
 var receiveDiv =  document.querySelector("div#receive");
 channel.onmessage = function(event) {
+	var json = JSON.parse(event.data);
 	console.log('Received message: ' + event.data);
-	receiveDiv.innerHTML += moment().format('MMMM Do YYYY, h:mm:ss a');
-	receiveDiv.innerHTML += " | ";
-	receiveDiv.innerHTML += event.data;
-	receiveDiv.innerHTML +=  "<br />";
+	if(json.message == "tick") 
+	{
+		var now = new Date();
+		var sentAt = new Date(json.date);
+		var elapsed = now - sentAt;
+
+		var message = json.number;
+		message += " | ";
+		message += moment.duration(elapsed).asMilliseconds();
+		message += "ms <br />";
+
+		receiveDiv.innerHTML = message + receiveDiv.innerHTML;
+	}
+
 }
+
+
+
+var timeDiv = document.querySelector("#time");
+setInterval(function(){
+	timeDiv.innerHTML = moment().format('h:mm:ss:SSSS a');
+}, 10);
+
+
+
+
+
+// INIT MISC
+
+var isFullScreen = false;
+function toggleFullScreen() {
+  var doc = window.document;
+  var docEl = doc.documentElement;
+
+  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+  if(doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement) {
+    cancelFullScreen.call(doc);
+  } else {
+    requestFullScreen.call(docEl);
+  }
+}
+
+
+
+// Keep this around in case we want any raw touch events
+document.querySelector("#container").addEventListener('touchstart', function(event) {
+	if(!isFullScreen) {
+		//toggleFullScreen();
+		isFullScreen = true;
+	} 
+  
+	console.log("touchstart");
+	if (event.targetTouches.length == 1) {
+		var touch = event.targetTouches[0];
+		var message = {"message": "touch"};
+		channel.send( JSON.stringify(message) );
+	}
+
+  if (event.targetTouches.length == 1) {
+    // var touch = event.targetTouches[0];
+    // ws.send(JSON.stringify({"event": "single"}));
+  } else if (event.targetTouches.length == 2) {
+    // var touch = event.targetTouches[0];
+    // ws.send(JSON.stringify({"event": "double"}));
+  }
+}, false);
+
+

@@ -165,14 +165,14 @@ ws.onclose = function()
 function isFullScreen() {
   return doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement;
 }
-function setFullScreen(fullscren) {
+function setFullScreen(fullscreen) {
   var doc = window.document;
   var docEl = doc.documentElement;
 
   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
 
-  if(fullscren) {
+  if(fullscreen) {
     requestFullScreen.call(docEl);
   } else {
     cancelFullScreen.call(doc);
