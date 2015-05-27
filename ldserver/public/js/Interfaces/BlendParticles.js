@@ -15,7 +15,7 @@ function BlendParticles( options )
 
 	var spriteOpacity = options.spriteOpacity || .34;
 
-	var spriteNoiseAmount = options.spriteNoiseAmount || 1;
+	var spriteNoiseAmount = options.spriteNoiseAmount !== undefined ? options.spriteNoiseAmount : 1;
 
 	var controller = options.controller;
 
