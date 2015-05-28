@@ -1,5 +1,7 @@
 //INIT INTERFACE
 
+var ldInterface;
+
 nx.onload = function() {
 		
   nx.sendsTo("js");
@@ -14,8 +16,9 @@ nx.onload = function() {
         createControl("range", 1);
         break;
       case "2":
-        createControl("multislider", 1)
-          .setNumberOfSliders(5);
+        var controls = createControl("multislider", 1);
+         
+        controls.setNumberOfSliders(5);
         break;
       case "3":
         createControl("tilt", 1);
@@ -34,6 +37,77 @@ nx.onload = function() {
         break;
       case "8":
         createControl("button", 6);
+
+      case "9":
+        var controls = createControl("multislider", 1);
+         
+        controls.setNumberOfSliders(5);
+
+        ldInterface = MultiSliderInterface({
+          controller: controls
+        });
+
+        break;
+        
+
+      case "10":
+        var controls = createControl("multislider", 1);
+         
+        controls.setNumberOfSliders(5);
+
+        ldInterface = BlendParticles({
+          controller: controls,
+          spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
+          numSpritesX: 20,
+          spriteSize: 150,
+          spriteBlending: 2,
+          spriteOpacity: .45,
+          c0: new THREE.Color( 0x34FFFF ),
+          c1: new THREE.Color( 0xFF34FF ),
+        });
+
+        break;
+          
+
+      case "11":
+        var controls = createControl("multislider", 1);
+         
+        controls.setNumberOfSliders(10);
+
+        ldInterface = BlendParticles({
+          controller: controls,
+          spritePath: "/textures/sphereNormal.png",
+          numSpritesX: 40,
+          spriteSize: 60,
+          spriteBlending: 2,
+          spriteOpacity: .45,
+          c0: new THREE.Color( 0x34FFFF ),
+          c1: new THREE.Color( 0xFF34FF ),
+          spriteNoiseAmount: 0
+        });
+
+        break;
+
+        
+
+      case "12":
+        var controls = createControl("multislider", 1);
+         
+        controls.setNumberOfSliders(3);
+
+        ldInterface = BlendParticles({
+          controller: controls,
+          spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
+          numSpritesX: 50,
+          spriteSize: 75,
+          spriteBlending: 2,
+          spriteOpacity: .35,
+          c0: new THREE.Color( 0x34FFFF ),
+          c1: new THREE.Color( 0xFF34FF ),
+        });
+
+        break;
+      default:  
         break;
   }
 	
@@ -44,14 +118,18 @@ function createControl(controlType, controlNumber){
   var settings = {
                     "id": id, 
                     "parent":"controls",
-                    "w":"1280px",
-                    "h":"800px"
+                    "w": "1280px", //window.innerWidth, // 
+                    "h": "800px" //window.innerHeight, // 
                   }
   var widget = nx.add(controlType, settings)
     .on('*', function(data) {
-      console.log(data);
+      // console.log(data);
       var eventObject = {"event":id, 
                           "data":data};
+
+      if(ldInterface){
+        ldInterface.widgetEvent( eventObject );
+      }
       ws.send(JSON.stringify(eventObject));
     });
     // widget.colors.fill("#F0F0F0");
