@@ -1,7 +1,7 @@
 
 var servers = {
 	iceServers: [{
-	    url: 'stun:stun.l.google.com:19302'
+		url: 'stun:stun.l.google.com:19302'
 	}]
 };
 var constraints = {
