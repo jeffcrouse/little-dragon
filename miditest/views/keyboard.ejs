@@ -12,10 +12,16 @@
 	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+	<style>
+	body {
+		border-top: 50px;
+	}
+	</style>
   </head>
   <body>
 
-	<canvas nx="keyboard" id="keyboard1"></canvas>
+	<!--	<canvas nx="keyboard" id="keyboard1" width="500"></canvas>-->
+	<canvas nx="multitouch" id="multitouch1" width="700" height="400"></canvas>
 
 	<script>var ws_addr = "<%= ws_addr %>";</script>
 	<script>var me = "<%= client %>";</script>

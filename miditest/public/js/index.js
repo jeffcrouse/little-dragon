@@ -13,7 +13,7 @@ var onMessage = function(event) {
 	//console.log('Received message: ' + event.data);
 	var json = JSON.parse(event.data);
 
-	if(json.message == "tick") {
+	if(json.msg == "tick") {
 		var now = new Date();
 		var sentAt = new Date(json.date);
 		var elapsed = now - sentAt;
@@ -31,7 +31,7 @@ var onOpen = function() {
 	var loop = function() {
 		var now = new Date();
 		ticks[tick_num] = now;
-		rtc.send(JSON.stringify({"message": "tick", "num": tick_num, "date": now}));
+		rtc.send(JSON.stringify({"msg": "tick", "num": tick_num, "date": now}));
 		tick_num++;
 	};
 	roundtripTimer = setInterval(loop, 50);

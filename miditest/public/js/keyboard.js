@@ -11,19 +11,30 @@ var rtc = null;
 nx.onload = function() {	
 	nx.sendsTo("js");
 
+	/*
+	keyboard1.octaves = 1;
+	keyboard1.midibase = 40;
+	keyboard1.init();
+
 	// listen to all of position's output
-	slider1.on('*', function(data) {
-		console.log("slider1", data.value);
-		
+	keyboard1.on('*', function(data) {
+		console.log("keyboard1", data);
+		rtc.send(JSON.stringify({"msg": "key", "note": data.note, "vel": data.on}));
 	})
+	*/
+	multitouch1.on('*', function(data){
+		for(key in data) {
+			var touch = data[key];
+			
+		}
+		console.log("multitouch1", data);
+	});
 }
 
 // Receives messages from RTC
 var onMessage = function(event) {
-	//console.log('Received message: ' + event.data);
-	var json = JSON.parse(event.data);
+	//var json = JSON.parse(event.data);
 }
-
 
 // Called when RTC connection is opened
 var onOpen = function() {
@@ -45,6 +56,8 @@ socket.on('disconnect', function(){
 
 
 socket.on('reload', function(data){
+	if(rtc) rtc.close();
+	rtc = null;
 	location.reload(true);
 });
 

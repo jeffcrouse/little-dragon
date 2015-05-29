@@ -30,7 +30,8 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 // http://www.midi.org/techspecs/midimessages.php
 var MIDI = {
 	C1: { NOTEON: 144, NOTEOFF: 126 },
-	C2: { NOTEON: 145, NOTEOFF: 129 }
+	C2: { NOTEON: 145, NOTEOFF: 129 },
+	C3: { NOTEON: 146, NOTEOFF: 130 }
 }
 var FULL_VELOCITY = 127;
 
@@ -109,7 +110,7 @@ io.on('connection', function (socket) {
 		//console.log('Received message:', event.data);
 
 		var json = JSON.parse(event.data);
-		if(json.message=="tick") {
+		if(json.msg=="tick") {
 			if(json.num != tick_num) {
 				console.error("!! missed message ", tick_num, "from on client", clientIp);
 				tick_num = json.num;  // catch up so we don't keep getting errors
@@ -118,10 +119,20 @@ io.on('connection', function (socket) {
 			rtc.send( event.data ); // echo it back
 		}
 
-		if(json.message=="button") {
+		if(json.msg=="btn") {
 			var note = json.value + 36;
+			console.log([MIDI.C2.NOTEON, note, FULL_VELOCITY]);
 			output.sendMessage([MIDI.C2.NOTEON, note, FULL_VELOCITY]);
 			output.sendMessage([MIDI.C2.NOTEOFF, note, FULL_VELOCITY]);
+		}
+		if(json.msg=="key") {
+			console.log(json.note, json.vel);
+			if(json.vel>0) {
+				output.sendMessage([MIDI.C3.NOTEON, json.note, json.vel]);
+			} else {
+				output.sendMessage([MIDI.C3.NOTEOFF, json.note, 0]);
+			}
+			
 		}
 	}
 

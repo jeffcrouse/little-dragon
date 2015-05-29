@@ -15,21 +15,21 @@ nx.onload = function() {
 	button1.on('*', function(data) {
 		if(data.press) {
 			console.log("button1");
-			rtc.send(JSON.stringify({"message": "button", "value": 1}));
+			rtc.send(JSON.stringify({"msg": "btn", "value": 1}));
 		}
 	})
 
 	button2.on('*', function(data) {
 		if(data.press) {
 			console.log("button2");
-			rtc.send(JSON.stringify({"message": "button", "value": 2}));
+			rtc.send(JSON.stringify({"msg": "btn", "value": 2}));
 		}
 	})
 
 	button3.on('*', function(data) {
 		if(data.press) {
 			console.log("button3");
-			rtc.send(JSON.stringify({"message": "button", "value": 3}));
+			rtc.send(JSON.stringify({"msg": "btn", "value": 3}));
 		}
 	});
 }
@@ -38,7 +38,7 @@ nx.onload = function() {
 // Called when we receive a message from RTC
 var onMessage = function(event) {
 	//console.log('Received message: ' + event.data);
-	var json = JSON.parse(event.data);
+	//var json = JSON.parse(event.data);
 }
 
 
@@ -62,6 +62,8 @@ socket.on('disconnect', function(){
 
 
 socket.on('reload', function(data){
+	if(rtc) rtc.close();
+	rtc = null;
 	location.reload(true);
 });
 

@@ -22,7 +22,7 @@ nx.onload = function() {
 // Handles messages from the RTC
 var onMessage = function(event) {
 	//console.log('Received message: ' + event.data);
-	var json = JSON.parse(event.data);
+	//var json = JSON.parse(event.data);
 }
 
 
@@ -46,6 +46,8 @@ socket.on('disconnect', function(){
 
 
 socket.on('reload', function(data){
+	if(rtc) rtc.close();
+	rtc = null;
 	location.reload(true);
 });
 
