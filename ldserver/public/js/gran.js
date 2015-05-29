@@ -107,6 +107,9 @@ nx.onload = function() {
           c1: new THREE.Color( 0xFF34FF ),
         });
 
+        ldInterface.setEdgeColorTop( 0xFFFFFF );
+        ldInterface.setEdgeColorBottom( 0x00FF00 );
+
         break;
 
       default:  

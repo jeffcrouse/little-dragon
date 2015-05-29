@@ -32,6 +32,8 @@ function BlendParticles( options )
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
 
+	var stats = undefined;
+
 	console.log( 'controller', controller );
 
 	var container = $("<div>", {id: "multisliderContainer"}).css({
@@ -41,8 +43,12 @@ function BlendParticles( options )
 		width: WIDTH,
 		height: HEIGHT,
 		pointerEvents: "none",
-		backgroundColor: "rgba( 0, 0, 0, 1)"
+		backgroundColor: "rgba( 0, 0, 0, 1)",
+		borderRadius: "0px" // TODO: I think this gets over-written by nexus
 	}).appendTo( document.body );
+
+	var edgeTopColor = new THREE.Color("magenta");
+	var edgeBottomColor = new THREE.Color("cyan");
 
 	var renderer, scene, camera, light, clock = new THREE.Clock();
 
@@ -184,12 +190,29 @@ function BlendParticles( options )
 	p3.position.x += spreadOffset.x ;
 	p3.position.y += spreadOffset.y ;
 
-
-
 	function addToParticleOffset( x )
 	{
 		points.material.uniforms.time.value += x || .1;
 	}
+
+	//EDGE COLOR BLOCKS
+	var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
+		color: edgeTopColor,
+		depthTest: true,
+
+	} ) );
+	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
+		color: edgeBottomColor,
+		depthTest: true,
+
+	} ) );
+
+
+	edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
+	edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
+
+	scene.add( edgeTop );
+	scene.add( edgeBottom );
 
 	function handleInput( event )
 	{
@@ -205,6 +228,8 @@ function BlendParticles( options )
 
 	function update()
 	{
+		if(stats)	stats.update();
+
 		var elapsedTime = clock.getElapsedTime();
 
 		addToParticleOffset( .002 );
@@ -250,6 +275,14 @@ function BlendParticles( options )
 		container.append( renderer.domElement );
 	}
 
+
+	stats = new Stats();
+	$(stats.domElement).css({
+		position: "absolute",
+		left: '20px',
+		right: '20px'
+	}).appendTo( container );
+
 	function begin(){
 		rendererSetup();
 		setup();
@@ -262,6 +295,12 @@ function BlendParticles( options )
 	return {
 
 		begin: begin,
-		widgetEvent: handleInput
+		widgetEvent: handleInput,
+		setEdgeColorTop: function( hex ){
+			edgeTopColor.set( hex );
+		},
+		setEdgeColorBottom: function( hex ){
+			edgeBottomColor.set( hex );
+		},
 	}
 }
