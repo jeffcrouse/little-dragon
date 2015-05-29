@@ -136,69 +136,13 @@
 	"buffers":
 	[
 		{
-			"file": "views/buttons.ejs",
-			"settings":
-			{
-				"buffer_size": 1406,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/keyboard.ejs",
-			"settings":
-			{
-				"buffer_size": 1386,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "\n// Open a socket connection to the node server for signaling.\nvar socket = io.connect(ws_addr);\nvar rtc = null;\n\n/***************\n╔╗╔┌─┐─┐ ┬┬ ┬┌─┐\n║║║├┤ ┌┴┬┘│ │└─┐\n╝╚╝└─┘┴ └─└─┘└─┘\n*****************/\nnx.onload = function() {	\n	nx.sendsTo(\"js\");\n\n	/*\n	keyboard1.octaves = 1;\n	keyboard1.midibase = 40;\n	keyboard1.init();\n\n	// listen to all of position's output\n	keyboard1.on('*', function(data) {\n		console.log(\"keyboard1\", data);\n		rtc.send(JSON.stringify({\"msg\": \"key\", \"note\": data.note, \"vel\": data.on}));\n	})\n	*/\n	multitouch1.on('*', function(data){\n		for(key in data) {\n			var touch = data[key];\n			\n		}\n		console.log(\"multitouch1\", data);\n	});\n}\n\n// Receives messages from RTC\nvar onMessage = function(event) {\n	//var json = JSON.parse(event.data);\n}\n\n// Called when RTC connection is opened\nvar onOpen = function() {\n	console.log(\"open!\");\n}\n\n\nsocket.on(\"connect\", function(){\n	console.log(\"!!! connected\");\n	rtc = new RTCDataChannelClient(socket, onOpen, onMessage);\n});\n\n// Close down the RTC if we are disconnected for any reason.\nsocket.on('disconnect', function(){\n	if(rtc) rtc.close();\n	rtc = null;\n	rtc = new RTCDataChannelClient(socket, onOpen, onMessage);\n});\n\n\nsocket.on('reload', function(data){\n	if(rtc) rtc.close();\n	rtc = null;\n	location.reload(true);\n});\n\n",
-			"file": "public/js/keyboard.js",
-			"file_size": 1364,
-			"file_write_time": 1432851863000000,
-			"settings":
-			{
-				"buffer_size": 1278,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/buttons.js",
-			"settings":
-			{
-				"buffer_size": 1463,
-				"line_ending": "Unix"
-			}
-		},
-		{
+			"contents": "",
 			"file": "server.js",
+			"file_size": -1,
+			"file_write_time": -1,
 			"settings":
 			{
-				"buffer_size": 6145,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/index.js",
-			"settings":
-			{
-				"buffer_size": 1328,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/fullscreen.js",
-			"settings":
-			{
-				"buffer_size": 726,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/sliders.js",
-			"settings":
-			{
-				"buffer_size": 1099,
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		}
@@ -227,6 +171,25 @@
 	},
 	"file_history":
 	[
+		"/Users/jeff/Desktop/osclistener/package.json",
+		"/Users/jeff/Development/little-dragon/rtctest/server.js",
+		"/Users/jeff/Development/little-dragon/.gitignore",
+		"/Users/jeff/Development/little-dragon/ldserver/public/js/gran.js",
+		"/Users/jeff/Development/little-dragon/littledragon/config.xml",
+		"/Users/jeff/Development/little-dragon/littledragon/README.md",
+		"/Users/jeff/Development/little-dragon/littledragon/www/js/index.js",
+		"/Users/jeff/Development/little-dragon/littledragon/.gitignore",
+		"/Users/jeff/Development/little-dragon/littledragon/plugins/cordova-plugin-vibration/plugin.xml",
+		"/Users/jeff/Development/little-dragon/littledragon/plugins/nl.sylvain.cordova.osc/plugin.xml",
+		"/Users/jeff/Desktop/osclistener/app.js",
+		"/Users/jeff/Desktop/littledragon/www/css/index.css",
+		"/Users/jeff/Desktop/littledragon/www/index.html",
+		"/Users/jeff/Desktop/littledragon/www/js/index.js",
+		"/Users/jeff/Desktop/littledragon/config.xml",
+		"/Users/jeff/Desktop/littledragon/README.md",
+		"/Users/jeff/Desktop/littledragon/.gitignore",
+		"/Users/jeff/Desktop/littledragon/plugins/cordova-plugin-crosswalk-webview/package.json",
+		"/Users/jeff/Desktop/littledragon/assets/xwalk-command-line",
 		"/Users/jeff/Development/little-dragon/miditest/public/js/index.js",
 		"/Users/jeff/Development/little-dragon/miditest/public/js/sliders.js",
 		"/Users/jeff/Development/little-dragon/miditest/public/js/buttons.js",
@@ -245,7 +208,6 @@
 		"/Users/jeff/Development/little-dragon/miditest/index.hs",
 		"/Users/jeff/Development/little-dragon/rtctest/proj.sublime-project",
 		"/Users/jeff/Development/little-dragon/rtctest/views/index.ejs",
-		"/Users/jeff/Development/little-dragon/rtctest/server.js",
 		"/Users/jeff/Development/little-dragon/rtctest/public/js/index.js",
 		"/Users/jeff/Desktop/rtctest/views/index.ejs",
 		"/Users/jeff/Desktop/rtctest/server.js",
@@ -271,7 +233,6 @@
 		"/Users/jeff/Desktop/rtctest/npm-debug.log",
 		"/Users/jeff/Development/little-dragon/ldserver/server.js",
 		"/Users/jeff/Development/little-dragon/ldserver/views/index.ejs",
-		"/Users/jeff/Development/little-dragon/ldserver/public/js/gran.js",
 		"/Users/jeff/Development/little-dragon/ldserver/public/css/index.css",
 		"/Users/jeff/Development/little-dragon/ldserver/views/gran.ejs",
 		"/Users/jeff/Development/little-dragon/Test_2_NexusUI_nodeBridge_Live_Granulator/LittleDragonFrontend/index.html",
@@ -337,24 +298,7 @@
 		"/Users/jeff/Google Drive/_UNCATEGORIZED/Untitled Diagram",
 		"/Users/jeff/Desktop/_rpi/eco-virtual.py",
 		"/Users/jeff/Development/LightEchoes/SimpleLine.js",
-		"/Volumes/Downloads/Cinema4d R15 Hybrid Installer/C4D_R15Install/StudioSerials.txt",
-		"/Users/jeff/Desktop/Crack-OSX/install.txt",
-		"/Volumes/Downloads/AUTODESK MAYA 2015 MAC OSX XFORCE/Crack-OSX/install.txt",
-		"/Users/jeff/Development/Witness/PointCloudTest/Assets/Recordings2/Brekel_Body_HIGH_Floor_05.bpc",
-		"/Users/jeff/Development/Witness/PointCloudTest/Assets/Recordings2/Brekel_Body_HIGH_Floor_05_geometry_PLY/frame_00000.ply",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxZipArchive/example-extractAll/Makefile",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxZipArchive/.gitignore",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxModifierKeys/.gitignore",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/apps/Clouds/zipTest/bin/data/testfile.txt",
-		"/Users/jeff/Desktop/rfid/rfid.js",
-		"/Users/jeff/Desktop/rfid.js",
-		"/Users/jeff/Sites/jeffish.com/_site/project/invisible_threads.html",
-		"/Users/jeff/Sites/jeffish.com/_site/cv/index.html",
-		"/Users/jeff/Sites/jeffish.com/_redirects/cv.html",
-		"/Users/jeff/Sites/jeffish.com/Gemfile",
-		"/Users/jeff/Sites/jeffish.com/_redirects.yml",
-		"/Users/jeff/Sites/jeffish.com/cv.html",
-		"/Users/jeff/Desktop/Recordings/Brekel_PointCloud_Lossless_Clip.bpc"
+		"/Volumes/Downloads/Cinema4d R15 Hybrid Installer/C4D_R15Install/StudioSerials.txt"
 	],
 	"find":
 	{
@@ -531,217 +475,28 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "views/buttons.ejs",
-					"settings":
-					{
-						"buffer_size": 1406,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1155,
-								1155
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "views/keyboard.ejs",
-					"settings":
-					{
-						"buffer_size": 1386,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								801,
-								812
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "public/js/keyboard.js",
-					"settings":
-					{
-						"buffer_size": 1278,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								604,
-								604
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "public/js/buttons.js",
-					"settings":
-					{
-						"buffer_size": 1463,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1400,
-								1400
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 49.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
 					"file": "server.js",
 					"settings":
 					{
-						"buffer_size": 6145,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3756,
-								3756
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1382.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "public/js/index.js",
-					"settings":
-					{
-						"buffer_size": 1328,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								627,
-								627
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "public/js/fullscreen.js",
-					"settings":
-					{
-						"buffer_size": 726,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								658,
-								658
+								0,
+								0
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "public/js/sliders.js",
-					"settings":
-					{
-						"buffer_size": 1099,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								490,
-								490
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

@@ -7,7 +7,8 @@
     <author email="jeff@odddivision.com" href="http://odddivisino.com">
         Jeff Crouse | Odd Division
     </author>
-    <content src="index.html" />
+    
+    <content src="http://192.168.2.6" />
     <plugin name="cordova-plugin-whitelist" version="1" />
     <preference name="xwalkCommandLine" value="--ignore-gpu-blacklist" />
     <preference name="Orientation" value="landscape" />

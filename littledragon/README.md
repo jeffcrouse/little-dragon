@@ -1,13 +1,13 @@
 # Little Dragon Mobile App
 
 
-##info
-This app was made with the [Cordova Command Line Interface](http://cordova.apache.org/docs/en/5.0.0/guide_cli_index.md.html#The%20Command-Line%20Interface) with the [Crosswalk Plugin](https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview) and some other plugins. There are some caveats about [using WebGL in xwalk/Cordova](https://crosswalk-project.org/documentation/about/faq.html#Canvas-and-WebGL-support).
+This is an app that is made with the [Cordova Command Line Interface](http://cordova.apache.org/docs/en/5.0.0/guide_cli_index.md.html#The%20Command-Line%20Interface) with the [Crosswalk Plugin](https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview) and some other plugins. There are some caveats about [using WebGL in xwalk/Cordova](https://crosswalk-project.org/documentation/about/faq.html#Canvas-and-WebGL-support).
 
 # Post-git Checkout Steps
-1. cordova prepare  # This will fetch all platforms and plugins saved in config.xml
-1. cordova emulate android
-1. cordova run --device
+1. `cordova prepare`  # This will fetch all platforms and plugins saved in config.xml
+1. You might have to ` sudo npm install -g ios-sim` if you want to run on ios
+1. `cordova emulate [android | ios]`
+1. `cordova run [android | ios] --device`
 
 
 ## Setup Steps
