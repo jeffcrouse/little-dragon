@@ -2,18 +2,13 @@
 <widget id="com.odddivision.littledragon" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>LittleDragon</name>
     <description>
-        Interface for Little Dragon musical interface.
+        Mobile app to run on Samsung devices for the Little Dragon instrument
     </description>
-    <author email="jeff@odddivision.com" href="http://odddivisino.com">
-        Jeff Crouse | Odd Division
+    <author email="jeff@odddivision.com" href="http://www.odddivision.com">
+        Jeff Crouse
     </author>
-    
-    <content src="http://192.168.2.6" />
+    <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" version="1" />
-    <preference name="xwalkCommandLine" value="--ignore-gpu-blacklist" />
-    <preference name="Orientation" value="landscape" />
-    <preference name="Fullscreen" value="true" />
-    <icon src="res/icon.png" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -28,9 +23,17 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <engine name="android" spec="^4.0.0" />
+    <engine name="ios" spec="^3.8.0" />
     <plugin name="cordova-plugin-crosswalk-webview" spec="^1.2.0" />
     <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
     <plugin name="nl.sylvain.cordova.osc" spec="https://github.com/sy1vain/cordova-osc-plugin.git" />
-    <engine name="android" spec="^4.0.0" />
-    <engine name="ios" spec="^3.8.0" />
+    <preference name="Orientation" value="landscape" />
+    <preference name="xwalkCommandLine" value="--ignore-gpu-blacklist" />
+    <preference name="Fullscreen" value="true" />
+    <preference name="DisallowOverscroll" value="true"/>
+    <plugin name="org.apache.cordova.device" spec="^0.3.0" />
+    <plugin name="nl.x-services.plugins.insomnia" spec="https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git" />
+    <preference name="BackupWebStorage" value="local" />
+    <icon src="res/icon.png" />
 </widget>

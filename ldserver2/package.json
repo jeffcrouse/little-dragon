@@ -9,6 +9,7 @@
   "author": "Jeff Crouse",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^2.3.1",
     "express": "^4.12.4",
     "node-osc": "^1.1.0"
   }

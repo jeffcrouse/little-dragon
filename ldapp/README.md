@@ -13,23 +13,28 @@ This is an app that is made with the [Cordova Command Line Interface](http://cor
 ## Setup Steps
 
 1. sudo npm install -g cordova
-1. cordova create littledragon com.odddivision.littledragon LittleDragon
+1. cordova create ldapp com.odddivision.littledragon LittleDragon
 1. cd little-dragon
 1. cordova platform add android --save
 1. cordova platform add ios --save
 	1. sudo npm install -g ios-sim
+	1. sudo npm install -g ios-deploy
 1. cordova plugin add cordova-plugin-crosswalk-webview --save
 1. cordova plugin add cordova-plugin-vibration --save
 1. cordova plugin add https://github.com/sy1vain/cordova-osc-plugin.git --save
+1. cordova plugin add org.apache.cordova.device --save
 1. cordova build
 1. Add to config.xml
 
-<!-- needed to enable WebGL -->
-<preference name="xwalkCommandLine" value="--ignore-gpu-blacklist" />
-<preference name="Orientation" value="landscape" />
-<!-- get rid of top menubar -->
-<preference name="Fullscreen" value="true" />
-
+    <!-- force landscape mode -->
+    <preference name="Orientation" value="landscape" />
+    <!-- needed to enable WebGL -->
+    <preference name="xwalkCommandLine" value="--ignore-gpu-blacklist" />
+    <!-- get rid of top menubar -->
+    <preference name="Fullscreen" value="true" />
+    <!-- for iOS -->
+     <preference name="DisallowOverscroll" value="true"/>
+     
 1. cordova emulate android
 1. cordova run --device
 
