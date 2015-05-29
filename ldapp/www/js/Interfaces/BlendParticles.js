@@ -11,6 +11,10 @@ function BlendParticles( options )
 
 	var spread = options.spread || .02;
 
+	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0);
+
+	var spriteRotation = options.spriteRotation || 0;
+
 	var spriteBlending = options.spriteBlending || 1;
 
 	var spriteOpacity = options.spriteOpacity || .34;
@@ -28,6 +32,8 @@ function BlendParticles( options )
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
 
+	var stats = undefined;
+
 	console.log( 'controller', controller );
 
 	var container = $("<div>", {id: "multisliderContainer"}).css({
@@ -37,8 +43,12 @@ function BlendParticles( options )
 		width: WIDTH,
 		height: HEIGHT,
 		pointerEvents: "none",
-		backgroundColor: "rgba( 0, 0, 0, 1)"
+		backgroundColor: "rgba( 0, 0, 0, 1)",
+		borderRadius: "0px" // TODO: I think this gets over-written by nexus
 	}).appendTo( document.body );
+
+	var edgeTopColor = new THREE.Color("magenta");
+	var edgeBottomColor = new THREE.Color("cyan");
 
 	var renderer, scene, camera, light, clock = new THREE.Clock();
 
@@ -143,7 +153,8 @@ function BlendParticles( options )
 		size: spriteSize,
 		blending: spriteBlending,
 		color: new THREE.Color( 0x0000FF ),
-		noiseScale: spriteNoiseAmount
+		noiseScale: spriteNoiseAmount,
+		spriteRotation: spriteRotation
 	} )
 
 	var points = new THREE.PointCloud( geometry, particleMat );
@@ -169,15 +180,39 @@ function BlendParticles( options )
 
 	p2.material.uniforms.time = p3.material.uniforms.time = points.material.uniforms.time;
 
+	// COLOR SPREAD
 	p2.scale.multiplyScalar( 1 + spread );
 	p3.scale.multiplyScalar( 1 + spread * 2);
 
+	p2.position.x += spreadOffset.x * .5;
+	p2.position.y += spreadOffset.y * .5;
 
+	p3.position.x += spreadOffset.x ;
+	p3.position.y += spreadOffset.y ;
 
 	function addToParticleOffset( x )
 	{
 		points.material.uniforms.time.value += x || .1;
 	}
+
+	//EDGE COLOR BLOCKS
+	var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
+		color: edgeTopColor,
+		depthTest: true,
+
+	} ) );
+	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
+		color: edgeBottomColor,
+		depthTest: true,
+
+	} ) );
+
+
+	edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
+	edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
+
+	scene.add( edgeTop );
+	scene.add( edgeBottom );
 
 	function handleInput( event )
 	{
@@ -193,6 +228,8 @@ function BlendParticles( options )
 
 	function update()
 	{
+		if(stats)	stats.update();
+
 		var elapsedTime = clock.getElapsedTime();
 
 		addToParticleOffset( .002 );
@@ -238,6 +275,14 @@ function BlendParticles( options )
 		container.append( renderer.domElement );
 	}
 
+
+	stats = new Stats();
+	$(stats.domElement).css({
+		position: "absolute",
+		left: '20px',
+		right: '20px'
+	}).appendTo( container );
+
 	function begin(){
 		rendererSetup();
 		setup();
@@ -250,6 +295,12 @@ function BlendParticles( options )
 	return {
 
 		begin: begin,
-		widgetEvent: handleInput
+		widgetEvent: handleInput,
+		setEdgeColorTop: function( hex ){
+			edgeTopColor.set( hex );
+		},
+		setEdgeColorBottom: function( hex ){
+			edgeBottomColor.set( hex );
+		},
 	}
 }

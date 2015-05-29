@@ -195,6 +195,7 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
+    
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -209,6 +210,7 @@ var app = {
 		document.addEventListener("startcallbutton", _stop, false);
 		document.addEventListener("endcallbutton", _stop, false);
     },
+
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
@@ -220,10 +222,11 @@ var app = {
         var onError = function(){ console.error("!! Couldn't keep device awake!"); }
         window.plugins.insomnia.keepAwake(onSuccess, onError);
 
-        console.log( device.uuid )
+		console.log( device.uuid )
 		console.log( navigator.userAgent );
 		osc = new window.OSCSender("192.168.2.6", 3333);
     },
+
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         // var parentElement = document.getElementById(id);

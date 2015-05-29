@@ -31,8 +31,6 @@ function MultiSliderInterface ( options ) {
 
 	var renderer, scene, camera, light;
 
-
-
 	//
 	//DEBUG
 	//
@@ -187,6 +185,7 @@ function MultiSliderInterface ( options ) {
 
 	function update()
 	{
+
 	}
 
 	function draw()
