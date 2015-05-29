@@ -11,6 +11,10 @@ function BlendParticles( options )
 
 	var spread = options.spread || .02;
 
+	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0);
+
+	var spriteRotation = options.spriteRotation || 0;
+
 	var spriteBlending = options.spriteBlending || 1;
 
 	var spriteOpacity = options.spriteOpacity || .34;
@@ -143,7 +147,8 @@ function BlendParticles( options )
 		size: spriteSize,
 		blending: spriteBlending,
 		color: new THREE.Color( 0x0000FF ),
-		noiseScale: spriteNoiseAmount
+		noiseScale: spriteNoiseAmount,
+		spriteRotation: spriteRotation
 	} )
 
 	var points = new THREE.PointCloud( geometry, particleMat );
@@ -169,8 +174,15 @@ function BlendParticles( options )
 
 	p2.material.uniforms.time = p3.material.uniforms.time = points.material.uniforms.time;
 
+	// COLOR SPREAD
 	p2.scale.multiplyScalar( 1 + spread );
 	p3.scale.multiplyScalar( 1 + spread * 2);
+
+	p2.position.x += spreadOffset.x * .5;
+	p2.position.y += spreadOffset.y * .5;
+
+	p3.position.x += spreadOffset.x ;
+	p3.position.y += spreadOffset.y ;
 
 
 

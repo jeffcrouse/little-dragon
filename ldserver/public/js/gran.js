@@ -62,6 +62,7 @@ nx.onload = function() {
           spriteSize: 150,
           spriteBlending: 2,
           spriteOpacity: .45,
+          spreadOffset: new THREE.Vector2( 50, 0),
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
         });
@@ -80,7 +81,7 @@ nx.onload = function() {
           numSpritesX: 40,
           spriteSize: 60,
           spriteBlending: 2,
-          spriteOpacity: .45,
+          spriteOpacity: .55,
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
           spriteNoiseAmount: 0
@@ -97,7 +98,7 @@ nx.onload = function() {
 
         ldInterface = BlendParticles({
           controller: controls,
-          spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
+          spritePath: "/textures/hexagon.png",
           numSpritesX: 50,
           spriteSize: 75,
           spriteBlending: 2,
@@ -107,6 +108,7 @@ nx.onload = function() {
         });
 
         break;
+
       default:  
         break;
   }
