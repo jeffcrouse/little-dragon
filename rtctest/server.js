@@ -2,7 +2,6 @@ var path = require('path');
 var util = require('util');
 var wrtc = require('wrtc');
 var express = require('express');
-var wrtc = require('wrtc');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -38,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+	console.log("http", ip);
 	var data = {"title": 'Little Dragon Server', 'ws_addr': ws_addr, "client": ip};
 	res.render('index', data);
 });

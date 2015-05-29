@@ -135,30 +135,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "server.js",
-			"settings":
-			{
-				"buffer_size": 4623,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "public/js/index.js",
-			"settings":
-			{
-				"buffer_size": 4558,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/index.ejs",
-			"settings":
-			{
-				"buffer_size": 1395,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Packages/Python/Python.sublime-build",
 	"command_palette":
@@ -184,10 +160,35 @@
 	},
 	"file_history":
 	[
-		"/Users/jeff/Development/little-dragon/rtctest/views/index.ejs",
-		"/Users/jeff/Development/little-dragon/rtctest/public/js/index.js",
-		"/Users/jeff/Development/little-dragon/rtctest/server.js",
+		"/Users/jeff/Development/little-dragon/littledragon/config.xml",
+		"/Users/jeff/Desktop/littledragon/www/css/index.css",
+		"/Users/jeff/Desktop/littledragon/www/index.html",
+		"/Users/jeff/Desktop/littledragon/www/js/index.js",
+		"/Users/jeff/Desktop/littledragon/config.xml",
+		"/Users/jeff/Desktop/littledragon/README.md",
+		"/Users/jeff/Desktop/littledragon/.gitignore",
+		"/Users/jeff/Desktop/littledragon/plugins/cordova-plugin-crosswalk-webview/package.json",
+		"/Users/jeff/Desktop/littledragon/assets/xwalk-command-line",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/index.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/sliders.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/buttons.js",
+		"/Users/jeff/Development/little-dragon/miditest/server.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/keyboard.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/fullscreen.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/RTCDataChannelClient.js",
+		"/Users/jeff/Development/little-dragon/miditest/README.md",
+		"/Users/jeff/Development/little-dragon/miditest/initiator.js",
+		"/Users/jeff/Development/little-dragon/miditest/views/index.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/views/sliders.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/views/buttons.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/public/manifest.json",
+		"/Users/jeff/Development/little-dragon/miditest/views/keyboard.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/package.json",
+		"/Users/jeff/Development/little-dragon/miditest/index.hs",
 		"/Users/jeff/Development/little-dragon/rtctest/proj.sublime-project",
+		"/Users/jeff/Development/little-dragon/rtctest/views/index.ejs",
+		"/Users/jeff/Development/little-dragon/rtctest/server.js",
+		"/Users/jeff/Development/little-dragon/rtctest/public/js/index.js",
 		"/Users/jeff/Desktop/rtctest/views/index.ejs",
 		"/Users/jeff/Desktop/rtctest/server.js",
 		"/Users/jeff/Desktop/rtctest/public/js/index.js",
@@ -286,32 +287,7 @@
 		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxZipArchive/example-extractAll/Makefile",
 		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxZipArchive/.gitignore",
 		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxModifierKeys/.gitignore",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/apps/Clouds/zipTest/bin/data/testfile.txt",
-		"/Users/jeff/Desktop/rfid/rfid.js",
-		"/Users/jeff/Desktop/rfid.js",
-		"/Users/jeff/Sites/jeffish.com/_site/project/invisible_threads.html",
-		"/Users/jeff/Sites/jeffish.com/_site/cv/index.html",
-		"/Users/jeff/Sites/jeffish.com/_redirects/cv.html",
-		"/Users/jeff/Sites/jeffish.com/Gemfile",
-		"/Users/jeff/Sites/jeffish.com/_redirects.yml",
-		"/Users/jeff/Sites/jeffish.com/cv.html",
-		"/Users/jeff/Desktop/Recordings/Brekel_PointCloud_Lossless_Clip.bpc",
-		"/Users/jeff/Sites/jeffish.com/_includes/footer.html",
-		"/Users/jeff/Sites/jeffish.com/_layouts/default.html",
-		"/Users/jeff/Development/Framed/.gitignore",
-		"/Users/jeff/Dropbox/DaytonWall/json/477446342575267840.json",
-		"/Users/jeff/Desktop/_odddivision/odd-division/index.html",
-		"/Users/jeff/Desktop/server.js",
-		"/Users/jeff/Desktop/shader/index.html",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxPostGlitch/example/Makefile",
-		"/Users/jeff/Desktop/HTML5 Video.html",
-		"/Users/jeff/Desktop/style.css",
-		"/Users/jeff/Library/Caches/Cleanup At Startup/Transmit/F69C9BB9-4227-47C3-9725-B01EEEDEC899/index.html",
-		"/Users/jeff/Desktop/themeforest-8374953-reflex-enjoyable-portfolio-creatives-agency/site/stylesheets/main.css",
-		"/Users/jeff/Desktop/themeforest-8374953-reflex-enjoyable-portfolio-creatives-agency/site/index01.html",
-		"/Users/jeff/Library/Caches/Cleanup At Startup/Transmit/2A17CAB8-4C08-4BBE-A91A-BD5E48CA506A/index.php",
-		"/Users/jeff/Library/Caches/Cleanup At Startup/Transmit/FED249BC-ECAA-499C-8AD8-FF623D9614A3/2a16116a4467cfccff2e6ed13e372dbc.json",
-		"/Users/jeff/Desktop/themeforest-8374953-reflex-enjoyable-portfolio-creatives-agency/site/works-masonry.html"
+		"/Users/jeff/Development/of_v0.8.4_osx_release/apps/Clouds/zipTest/bin/data/testfile.txt"
 	],
 	"find":
 	{
@@ -336,6 +312,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"RTCIceCandidate",
+			"wrtc.",
 			"RTCSessionDescription",
 			"RTCIceCandidate",
 			"cocoon",
@@ -461,9 +439,7 @@
 			"hover",
 			"img",
 			"content-type",
-			"loltube",
-			"linkPatterns",
-			"validUrl"
+			"loltube"
 		],
 		"highlight": false,
 		"in_selection": false,
@@ -488,90 +464,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "server.js",
-					"settings":
-					{
-						"buffer_size": 4623,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4141,
-								4168
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 1.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "public/js/index.js",
-					"settings":
-					{
-						"buffer_size": 4558,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2660,
-								2604
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1125.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "views/index.ejs",
-					"settings":
-					{
-						"buffer_size": 1395,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								907,
-								857
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],

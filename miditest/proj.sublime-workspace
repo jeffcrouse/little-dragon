@@ -136,10 +136,45 @@
 	"buffers":
 	[
 		{
+			"file": "views/buttons.ejs",
+			"settings":
+			{
+				"buffer_size": 1406,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "views/keyboard.ejs",
+			"settings":
+			{
+				"buffer_size": 1386,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\n// Open a socket connection to the node server for signaling.\nvar socket = io.connect(ws_addr);\nvar rtc = null;\n\n/***************\n╔╗╔┌─┐─┐ ┬┬ ┬┌─┐\n║║║├┤ ┌┴┬┘│ │└─┐\n╝╚╝└─┘┴ └─└─┘└─┘\n*****************/\nnx.onload = function() {	\n	nx.sendsTo(\"js\");\n\n	/*\n	keyboard1.octaves = 1;\n	keyboard1.midibase = 40;\n	keyboard1.init();\n\n	// listen to all of position's output\n	keyboard1.on('*', function(data) {\n		console.log(\"keyboard1\", data);\n		rtc.send(JSON.stringify({\"msg\": \"key\", \"note\": data.note, \"vel\": data.on}));\n	})\n	*/\n	multitouch1.on('*', function(data){\n		for(key in data) {\n			var touch = data[key];\n			\n		}\n		console.log(\"multitouch1\", data);\n	});\n}\n\n// Receives messages from RTC\nvar onMessage = function(event) {\n	//var json = JSON.parse(event.data);\n}\n\n// Called when RTC connection is opened\nvar onOpen = function() {\n	console.log(\"open!\");\n}\n\n\nsocket.on(\"connect\", function(){\n	console.log(\"!!! connected\");\n	rtc = new RTCDataChannelClient(socket, onOpen, onMessage);\n});\n\n// Close down the RTC if we are disconnected for any reason.\nsocket.on('disconnect', function(){\n	if(rtc) rtc.close();\n	rtc = null;\n	rtc = new RTCDataChannelClient(socket, onOpen, onMessage);\n});\n\n\nsocket.on('reload', function(data){\n	if(rtc) rtc.close();\n	rtc = null;\n	location.reload(true);\n});\n\n",
+			"file": "public/js/keyboard.js",
+			"file_size": 1364,
+			"file_write_time": 1432851863000000,
+			"settings":
+			{
+				"buffer_size": 1278,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "public/js/buttons.js",
+			"settings":
+			{
+				"buffer_size": 1463,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "server.js",
 			"settings":
 			{
-				"buffer_size": 4623,
+				"buffer_size": 6145,
 				"line_ending": "Unix"
 			}
 		},
@@ -147,15 +182,23 @@
 			"file": "public/js/index.js",
 			"settings":
 			{
-				"buffer_size": 4558,
+				"buffer_size": 1328,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "views/index.ejs",
+			"file": "public/js/fullscreen.js",
 			"settings":
 			{
-				"buffer_size": 1395,
+				"buffer_size": 726,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "public/js/sliders.js",
+			"settings":
+			{
+				"buffer_size": 1099,
 				"line_ending": "Unix"
 			}
 		}
@@ -184,10 +227,26 @@
 	},
 	"file_history":
 	[
-		"/Users/jeff/Development/little-dragon/rtctest/views/index.ejs",
-		"/Users/jeff/Development/little-dragon/rtctest/public/js/index.js",
-		"/Users/jeff/Development/little-dragon/rtctest/server.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/index.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/sliders.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/buttons.js",
+		"/Users/jeff/Development/little-dragon/miditest/server.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/keyboard.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/fullscreen.js",
+		"/Users/jeff/Development/little-dragon/miditest/public/js/RTCDataChannelClient.js",
+		"/Users/jeff/Development/little-dragon/miditest/README.md",
+		"/Users/jeff/Development/little-dragon/miditest/initiator.js",
+		"/Users/jeff/Development/little-dragon/miditest/views/index.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/views/sliders.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/views/buttons.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/public/manifest.json",
+		"/Users/jeff/Development/little-dragon/miditest/views/keyboard.ejs",
+		"/Users/jeff/Development/little-dragon/miditest/package.json",
+		"/Users/jeff/Development/little-dragon/miditest/index.hs",
 		"/Users/jeff/Development/little-dragon/rtctest/proj.sublime-project",
+		"/Users/jeff/Development/little-dragon/rtctest/views/index.ejs",
+		"/Users/jeff/Development/little-dragon/rtctest/server.js",
+		"/Users/jeff/Development/little-dragon/rtctest/public/js/index.js",
 		"/Users/jeff/Desktop/rtctest/views/index.ejs",
 		"/Users/jeff/Desktop/rtctest/server.js",
 		"/Users/jeff/Desktop/rtctest/public/js/index.js",
@@ -295,23 +354,7 @@
 		"/Users/jeff/Sites/jeffish.com/Gemfile",
 		"/Users/jeff/Sites/jeffish.com/_redirects.yml",
 		"/Users/jeff/Sites/jeffish.com/cv.html",
-		"/Users/jeff/Desktop/Recordings/Brekel_PointCloud_Lossless_Clip.bpc",
-		"/Users/jeff/Sites/jeffish.com/_includes/footer.html",
-		"/Users/jeff/Sites/jeffish.com/_layouts/default.html",
-		"/Users/jeff/Development/Framed/.gitignore",
-		"/Users/jeff/Dropbox/DaytonWall/json/477446342575267840.json",
-		"/Users/jeff/Desktop/_odddivision/odd-division/index.html",
-		"/Users/jeff/Desktop/server.js",
-		"/Users/jeff/Desktop/shader/index.html",
-		"/Users/jeff/Development/of_v0.8.4_osx_release/addons/ofxPostGlitch/example/Makefile",
-		"/Users/jeff/Desktop/HTML5 Video.html",
-		"/Users/jeff/Desktop/style.css",
-		"/Users/jeff/Library/Caches/Cleanup At Startup/Transmit/F69C9BB9-4227-47C3-9725-B01EEEDEC899/index.html",
-		"/Users/jeff/Desktop/themeforest-8374953-reflex-enjoyable-portfolio-creatives-agency/site/stylesheets/main.css",
-		"/Users/jeff/Desktop/themeforest-8374953-reflex-enjoyable-portfolio-creatives-agency/site/index01.html",
-		"/Users/jeff/Library/Caches/Cleanup At Startup/Transmit/2A17CAB8-4C08-4BBE-A91A-BD5E48CA506A/index.php",
-		"/Users/jeff/Library/Caches/Cleanup At Startup/Transmit/FED249BC-ECAA-499C-8AD8-FF623D9614A3/2a16116a4467cfccff2e6ed13e372dbc.json",
-		"/Users/jeff/Desktop/themeforest-8374953-reflex-enjoyable-portfolio-creatives-agency/site/works-masonry.html"
+		"/Users/jeff/Desktop/Recordings/Brekel_PointCloud_Lossless_Clip.bpc"
 	],
 	"find":
 	{
@@ -336,6 +379,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"RTCIceCandidate",
+			"wrtc.",
 			"RTCSessionDescription",
 			"RTCIceCandidate",
 			"cocoon",
@@ -461,9 +506,7 @@
 			"hover",
 			"img",
 			"content-type",
-			"loltube",
-			"linkPatterns",
-			"validUrl"
+			"loltube"
 		],
 		"highlight": false,
 		"in_selection": false,
@@ -488,31 +531,31 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "server.js",
+					"file": "views/buttons.ejs",
 					"settings":
 					{
-						"buffer_size": 4623,
+						"buffer_size": 1406,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4141,
-								4168
+								1155,
+								1155
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 1.0,
+						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
@@ -520,18 +563,153 @@
 				},
 				{
 					"buffer": 1,
-					"file": "public/js/index.js",
+					"file": "views/keyboard.ejs",
 					"settings":
 					{
-						"buffer_size": 4558,
+						"buffer_size": 1386,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2660,
-								2604
+								801,
+								812
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "public/js/keyboard.js",
+					"settings":
+					{
+						"buffer_size": 1278,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								604,
+								604
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "public/js/buttons.js",
+					"settings":
+					{
+						"buffer_size": 1463,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1400,
+								1400
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 49.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "server.js",
+					"settings":
+					{
+						"buffer_size": 6145,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3756,
+								3756
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1382.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "public/js/index.js",
+					"settings":
+					{
+						"buffer_size": 1328,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								627,
+								627
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "public/js/fullscreen.js",
+					"settings":
+					{
+						"buffer_size": 726,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								658,
+								658
 							]
 						],
 						"settings":
@@ -539,32 +717,31 @@
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1125.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "views/index.ejs",
+					"buffer": 7,
+					"file": "public/js/sliders.js",
 					"settings":
 					{
-						"buffer_size": 1395,
+						"buffer_size": 1099,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								907,
-								857
+								490,
+								490
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
