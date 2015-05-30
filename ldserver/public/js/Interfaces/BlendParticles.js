@@ -3,15 +3,22 @@
 
 function BlendParticles( options )
 {
+	var WIDGET_TYPE = undefined;
+
+	var WIDGETS = {
+		BUTTON: 0,
+		MULTISLIDER: 1
+	}
+
 	var spritePath = options.spritePath || "/textures/hexagon.png"; // "/textures/sphereNormal.png"
 
 	var numSpritesX = options.numSpritesX || 30;
 
 	var spriteSize = options.spriteSize || 100;
 
-	var spread = options.spread || .02;
+	var spread = options.spread !== undefined ? options.spread : .02;
 
-	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0);
+	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0 );
 
 	var spriteRotation = options.spriteRotation || 0;
 
@@ -25,8 +32,8 @@ function BlendParticles( options )
 
 	var NUM_SLIDERS = controller.sliders;
 
-	var WIDTH = controller.width;
-	var HEIGHT = controller.height;
+	var WIDTH = 1280; // controller.width;
+	var HEIGHT = 720; // controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
 	var HALF_WIDTH = WIDTH * .5;
@@ -34,14 +41,12 @@ function BlendParticles( options )
 
 	var stats = undefined;
 
-	console.log( 'controller', controller );
-
 	var container = $("<div>", {id: "multisliderContainer"}).css({
 		position: "absolute",
 		left: 0,
 		top: 0,
-		width: WIDTH,
-		height: HEIGHT,
+		width: WIDTH, // 1280, // WIDTH,
+		height: HEIGHT, // 800, // HEIGHT,
 		pointerEvents: "none",
 		backgroundColor: "rgba( 0, 0, 0, 1)",
 		borderRadius: "0px" // TODO: I think this gets over-written by nexus
@@ -77,7 +82,34 @@ function BlendParticles( options )
 
 
 	//WIDGET
-	var widget = MultiSliderWrapper( options ); 
+	var widget, controlID = controller.canvasID;
+
+	if(controlID.indexOf( "multislider" ) > -1)
+	{
+		WIDGET_TYPE = WIDGETS.MULTISLIDER;
+
+		widget = MultiSliderWrapper( options ); 
+	}	
+	else if(controlID.indexOf( "button" ) > -1)
+	{
+		WIDGET_TYPE = WIDGETS.BUTTON;
+
+		widget = ButtonWrapper( options ); 
+	}
+	else 
+	{
+		widget = {
+			renderTarget: THREE.WebGLRenderTarget( WIDTH * .25, HEIGHT * .25, {
+				minFilter: THREE.LinearFilter
+			} ),
+			draw: function(){
+				// console.log( "widget no set recoginzes" );
+			},
+			handleInput: function(){
+				console.log( "little dragon:: widget not recognized" );
+			}
+		}
+	}
 
 	//
 	//	SCENE
@@ -90,8 +122,8 @@ function BlendParticles( options )
 	
 	camera = new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
-	// camera.position.z = 1000;
-	camera.lookAt( origin );
+	// camera.position.z = 100;
+	// camera.lookAt( origin );
 
 
 	var debug_widgetTextureMesh = new THREE.Mesh( new THREE.BoxGeometry( WIDTH * .25, HEIGHT * .25, 10), new THREE.MeshBasicMaterial( {
@@ -102,14 +134,36 @@ function BlendParticles( options )
 
 	scene.add( debug_widgetTextureMesh );
 
+
+
+	//EDGE COLOR BLOCKS
+	var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
+		color: edgeTopColor,
+		depthTest: false,
+		transparent: false
+
+	} ) );
+	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
+		color: edgeBottomColor,
+		depthTest: false,
+		transparent: false
+	} ) );
+
+
+	edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
+	edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
+
+	scene.add( edgeTop );
+	scene.add( edgeBottom );
+
+
 	//
 	//	PARTICLES
 	//	
 	var pointsGeometry = new THREE.Geometry(), v = pointsGeometry.vertices;
 
-
 	var spacing = WIDTH / numSpritesX, 
-		numX = Math.ceil( WIDTH / spacing ),
+		numX = Math.ceil( WIDTH / (spacing * .866) ),
 		numY	= Math.ceil( HEIGHT / spacing ),
 		numPoints = (numX + 2) * (numY + 2),
 		halfSpacing = spacing;
@@ -123,10 +177,10 @@ function BlendParticles( options )
 	{
 		for(var y=-1; y<=numY; y++)
 		{
-			var uv = v2(x / (numX-1), y / (numY - 1));
+			var uv = v2( x / (numX-1), y / (numY - 1));
 			// var c = new THREE.Color().setHSL( uv.x, uv.y, .5 );
 			
-			positions[i3] = x * spacing - HALF_WIDTH;
+			positions[i3] = x * spacing * .866 - HALF_WIDTH;
 			positions[i3+1] = (y + (x%2) * .5) * spacing - HALF_HEIGHT;
 			positions[i3+2] = 0;
 
@@ -181,8 +235,8 @@ function BlendParticles( options )
 	p2.material.uniforms.time = p3.material.uniforms.time = points.material.uniforms.time;
 
 	// COLOR SPREAD
-	p2.scale.multiplyScalar( 1 + spread );
-	p3.scale.multiplyScalar( 1 + spread * 2);
+	p2.scale.x = p2.scale.y = 1.1;// 1 + spread * .5;
+	p3.scale.x = p3.scale.y = 1.2;// 1 + spread;
 
 	p2.position.x += spreadOffset.x * .5;
 	p2.position.y += spreadOffset.y * .5;
@@ -190,35 +244,20 @@ function BlendParticles( options )
 	p3.position.x += spreadOffset.x ;
 	p3.position.y += spreadOffset.y ;
 
-	function addToParticleOffset( x )
-	{
-		points.material.uniforms.time.value += x || .1;
-	}
 
-	//EDGE COLOR BLOCKS
-	var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
-		color: edgeTopColor,
-		depthTest: true,
+	// WIDGET SPECIFIC CALLBACKS
+	switch (WIDGET_TYPE) {
+		case WIDGETS.MULTISLIDER :
 
-	} ) );
-	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
-		color: edgeBottomColor,
-		depthTest: true,
+			widget.scope.onHandleInput = function( e ){
+				points.material.uniforms.time.value += .1;
+			}
 
-	} ) );
+			break;
 
+		case WIDGETS.BUTTON :
 
-	edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
-	edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
-
-	scene.add( edgeTop );
-	scene.add( edgeBottom );
-
-	function handleInput( event )
-	{
-		addToParticleOffset( .05 );
-
-		widget.handleInput( event );
+			break;
 	}
 
 	function setup()
@@ -232,17 +271,21 @@ function BlendParticles( options )
 
 		var elapsedTime = clock.getElapsedTime();
 
-		addToParticleOffset( .002 );
+		points.material.uniforms.time.value += .003;
 	}
 
 	function draw()
 	{
 		widget.draw( renderer );
 		renderer.render( scene, camera, null, true );
+
+		// renderer.render( widget.scene, widget.camera, null, true );
 	}
 
 	function animate()
 	{
+		TWEEN.update();
+		
 		update();
 
 		draw();
@@ -268,10 +311,6 @@ function BlendParticles( options )
 
 		renderer.autoClear = false;
 
-		// renderer.shadowMapEnabled = true;
-
-		// renderer.shadowMapType = THREE.PCFShadowMap;
-
 		container.append( renderer.domElement );
 	}
 
@@ -295,10 +334,13 @@ function BlendParticles( options )
 	return {
 
 		begin: begin,
-		widgetEvent: handleInput,
+
+		widgetEvent: widget.handleInput,
+
 		setEdgeColorTop: function( hex ){
 			edgeTopColor.set( hex );
 		},
+
 		setEdgeColorBottom: function( hex ){
 			edgeBottomColor.set( hex );
 		},

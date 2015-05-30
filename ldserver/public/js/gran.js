@@ -98,13 +98,14 @@ nx.onload = function() {
 
         ldInterface = BlendParticles({
           controller: controls,
-          spritePath: "/textures/hexagon.png",
-          numSpritesX: 50,
-          spriteSize: 75,
+          spritePath: "/textures/sphereNormal.png",
+          numSpritesX: 40,
+          spriteSize: 60,
           spriteBlending: 2,
-          spriteOpacity: .35,
+          spriteOpacity: .55,
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
+          spriteNoiseAmount: 0
         });
 
         ldInterface.setEdgeColorTop( 0xFFFFFF );
@@ -112,6 +113,21 @@ nx.onload = function() {
 
         break;
 
+      case "13":
+        var controls = createControl("button", 2);
+
+        ldInterface = BlendParticles({
+          controller: controls,
+          spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
+          numSpritesX: 20,
+          spriteSize: 150,
+          spriteBlending: 2,
+          spriteOpacity: .34,
+          c0: new THREE.Color( 0x34FFFF ),
+          c1: new THREE.Color( 0xFF34FF ),
+        });
+
+        break;
       default:  
         break;
   }
@@ -124,19 +140,21 @@ function createControl(controlType, controlNumber){
                     "id": id, 
                     "parent":"controls",
                     "w": "1280px", //window.innerWidth, // 
-                    "h": "800px" //window.innerHeight, // 
+                    "h": "720px" //window.innerHeight, // 
                   }
   var widget = nx.add(controlType, settings)
     .on('*', function(data) {
       // console.log(data);
+      // 
       var eventObject = {"event":id, 
                           "data":data};
 
-      if(ldInterface){
-        ldInterface.widgetEvent( eventObject );
+      if ( ldInterface ) {
+        ldInterface.widgetEvent( data );
       }
+
       ws.send(JSON.stringify(eventObject));
-    });
+    })
     // widget.colors.fill("#F0F0F0");
     // widget.colorize("#F0F0F0"); 
     console.log(widget.colors.fill);

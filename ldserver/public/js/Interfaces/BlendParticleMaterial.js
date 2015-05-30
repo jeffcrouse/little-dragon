@@ -68,17 +68,10 @@ var BlendParticleMaterial = function( params ) {
 		'float mapLinear( in float x, in float a1, in float a2, in float b1, in float b2 ) {',
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
-		
-		'vec3 getPosition(){',
-		'	vec3 p = position;',
-		'	return p;',
-		'}',
 
 		'void main() {',
 
-		'	vec3 pos = getPosition();',
-
-		'	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );',
+		'	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
 
 		'	vAlpha = .5;',
 
@@ -96,7 +89,7 @@ var BlendParticleMaterial = function( params ) {
 		'	q.w = cos(angle / 2.);',
 
 
-		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );',
+		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
 
 		'}'].join('\n'),
