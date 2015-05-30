@@ -162,7 +162,7 @@ function createControl(controlType, controlNumber){
       navigator.vibrate(100);
       var addr = "/"+id;
 
-      osc.send(addr, JSON.stringify(data));
+      if(osc) osc.send(addr, JSON.stringify(data));
     });
     // widget.colors.fill("#F0F0F0");
     // widget.colorize("#F0F0F0"); 
