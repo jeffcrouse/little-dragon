@@ -1,12 +1,12 @@
-<<<<<<< HEAD
+
 *node_modules*
-=======
+
 # Audio files
 *.aif
 
-# Dependency directory
-MidiBridge/node_modules
-
 .DS_Store
 
->>>>>>> 0856da9bde8c1b65ed8dd6018e7f510ec6333eaa
+.sublime-project
+.sublime-workspace
+proj.sublime-workspace
+*.sublime-project

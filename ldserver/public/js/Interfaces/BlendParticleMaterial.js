@@ -24,7 +24,8 @@ var BlendParticleMaterial = function( params ) {
 			opacity: {type: 'f', value: params.opacity || 1.},
 			size: { type: 'f', value: params.size || 10},
 			time: {type: 'f', value: 0},
-			noiseScale: {type: 'f', value: params.noiseScale || 0 }
+			noiseScale: {type: 'f', value: params.noiseScale || 0 },
+			spriteRotation: {type: 'f', value: params.spriteRotation || 0 }
 		},
 
 		vertexShader: [
@@ -33,6 +34,7 @@ var BlendParticleMaterial = function( params ) {
 		'uniform float scale;',
 		'uniform float time;',
 		'uniform float noiseScale;',
+		'uniform float spriteRotation;',
 
 
 		'uniform sampler2D pMap;',
@@ -66,17 +68,10 @@ var BlendParticleMaterial = function( params ) {
 		'float mapLinear( in float x, in float a1, in float a2, in float b1, in float b2 ) {',
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
-		
-		'vec3 getPosition(){',
-		'	vec3 p = position;',
-		'	return p;',
-		'}',
 
 		'void main() {',
 
-		'	vec3 pos = getPosition();',
-
-		'	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );',
+		'	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
 
 		'	vAlpha = .5;',
 
@@ -87,14 +82,14 @@ var BlendParticleMaterial = function( params ) {
 		'	gl_PointSize =  size * vAlpha + (pow(noise3( position + vec3(0., time, 0.) ),2.) * size) * noiseScale;',
 
 		// '	vec4 q;',
-		'	float angle = vAlpha * sin(position.x * .5 ) * cos(position.y * .5 + time * .5) * 2.;',
+		'	float angle = vAlpha * sin(position.x * .5 ) * cos(position.y * .5 + time * .5) * 2. * spriteRotation;',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
 		'	q.w = cos(angle / 2.);',
 
 
-		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );',
+		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
 
 		'}'].join('\n'),

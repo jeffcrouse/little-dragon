@@ -1,3 +1,5 @@
+This is the result of Jeff trying to get WebRT working between browser and NodeJS server. It's not pretty.
+
 
 
 # Resources

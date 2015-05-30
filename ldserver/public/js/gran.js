@@ -62,6 +62,7 @@ nx.onload = function() {
           spriteSize: 150,
           spriteBlending: 2,
           spriteOpacity: .45,
+          spreadOffset: new THREE.Vector2( 50, 0),
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
         });
@@ -80,7 +81,7 @@ nx.onload = function() {
           numSpritesX: 40,
           spriteSize: 60,
           spriteBlending: 2,
-          spriteOpacity: .45,
+          spriteOpacity: .55,
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
           spriteNoiseAmount: 0
@@ -97,11 +98,31 @@ nx.onload = function() {
 
         ldInterface = BlendParticles({
           controller: controls,
-          spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
-          numSpritesX: 50,
-          spriteSize: 75,
+          spritePath: "/textures/sphereNormal.png",
+          numSpritesX: 40,
+          spriteSize: 60,
           spriteBlending: 2,
-          spriteOpacity: .35,
+          spriteOpacity: .55,
+          c0: new THREE.Color( 0x34FFFF ),
+          c1: new THREE.Color( 0xFF34FF ),
+          spriteNoiseAmount: 0
+        });
+
+        ldInterface.setEdgeColorTop( 0xFFFFFF );
+        ldInterface.setEdgeColorBottom( 0x00FF00 );
+
+        break;
+
+      case "13":
+        var controls = createControl("button", 2);
+
+        ldInterface = BlendParticles({
+          controller: controls,
+          spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
+          numSpritesX: 30,
+          spriteSize: 150,
+          spriteBlending: 2,
+          spriteOpacity: .34,
           c0: new THREE.Color( 0x34FFFF ),
           c1: new THREE.Color( 0xFF34FF ),
         });
@@ -118,20 +139,22 @@ function createControl(controlType, controlNumber){
   var settings = {
                     "id": id, 
                     "parent":"controls",
-                    "w": "1280px", //window.innerWidth, // 
-                    "h": "800px" //window.innerHeight, // 
+                    "w": "1280px",
+                    "h": "720px"
                   }
   var widget = nx.add(controlType, settings)
     .on('*', function(data) {
       // console.log(data);
+      // 
       var eventObject = {"event":id, 
                           "data":data};
 
-      if(ldInterface){
-        ldInterface.widgetEvent( eventObject );
+      if ( ldInterface ) {
+        ldInterface.widgetEvent( data );
       }
+
       ws.send(JSON.stringify(eventObject));
-    });
+    })
     // widget.colors.fill("#F0F0F0");
     // widget.colorize("#F0F0F0"); 
     console.log(widget.colors.fill);
@@ -160,37 +183,4 @@ ws.onclose = function()
   console.log("Connection is closed..."); 
 };
 
-
-
-// INIT MISC
-function isFullScreen() {
-  return doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement;
-}
-function setFullScreen(fullscreen) {
-  var doc = window.document;
-  var docEl = doc.documentElement;
-
-  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
-
-  if(fullscreen) {
-    requestFullScreen.call(docEl);
-  } else {
-    cancelFullScreen.call(doc);
-  }
-}
-// Keep this around in case we want any raw touch events
-document.body.addEventListener('touchstart', function(event) {
-  if(!isFullScreen()) {
-    toggleFullScreen(true);
-  } 
-  
-  if (event.targetTouches.length == 1) {
-    // var touch = event.targetTouches[0];
-    // ws.send(JSON.stringify({"event": "single"}));
-  } else if (event.targetTouches.length == 2) {
-    // var touch = event.targetTouches[0];
-    // ws.send(JSON.stringify({"event": "double"}));
-  }
-}, false);
 

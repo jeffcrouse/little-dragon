@@ -1,0 +1,17 @@
+{
+  "name": "ldserver2",
+  "version": "2.0.0",
+  "description": "LittleDragon/Samsung project midibridge web server thing",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeff Crouse",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.3.1",
+    "express": "^4.12.4",
+    "mdns": "^2.2.8",
+    "node-osc": "^1.1.0"
+  }
+}
