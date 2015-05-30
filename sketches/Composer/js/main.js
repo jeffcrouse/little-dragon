@@ -57,7 +57,7 @@ function APP( _debug )
 	var gui = new dat.GUI();
 
 
-	// gui.remember( guiControls );
+	gui.remember( guiControls );
 
 	var guiContainer = $("<div>", {id: "GUIContainer"});
 	guiContainer.css({
@@ -94,7 +94,7 @@ function APP( _debug )
 		}
 	} );
 
-	// $(gui.domElement).append( input )
+	$(gui.domElement).append( input )
 
 	gui.add( guiControls, "particleSize", 1, 100 ).onChange( function( value ){
 		ldInterface.setParticleSize( value );
