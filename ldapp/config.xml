@@ -8,6 +8,7 @@
         Jeff Crouse
     </author>
     <content src="index.html" />
+    <icon src="res/icon.png" />
     <plugin name="cordova-plugin-whitelist" version="1" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -25,15 +26,18 @@
     </platform>
     <engine name="android" spec="^4.0.0" />
     <engine name="ios" spec="^3.8.0" />
+    
     <plugin name="cordova-plugin-crosswalk-webview" spec="^1.2.0" />
     <plugin name="cordova-plugin-vibration" spec="^1.1.0" />
     <plugin name="nl.sylvain.cordova.osc" spec="https://github.com/sy1vain/cordova-osc-plugin.git" />
+    <plugin name="com.triggertrap.ZeroConf" spec="https://github.com/vstirbu/ZeroConf" />
+    <plugin name="org.apache.cordova.device" spec="^0.3.0" />
+    <plugin name="nl.x-services.plugins.insomnia" spec="https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git" />
+
     <preference name="Orientation" value="landscape" />
     <preference name="xwalkCommandLine" value="--ignore-gpu-blacklist" />
     <preference name="Fullscreen" value="true" />
-    <preference name="DisallowOverscroll" value="true"/>
-    <plugin name="org.apache.cordova.device" spec="^0.3.0" />
-    <plugin name="nl.x-services.plugins.insomnia" spec="https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git" />
+    <preference name="DisallowOverscroll" value="true" />
     <preference name="BackupWebStorage" value="local" />
-    <icon src="res/icon.png" />
+     
 </widget>
