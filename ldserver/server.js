@@ -9,9 +9,9 @@ var http_port = 3000;
 var http_addr = null;
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 	ws_addr = util.format("ws://%s:%s", add, ws_port);
-	http_port = util.format("http://%s:%s", add, http_port);
+	http_addr = util.format("http://%s:%s", add, http_port);
 	console.log('ws_addr: '+ws_addr);
-	console.log('http_port: '+http_port);
+	console.log('http_addr: '+http_addr);
 });
 
 /********************************************************
