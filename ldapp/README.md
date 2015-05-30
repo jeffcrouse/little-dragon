@@ -33,8 +33,10 @@ This is an app that is made with the [Cordova Command Line Interface](http://cor
     <!-- get rid of top menubar -->
     <preference name="Fullscreen" value="true" />
     <!-- for iOS -->
-     <preference name="DisallowOverscroll" value="true"/>
-     
+    <preference name="DisallowOverscroll" value="true"/>
+    <!-- for iOS, to get rid of warning about iCloud backup -->
+    <preference name="BackupWebStorage" value="local" />
+
 1. cordova emulate android
 1. cordova run --device
 

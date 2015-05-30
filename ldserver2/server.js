@@ -117,7 +117,22 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 
+/************************************
+███╗   ███╗██████╗ ███╗   ██╗███████╗
+████╗ ████║██╔══██╗████╗  ██║██╔════╝
+██╔████╔██║██║  ██║██╔██╗ ██║███████╗
+██║╚██╔╝██║██║  ██║██║╚██╗██║╚════██║
+██║ ╚═╝ ██║██████╔╝██║ ╚████║███████║
+╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═══╝╚══════╝
+*************************************/                                    
 
+// Advertise the OSC server using ZeroConf discovery 
+// so that we don't have to hardcode the IP address into the phones
+
+var mdns = require('mdns');
+console.log("advertising", mdns.udp('osc'), osc_port);
+var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld"});
+ad.start();
 
 
 
