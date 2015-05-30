@@ -1,30 +1,17 @@
 
-// TO DO: How can we not hard-code this IP address? 
-// perhaps fetch it from some more stable source?
-var osc = null;
-
-var PHONE_MAP = {
-	"76ec865819c137ff": 1,
-	"9f7e53d36f8ed9e9": 2,
-	"95f05e26df84e87f": 3,
-	"cc24d0c197a5d420": 4,
-	"61adc6d72a141a6f": 5,
-	"cc6558defee3fb4": 6
-};
-
-var PHONE_ID = PHONE_MAP[device.uuid];
-
-var INTERFACE_MAP = {
-	1: 10,
-	2: 11,
-	3: 12,
-	4: 4,
-	5: 5,
-	6: 6
-};
-
-var INTERFACE_ID = INTERFACE_MAP[PHONE_ID];
-
+// Load this stuff from somewhere remote
+var settings = {
+	osc_host: "192.168.0.107",
+	osc_port: 3333,
+	device_map: {
+		"76ec865819c137ff": { id: 1, ui: 10 },
+		"9f7e53d36f8ed9e9": { id: 2, ui: 11 },
+		"95f05e26df84e87f": { id: 3, ui: 12 },
+		"cc24d0c197a5d420": { id: 4, ui: 4 },
+		"61adc6d72a141a6f": { id: 5, ui: 5 },
+		"cc6558defee3fb4": 	{ id: 6, ui: 6 },
+	}
+}
 
 
 
@@ -37,123 +24,150 @@ var loop = function() {
 loop();
 */
 
-
-
-
+var osc = null;		// The OSC sender object
+var _device = null;	// All device-specific information (determined by UUID)
 var ldInterface = null;
 
-nx.onload = function() {
-		
-  nx.sendsTo("js");
-  nx.colorize("#00ff00");
-  nx.colorize("accent", "#FF00FF");
-  nx.colorize("fill", "#00FFFF");  
-  
-  nx.setViewport(0.5);
+var onDeviceReady = function() {
+	console.log('deviceready');
+	console.log( navigator.userAgent );
+	console.log( device.uuid )
 
-  switch(INTERFACE_ID){
-  	  default:
-      case 1:
-        createControl("range", 1);
-        break;
 
-      case 2:
-        var controls = createControl("multislider", 1);
-         
-        controls.setNumberOfSliders(5);
-        break;
-      case 3:
-        createControl("tilt", 1);
-        break;
+	var onSuccess = function(){ console.log("!! We are awake!"); }
+	var onError = function(){ console.error("!! Couldn't keep device awake!"); }
+	window.plugins.insomnia.keepAwake(onSuccess, onError);
 
-      case 4:
-        createControl("button", 2);
-        break;
+	_device = settings.device_map[device.uuid];
+	osc = new window.OSCSender(settings.osc_host, settings.osc_port);
 
-      case 5:
-        createControl("button", 3);
-        break;
 
-      case 6:
-        createControl("button", 4);
-        break;
+	nx.sendsTo("js");
+	nx.colorize("#00ff00");
+	nx.colorize("accent", "#FF00FF");
+	nx.colorize("fill", "#00FFFF");  
+	nx.setViewport(0.5);
 
-      case 7:
-        createControl("button", 5);
-        break;
+	switch( _device.ui ){
+	
+	  case 1:
+	    createControl("range", 1);
+	    break;
 
-      case 8:
-        createControl("button", 6);
+	  case 2:
+	    var controls = createControl("multislider", 1);
+	     
+	    controls.setNumberOfSliders(5);
+	    break;
+	  case 3:
+	    createControl("tilt", 1);
+	    break;
 
-      case 9:
-        var controls = createControl("multislider", 1);
-         
-        controls.setNumberOfSliders(5);
+	  case 4:
+	    createControl("button", 2);
+	    break;
 
-        ldInterface = MultiSliderInterface({
+	  case 5:
+	    createControl("button", 3);
+	    break;
+
+	  case 6:
+	    createControl("button", 4);
+	    break;
+
+	  case 7:
+	    createControl("button", 5);
+	    break;
+
+	  case 8:
+	    createControl("button", 6);
+
+	  case 9:
+	    var controls = createControl("multislider", 1);
+	     
+	    controls.setNumberOfSliders(5);
+
+	    ldInterface = MultiSliderInterface({
 			controller: controls
-        });
+	    });
 
-        break;
+	    break;
 
-      case 10:
-        var controls = createControl("multislider", 1);
-         
-        controls.setNumberOfSliders(5);
+	  case 10:
+	    var controls = createControl("multislider", 1);
+	     
+	    controls.setNumberOfSliders(5);
 
-        ldInterface = BlendParticles({
-          controller: controls,
-          spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-          numSpritesX: 20,
-          spriteSize: 150,
-          spriteBlending: 2,
-          spriteOpacity: .45,
-          c0: new THREE.Color( 0x34FFFF ),
-          c1: new THREE.Color( 0xFF34FF ),
-        });
+	    ldInterface = BlendParticles({
+			controller: controls,
+			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+			numSpritesX: 20,
+			spriteSize: 150,
+			spriteBlending: 2,
+			spriteOpacity: .45,
+			c0: new THREE.Color( 0x34FFFF ),
+			c1: new THREE.Color( 0xFF34FF ),
+	    });
 
-        break;
-          
+	    break;
+	      
 
-      case 11:
-        var controls = createControl("multislider", 1);
-         
-        controls.setNumberOfSliders(10);
+	  case 11:
+	    var controls = createControl("multislider", 1);
+	     
+	    controls.setNumberOfSliders(10);
 
-        ldInterface = BlendParticles({
-          controller: controls,
-          spritePath: "textures/sphereNormal.png",
-          numSpritesX: 40,
-          spriteSize: 60,
-          spriteBlending: 2,
-          spriteOpacity: .45,
-          c0: new THREE.Color( 0x34FFFF ),
-          c1: new THREE.Color( 0xFF34FF ),
-          spriteNoiseAmount: 0
-        });
+	    ldInterface = BlendParticles({
+			controller: controls,
+			spritePath: "textures/sphereNormal.png",
+			numSpritesX: 40,
+			spriteSize: 60,
+			spriteBlending: 2,
+			spriteOpacity: .45,
+			c0: new THREE.Color( 0x34FFFF ),
+			c1: new THREE.Color( 0xFF34FF ),
+			spriteNoiseAmount: 0
+	    });
 
-        break;
+	    break;
 
-      
-      case 12:
- 
-        var controls = createControl("multislider", 1);
-         
-        controls.setNumberOfSliders(3);
+	  
+	  case 12:
 
-        ldInterface = BlendParticles({
-          controller: controls,
-          spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-          numSpritesX: 50,
-          spriteSize: 75,
-          spriteBlending: 2,
-          spriteOpacity: .35,
-          c0: new THREE.Color( 0x34FFFF ),
-          c1: new THREE.Color( 0xFF34FF ),
-        });
+	    var controls = createControl("multislider", 1);
+	     
+	    controls.setNumberOfSliders(3);
 
-        break;
-  }
+	    ldInterface = BlendParticles({
+			controller: controls,
+			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+			numSpritesX: 50,
+			spriteSize: 75,
+			spriteBlending: 2,
+			spriteOpacity: .35,
+			c0: new THREE.Color( 0x34FFFF ),
+			c1: new THREE.Color( 0xFF34FF ),
+	    });
+
+	    break;
+
+	    default:
+	    	// to do - show some kind of warning message
+	   		break;
+	}
+
+}
+
+
+nx.onload = function() {
+	document.addEventListener('deviceready', onDeviceReady, false);
+
+	var _stop = function(e){ e.preventDefault(); };
+	document.addEventListener("backbutton", _stop, false);
+	document.addEventListener("menubutton", _stop, false);
+	document.addEventListener("searchbutton", _stop, false);
+	document.addEventListener("startcallbutton", _stop, false);
+	document.addEventListener("endcallbutton", _stop, false);
 }
 
 
@@ -175,7 +189,9 @@ function createControl(controlType, controlNumber){
         ldInterface.widgetEvent( eventObject );
       }
       navigator.vibrate(100);
-      osc.send("/event", JSON.stringify(eventObject));
+      var addr = "/"+id;
+
+      osc.send(addr, JSON.stringify(data));
     });
     // widget.colors.fill("#F0F0F0");
     // widget.colorize("#F0F0F0"); 
@@ -189,8 +205,11 @@ function createControl(controlType, controlNumber){
 
 
 
+/*
+
 // CORDOVA LAUNCH STUFF
 var app = {
+
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -203,12 +222,7 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
 
-		var _stop = function(e){ e.preventDefault(); };
-		document.addEventListener("backbutton", _stop, false);
-		document.addEventListener("menubutton", _stop, false);
-		document.addEventListener("searchbutton", _stop, false);
-		document.addEventListener("startcallbutton", _stop, false);
-		document.addEventListener("endcallbutton", _stop, false);
+
     },
 
     // deviceready Event Handler
@@ -216,15 +230,20 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+		app.receivedEvent('deviceready');
 
-        var onSuccess = function(){ console.log("We are awake!"); }
-        var onError = function(){ console.error("!! Couldn't keep device awake!"); }
-        window.plugins.insomnia.keepAwake(onSuccess, onError);
-
-		console.log( device.uuid )
 		console.log( navigator.userAgent );
-		osc = new window.OSCSender("192.168.2.6", 3333);
+
+		var onSuccess = function(){ console.log("We are awake!"); }
+		var onError = function(){ console.error("!! Couldn't keep device awake!"); }
+		window.plugins.insomnia.keepAwake(onSuccess, onError);
+
+		// console.log( device.uuid )
+		_device = DEVICE_MAP[device.uuid];
+
+		nx.onload = setup_neuxus;
+
+		osc = new window.OSCSender(OSC_HOST, OSC_PORT);
     },
 
     // Update DOM on a Received Event
@@ -241,3 +260,4 @@ var app = {
 };
 
 app.initialize();
+*/
