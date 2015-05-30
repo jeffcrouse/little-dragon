@@ -9,7 +9,7 @@ loop();
 
 var osc = null;				// The OSC sender object
 var ldInterface = null;		// WebGL layer (?)
-var interface = parseInt(getQueryVariable("interface")); // which interface should we show?
+var iface = getQueryVariable("iface"); // which interface should we show?
 
 
 nx.onload = function() {
@@ -20,112 +20,161 @@ nx.onload = function() {
 	nx.colorize("fill", "#00FFFF");  
 	nx.setViewport(0.5);
 
-	switch( interface ){
-	
-	  case 1:
-	    createControl("range", 1);
-	    break;
+	console.log("iface", iface);
+	switch( iface ){
+			
+		 //   ___                   _            ___          _   _    
+		 //  / __|_ _ __ _ _ _ _  _| |__ _ _ _  / __|_  _ _ _| |_| |_  
+		 // | (_ | '_/ _` | ' \ || | / _` | '_| \__ \ || | ' \  _| ' \ 
+		 //  \___|_| \__,_|_||_\_,_|_\__,_|_|   |___/\_, |_||_\__|_||_|
+		 //                                          |__/              
+		case "gran1":
+			createControl("gran", "range", 1);
+			break;
 
-	  case 2:
-	    var controls = createControl("multislider", 1);
-	     
-	    controls.setNumberOfSliders(5);
-	    break;
-	  case 3:
-	    createControl("tilt", 1);
-	    break;
+		case "gran2":
+			var controls = createControl("gran", "multislider", 1);
+			controls.setNumberOfSliders(5);
+			break;
 
-	  case 4:
-	    createControl("button", 2);
-	    break;
+		case "gran3":
+			createControl("button", 4);
+			break;
 
-	  case 5:
-	    createControl("button", 3);
-	    break;
+		case "gran4":
+			createControl("gran", "button", 3);
+			break;
 
-	  case 6:
-	    createControl("button", 4);
-	    break;
+		case "gran5":
+			createControl("gran", "button", 2);
+			break;
 
-	  case 7:
-	    createControl("button", 5);
-	    break;
+		case "grantilt":
+			createControl("gran", "tilt", 1);
+			break;
 
-	  case 8:
-	    createControl("button", 6);
-	    break;
 
-	  case 9:
-	    var controls = createControl("multislider", 1);
-	     
-	    controls.setNumberOfSliders(5);
 
-	    ldInterface = MultiSliderInterface({
-			controller: controls
-	    });
+		 //  ___          _   _           _            
+		 // / __|_  _ _ _| |_| |_  ___ __(_)______ _ _ 
+		 // \__ \ || | ' \  _| ' \/ -_|_-< |_ / -_) '_|
+		 // |___/\_, |_||_\__|_||_\___/__/_/__\___|_|  
+		 //      |__/                                  
 
-	    break;
+		case "synth1":
+			var control = createControl("synth", "keyboard", 1);
+			control.octaves = 2;
+			control.init();
+			break;
 
-	  case 10:
-	    var controls = createControl("multislider", 1);
-	     
-	    controls.setNumberOfSliders(5);
+		case "synth2":
+			createControl("synth", "button", 6);
+			break;
 
-	    ldInterface = BlendParticles({
-			controller: controls,
-			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-			numSpritesX: 20,
-			spriteSize: 150,
-			spriteBlending: 2,
-			spriteOpacity: .45,
-			c0: new THREE.Color( 0x34FFFF ),
-			c1: new THREE.Color( 0xFF34FF ),
-	    });
+		case "synth3":
+			var controls = createControl("synth", "multislider", 1);
+			 
+			controls.setNumberOfSliders(5);
 
-	    break;
-	      
+			ldInterface = MultiSliderInterface({
+				controller: controls
+			});
 
-	  case 11:
-	    var controls = createControl("multislider", 1);
-	     
-	    controls.setNumberOfSliders(10);
+			break;
 
-	    ldInterface = BlendParticles({
-			controller: controls,
-			spritePath: "textures/sphereNormal.png",
-			numSpritesX: 40,
-			spriteSize: 60,
-			spriteBlending: 2,
-			spriteOpacity: .45,
-			c0: new THREE.Color( 0x34FFFF ),
-			c1: new THREE.Color( 0xFF34FF ),
-			spriteNoiseAmount: 0
-	    });
+		case "synth4":
+			var controls = createControl("synth", "multislider", 2);
+			 
+			controls.setNumberOfSliders(5);
 
-	    break;
+			ldInterface = BlendParticles({
+				controller: controls,
+				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+				numSpritesX: 20,
+				spriteSize: 150,
+				spriteBlending: 2,
+				spriteOpacity: .45,
+				c0: new THREE.Color( 0x34FFFF ),
+				c1: new THREE.Color( 0xFF34FF ),
+			});
 
-	  
-	  case 12:
+			break;
+			  
 
-	    var controls = createControl("multislider", 1);
-	     
-	    controls.setNumberOfSliders(3);
+		case "synth5":
+			var controls = createControl("synth", "multislider", 3);
+			 
+			controls.setNumberOfSliders(10);
 
-	    ldInterface = BlendParticles({
-			controller: controls,
-			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-			numSpritesX: 50,
-			spriteSize: 75,
-			spriteBlending: 2,
-			spriteOpacity: .35,
-			c0: new THREE.Color( 0x34FFFF ),
-			c1: new THREE.Color( 0xFF34FF ),
-	    });
+			ldInterface = BlendParticles({
+				controller: controls,
+				spritePath: "textures/sphereNormal.png",
+				numSpritesX: 40,
+				spriteSize: 60,
+				spriteBlending: 2,
+				spriteOpacity: .45,
+				c0: new THREE.Color( 0x34FFFF ),
+				c1: new THREE.Color( 0xFF34FF ),
+				spriteNoiseAmount: 0
+			});
 
-	    break;
+			break;
 
+
+		case "synthtilt":
+
+			var controls = createControl("synth", "multislider", 4);
+			 
+			controls.setNumberOfSliders(3);
+
+			ldInterface = BlendParticles({
+				controller: controls,
+				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+				numSpritesX: 50,
+				spriteSize: 75,
+				spriteBlending: 2,
+				spriteOpacity: .35,
+				c0: new THREE.Color( 0x34FFFF ),
+				c1: new THREE.Color( 0xFF34FF ),
+			});
+
+			break;
+
+
+		 //  ___                    
+		 // |   \ _ _ _  _ _ __  ___
+		 // | |) | '_| || | '  \(_-<
+		 // |___/|_|  \_,_|_|_|_/__/
+		                         
+	    case "drums1":
+		    createControl("drum", "button", 1);
+		    break;
+
+	    case "drums2":
+		    createControl("drum", "button", 2);
+		    break;
+
+		case "drums3":
+		    createControl("drum", "button", 3);
+		    break;
+
+		case "drums4":
+		    createControl("drum", "button", 4);
+		    break;
+
+		case "drums5":
+		    createControl("drum", "button", 5);
+		    break;
+
+		case "drumstilt":
+		    createControl("drum", "tilt", 1);
+		    break;
+		 // __      _______ ___ ___ 
+		 // \ \    / /_   _| __|__ \
+		 //  \ \/\/ /  | | | _|  /_/
+		 //   \_/\_/   |_| |_|  (_) 
+		                         
 	    default:
-	    	
 			var container = $("<div>", {id: "warning"}).css({
 				position: "absolute",
 				left: 0,
@@ -142,15 +191,15 @@ nx.onload = function() {
 
 }
 
-function createControl(controlType, controlNumber){
-  var id = "gran_" + controlType + "_" + controlNumber;
+function createControl(instrument, type, number){
+  var id = [instrument, type, number].join("_");
   var settings = {
                     "id": id, 
                     "parent":"controls",
                     "w": "1280px", //window.innerWidth, // 
                     "h": "800px" //window.innerHeight, // 
                   }
-  var widget = nx.add(controlType, settings)
+  var widget = nx.add(type, settings)
     .on('*', function(data) {
       // console.log(data);
       var eventObject = {"event":id, 
@@ -177,7 +226,6 @@ var onDeviceReady = function() {
 	console.log('deviceready');
 	console.log( navigator.userAgent );
 	console.log( device.uuid );
-	console.log("interface", interface);
 
 	// Disable as many buttons as possible.
 	var _stop = function(e){ e.preventDefault(); };
