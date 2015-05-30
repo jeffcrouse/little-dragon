@@ -11,7 +11,7 @@ var rtc = null;
 nx.onload = function() {	
 	nx.sendsTo("js");
 
-	/*
+
 	keyboard1.octaves = 1;
 	keyboard1.midibase = 40;
 	keyboard1.init();
@@ -21,14 +21,7 @@ nx.onload = function() {
 		console.log("keyboard1", data);
 		rtc.send(JSON.stringify({"msg": "key", "note": data.note, "vel": data.on}));
 	})
-	*/
-	multitouch1.on('*', function(data){
-		for(key in data) {
-			var touch = data[key];
-			
-		}
-		console.log("multitouch1", data);
-	});
+
 }
 
 // Receives messages from RTC

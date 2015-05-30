@@ -5,10 +5,14 @@ var midi = require('midi');
 
 var ws_port = 9998;
 var ws_addr = null;
+var http_port = 3000;
+var http_addr = null;
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 	ws_addr = util.format("ws://%s:%s", add, ws_port);
+	http_port = util.format("http://%s:%s", add, http_port);
 	console.log('ws_addr: '+ws_addr);
-})
+	console.log('http_port: '+http_port);
+});
 
 /********************************************************
 ███████╗██╗  ██╗██████╗ ██████╗ ███████╗███████╗███████╗
@@ -34,16 +38,12 @@ app.get('/gran/:phone', function(req, res) {
 	res.render('gran', data);
 });
 
-function generatePage(req, res, phoneNumber){
-	
-}
-
 app.get('/drum', function(req, res) {
 	res.send('hello world');
 });
 
 
-app.listen(3000);
+app.listen(http_port);
 
 
 
@@ -167,8 +167,6 @@ wss.on('connection', function connection(ws) {
        		console.error("Invalid message from WebSocket client.")
    		}
 	});
-
-	
 });
 
 

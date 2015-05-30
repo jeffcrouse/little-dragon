@@ -184,36 +184,3 @@ ws.onclose = function()
 };
 
 
-
-// INIT MISC
-function isFullScreen() {
-  return doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement;
-}
-function setFullScreen(fullscreen) {
-  var doc = window.document;
-  var docEl = doc.documentElement;
-
-  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
-
-  if(fullscreen) {
-    requestFullScreen.call(docEl);
-  } else {
-    cancelFullScreen.call(doc);
-  }
-}
-// Keep this around in case we want any raw touch events
-document.body.addEventListener('touchstart', function(event) {
-  if(!isFullScreen()) {
-    toggleFullScreen(true);
-  } 
-  
-  if (event.targetTouches.length == 1) {
-    // var touch = event.targetTouches[0];
-    // ws.send(JSON.stringify({"event": "single"}));
-  } else if (event.targetTouches.length == 2) {
-    // var touch = event.targetTouches[0];
-    // ws.send(JSON.stringify({"event": "double"}));
-  }
-}, false);
-
