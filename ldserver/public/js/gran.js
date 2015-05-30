@@ -139,8 +139,8 @@ function createControl(controlType, controlNumber){
   var settings = {
                     "id": id, 
                     "parent":"controls",
-                    "w": "1280px", //window.innerWidth, // 
-                    "h": "720px" //window.innerHeight, // 
+                    "w": "1280px",
+                    "h": "720px"
                   }
   var widget = nx.add(controlType, settings)
     .on('*', function(data) {
