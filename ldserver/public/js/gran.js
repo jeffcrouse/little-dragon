@@ -119,7 +119,7 @@ nx.onload = function() {
         ldInterface = BlendParticles({
           controller: controls,
           spritePath: "/textures/hexagon.png", // "/textures/sphereNormal.png"
-          numSpritesX: 20,
+          numSpritesX: 30,
           spriteSize: 150,
           spriteBlending: 2,
           spriteOpacity: .34,

@@ -103,7 +103,7 @@ function ButtonWrapper( options )
 
 	var center = new THREE.Vector2( controller.center.x, controller.center.y );
 
-	var radius = center.y;
+	var radius = center.y - 30; // should probably do somehting better to scale it
 
 	var decay = .025;
 
@@ -156,12 +156,14 @@ function ButtonWrapper( options )
 		{
 
 			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )
-				.to( {r: 1, g: 1, b: 1}, 100)
+				.to( {r: 1, g: 1, b: 1}, 200)
+				.easing( TWEEN.Easing.Bounce.Out )
 				.start()	
 		} else {
 
 			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )
 				.to( {r: 0, g: 0, b: 0}, 1000)
+				.easing( TWEEN.Easing.Bounce.Out )
 				.start()
 		}
 	}
