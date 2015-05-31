@@ -122,21 +122,7 @@ nx.onload = function() {
 
 
 		case "synthtilt":
-
-			var controls = createControl("synth", "multislider", 4);
-			 
-			controls.setNumberOfSliders(3);
-
-			ldInterface = BlendParticles({
-				controller: controls,
-				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-				numSpritesX: 50,
-				spriteSize: 75,
-				spriteBlending: 2,
-				spriteOpacity: .35,
-				c0: new THREE.Color( 0x34FFFF ),
-				c1: new THREE.Color( 0xFF34FF ),
-			});
+			createControl("synth", "tilt", 1);
 
 			break;
 
@@ -163,7 +149,21 @@ nx.onload = function() {
 		    break;
 
 		case "drums5":
-		    createControl("drum", "button", 5);
+			var controls = createControl("drum", "multislider", 4);
+			 
+			controls.setNumberOfSliders(3);
+
+			ldInterface = BlendParticles({
+				controller: controls,
+				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+				numSpritesX: 50,
+				spriteSize: 75,
+				spriteBlending: 2,
+				spriteOpacity: .35,
+				c0: new THREE.Color( 0x34FFFF ),
+				c1: new THREE.Color( 0xFF34FF ),
+			});
+
 		    break;
 
 		case "drumstilt":

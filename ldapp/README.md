@@ -40,3 +40,16 @@ This is an app that is made with the [Cordova Command Line Interface](http://cor
 1. cordova emulate android
 1. cordova run --device
 
+## Release Build
+This was a PITA to figure out. I pieced it together painfully from tiny clues at the [Cordova Android Tools instructions](https://cordova.apache.org/docs/en/edge/guide_platforms_android_tools.md.html).
+
+1. [Generate a keystore](https://docs.oracle.com/cd/E19509-01/820-3503/ggfen/index.html)
+`keytool -keystore platforms/android/dragon.keystore -genkey -alias dragon`
+
+2. Make a file called `release-signing.properties` and put it into the platforms/android folder. This will be auto-detected by the Gradle build system apparently.
+3. Put the following inside
+    storeFile=dragon.keystore
+    storePassword=dragonito
+    keyAlias=dragon
+    keyPassword=dragonito
+4. cordova run --release android

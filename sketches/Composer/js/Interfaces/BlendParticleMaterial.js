@@ -133,7 +133,9 @@ var BlendParticleMaterial = function( params ) {
 
 		'	float alpha = texture2D( map, uv ).w * opacity * vAlpha;',
 
-		'	gl_FragColor = vec4(vColor * color, alpha);',
+		'	float centerDecay = length(uv*2. - 1.) * .5 + .5;',
+
+		'	gl_FragColor = vec4(vColor * color, alpha * centerDecay);',
 
 		// '	vec2 uv = gl_PointCoord.xy * 2. - 1.;',
 
