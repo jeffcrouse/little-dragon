@@ -12,7 +12,6 @@ $(window).bind("load", function() {
 	app = new APP( debug );
 });
 
-
 function APP( _debug )
 {
 
@@ -47,10 +46,18 @@ function APP( _debug )
 		offsetX: ldInterface.getOffsetX(),
 		offsetY: ldInterface.getOffsetY(),
 		count: ldInterface.getNumX(),
-		noiseScale: ldInterface.getNoiseScale()
+		noiseScale: ldInterface.getNoiseScale(),
+		colorA: ldInterface.getColorA().getHex(),
+		colorB: ldInterface.getColorB().getHex(),
+		colorC: ldInterface.getColorC().getHex(),
 	}
 
+	console.log( 'guiControls', guiControls );
+
 	var gui = new dat.GUI();
+
+
+	gui.remember( guiControls );
 
 	var guiContainer = $("<div>", {id: "GUIContainer"});
 	guiContainer.css({
@@ -95,7 +102,7 @@ function APP( _debug )
 	gui.add( guiControls, "particleOpacity", .001, 1.00 ).onChange( function( value ){
 		ldInterface.setParticleOpacity( value );
 	})
-	gui.add( guiControls, "spread", -1.0, 1.00 ).onChange( function( value ){
+	gui.add( guiControls, "spread", -.99, .99 ).onChange( function( value ){
 		ldInterface.setSpread( value );
 	})
 
@@ -113,6 +120,18 @@ function APP( _debug )
 
 	gui.add( guiControls, "count", 10, 250 ).onChange( function( value ){
 		ldInterface.setNumberOfParticles( parseInt( value ) );
+	})
+
+	gui.addColor( guiControls, "colorA" ).onChange( function( value ){
+		ldInterface.setColorA( value );
+	})
+
+	gui.addColor( guiControls, "colorB" ).onChange( function( value ){
+		ldInterface.setColorB( value );
+	})
+
+	gui.addColor( guiControls, "colorC" ).onChange( function( value ){
+		ldInterface.setColorC( value );
 	})
 
 	// dat.GUI.toggleHide();

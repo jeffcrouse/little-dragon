@@ -240,7 +240,7 @@ function BlendParticles( options )
 		opacity: spriteOpacity,
 		size: spriteSize,
 		blending: spriteBlending,
-		color: new THREE.Color( 0x0000FF ),
+		color: new THREE.Color( 0x00FFFF ),
 		noiseScale: spriteNoiseAmount,
 		spriteRotation: spriteRotation
 	} )
@@ -255,7 +255,7 @@ function BlendParticles( options )
 	p2.material = particleMat.clone();
 	scene.add( p2 );
 
-	p2.material.uniforms.color.value.set( 0x00FF00 );
+	p2.material.uniforms.color.value.set( 0xFFFF00 );
 	p2.material.uniforms.map.value = spriteTexture;
 
 
@@ -263,7 +263,7 @@ function BlendParticles( options )
 	p3.material = particleMat.clone();
 	scene.add( p3 );
 
-	p3.material.uniforms.color.value.set( 0xFF0000 );
+	p3.material.uniforms.color.value.set( 0xFF00FF );
 	p3.material.uniforms.map.value = spriteTexture;
 
 	p2.material.uniforms.time = p3.material.uniforms.time = points.material.uniforms.time;
@@ -473,7 +473,34 @@ function BlendParticles( options )
 			numSpritesX = count;
 
 			createPointsGeometry( numSpritesX,points.geometry );
-		}
+		},
+
+		getColorA: function(){
+			return particleMat.uniforms.color.value;
+		},
+
+		getColorB: function(){
+			return p2.material.uniforms.color.value;
+		},
+
+		getColorC: function(){
+			return p3.material.uniforms.color.value;
+		},
+
+
+		setColorA: function( hex ){
+			return particleMat.uniforms.color.value.setHex( hex );
+		},
+
+		setColorB: function( hex ){
+			return p2.material.uniforms.color.value.setHex( hex );;
+		},
+
+		setColorC: function( hex ){
+			return p3.material.uniforms.color.value.setHex( hex );;
+		},
+
+
 
 	}
 }
