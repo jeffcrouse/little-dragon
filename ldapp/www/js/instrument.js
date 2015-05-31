@@ -63,18 +63,15 @@ nx.onload = function() {
 
 		case "synth1":
 			var control = createControl("synth", "keyboard", 1);
-			control.octaves = 2;
+			control.octaves = 1;
+			control.multitouch = true;
 			control.init();
 			break;
 
 		case "synth2":
-			createControl("synth", "button", 6);
-			break;
-
-		case "synth3":
 			var controls = createControl("synth", "multislider", 1);
 			 
-			controls.setNumberOfSliders(5);
+			controls.setNumberOfSliders(2);
 
 			ldInterface = MultiSliderInterface({
 				controller: controls
@@ -82,8 +79,13 @@ nx.onload = function() {
 
 			break;
 
+		case "synth3":
+			createControl("synth", "button", 1);
+
+			break;
+
 		case "synth4":
-			var controls = createControl("synth", "multislider", 2);
+			var controls = createControl("synth", "multislider", 3);
 			 
 			controls.setNumberOfSliders(5);
 
@@ -102,7 +104,7 @@ nx.onload = function() {
 			  
 
 		case "synth5":
-			var controls = createControl("synth", "multislider", 3);
+			var controls = createControl("synth", "multislider", 4);
 			 
 			controls.setNumberOfSliders(10);
 
@@ -208,7 +210,7 @@ function createControl(instrument, type, number){
       if(ldInterface){
         ldInterface.widgetEvent( eventObject );
       }
-      navigator.vibrate(100);
+      //navigator.vibrate(100);
       var addr = "/"+id;
 
       if(osc) osc.send(addr, JSON.stringify(data));
