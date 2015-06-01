@@ -8,7 +8,13 @@ This is an app that is made with the [Cordova Command Line Interface](http://cor
 1. If that fails for some reason, try following the [cordova setup steps](https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html)
 1. open up a terminal window in the "ldapp" filder
 1. `cordova prepare`  # This will fetch all platforms (android, ios) and plugins (crosswalk, vibration, osc, device, ZeroConf, Insomnia, network-information) saved in config.xml
-1. You might have to ` sudo npm install -g ios-sim` if you want to run on ios
+1. IOS
+    1. `sudo npm install -g ios-sim` if you want to run on ios
+1. Android
+    1. Download and install [Android SDK Tools](https://developer.android.com/sdk/index.html), note: scroll down to "SDK Tools Only", don't install all of Android Studio!
+    1. Put that folder somewhere safe, and then add "platform-tools" and "tools" to your path (you can do this in ~/.bash_profile)
+    1. Open up a terminal and run "android"
+    1. Install ALL THE STUFF (everything related to SDK 22 I thin...)
 1. `cordova emulate [android | ios]`
 1. `cordova run [android | ios] --device`
 
@@ -17,6 +23,7 @@ This is an app that is made with the [Cordova Command Line Interface](http://cor
 
 Just for posterity, this is how I setup the entire project
 
+1. Install the Android SDK
 1. sudo npm install -g cordova
 1. cordova create ldapp com.odddivision.littledragon LittleDragon
 1. cd little-dragon

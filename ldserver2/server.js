@@ -13,36 +13,21 @@ output.openPort(0);
 // http://betacontroller.com/post/74610077245/phase-2-2-playing-middle-c-with-node-js
 // http://www.midi.org/techspecs/midimessages.php
 var MIDI = {
-	CH1: { NOTEON: 144, NOTEOFF: 126, CONTROL: 176, PITCHBEND: 224 },
-	CH2: { NOTEON: 145, NOTEOFF: 129, CONTROL: 177, PITCHBEND: 225 },
-	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 }
+	CH1: { NOTEON: 144, NOTEOFF: 126, CONTROL: 176, PITCHBEND: 224 },	// KEYS
+	CH2: { NOTEON: 145, NOTEOFF: 129, CONTROL: 177, PITCHBEND: 225 },	// BASS
+	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 },	// DRUMS
+	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 }	// VOCALS
 }
 
 var FULL_VELOCITY = 127;
-Math.map = function (value, istart, istop, ostart, ostop) {
-	return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+Math.clamp = function(num, min, max) {
+	if(min>max) console.warn("Math.clamp: min > max");
+	return Math.min(Math.max(num, min), max);
+};
+Math.map = function (value, istart, istop, ostart, ostop, clamp) {
+	var val = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
 }
-
-
-var MidiRecorder = function() {
-
-	var self = this;
-	var recording = false;
-	var start = null;
-	var end = null;
-	var list = [];
-
-	this.onMidi = function(midi) {
-
-	}
-
-	this.clear = function() {
-		list.clear();
-	}
-
-}
-
-var synthRecorder = null;
 
 
 
@@ -64,19 +49,23 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	var oscServer = new osc.Server(osc_port, addr);
 	oscServer.on("message", function (msg, rinfo) {
-		console.log(msg);
+		//console.log(msg);
 		try {
 			var addr = msg.shift();
 			var data = JSON.parse(msg.shift());
 			var midiMessage;
-		
-			 //   ___                   _            ___          _   _    
-			 //  / __|_ _ __ _ _ _ _  _| |__ _ _ _  / __|_  _ _ _| |_| |_  
-			 // | (_ | '_/ _` | ' \ || | / _` | '_| \__ \ || | ' \  _| ' \ 
-			 //  \___|_| \__,_|_||_\_,_|_\__,_|_|   |___/\_, |_||_\__|_||_|
-			 //                                          |__/          
+	
 
-			if(addr=="/gran_button_2"){
+			
+			//  ___   _  _______  __   __  _______ 
+			// |   | | ||       ||  | |  ||       |
+			// |   |_| ||    ___||  |_|  ||  _____|
+			// |      _||   |___ |       || |_____ 
+			// |     |_ |    ___||_     _||_____  |
+			// |    _  ||   |___   |   |   _____| |
+			// |___| |_||_______|  |___|  |_______|
+
+			if(addr=="/keys_button_1"){
 				if(data.press == 1) 
 					midiMessage = [MIDI.CH1.NOTEON, 64, 127];
 				else 
@@ -84,7 +73,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/gran_button_3"){
+			else if(addr=="/keys_button_2"){
 				if(data.press == 1) 
 					midiMessage = [MIDI.CH1.NOTEON, 66, 127];
 				else 
@@ -92,7 +81,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/gran_button_4"){
+			else if(addr=="/keys_button_3"){
 				if(data.press == 1) 
 					midiMessage = [MIDI.CH1.NOTEON, 67, 127];
 				else 
@@ -100,7 +89,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/gran_button_5"){
+			else if(addr=="/keys_button_4"){
 				if(data.press == 1) 
 					midiMessage = [MIDI.CH1.NOTEON, 69, 127];
 				else 
@@ -108,7 +97,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/gran_button_6"){
+			else if(addr=="/keys_button_5"){
 				if(data.press == 1) 
 					midiMessage = [MIDI.CH1.NOTEON, 71, 127];
 				else 
@@ -116,7 +105,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/gran_range_1") {
+			else if(addr=="/keys_range_1") {
 				//filePos		
 				midiMessage = [CONTROL, 22, data.start * 100];
 				output.sendMessage(midiMessage);
@@ -126,7 +115,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/gran_multislider_1") {	
+			else if(addr=="/keys_multislider_1") {	
 				var slider = Object.keys(data)[0];
 				var value = parseFloat(data[slider]);
 				var control;		
@@ -155,42 +144,72 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 
-			 //  ___          _   _           _            
-			 // / __|_  _ _ _| |_| |_  ___ __(_)______ _ _ 
-			 // \__ \ || | ' \  _| ' \/ -_|_-< |_ / -_) '_|
-			 // |___/\_, |_||_\__|_||_\___/__/_/__\___|_|  
-			 //      |__/                                  
-
-
-			else if(addr=="/synth_keyboard_1") {
+			//  _______  _______  _______  _______ 
+			// |  _    ||   _   ||       ||       |
+			// | |_|   ||  |_|  ||  _____||  _____|
+			// |       ||       || |_____ | |_____ 
+			// |  _   | |       ||_____  ||_____  |
+			// | |_|   ||   _   | _____| | _____| |
+			// |_______||__| |__||_______||_______|
+	
+			else if(addr=="/bass_keyboard_1") {
 				if(data.on==0) {
 					midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
 				} else {
-					var velocity = Math.map(data.on, 0, 127, 65, 127);
+					var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
 					midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
 				}
 				output.sendMessage(midiMessage);
 			}
 
-			else if(addr=="/synth_multislider_1") {
+			else if(addr=="/bass_multislider_1") {
 				var reverb = data.list["0"] * FULL_VELOCITY;
 				var delay = data.list["1"] * FULL_VELOCITY;
 				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
 				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
 			}
 
-			else if(addr=="/synth_button_1") {
-				if(!synthRecorder) {
-					synthRecorder = new MidiRecorder() 
+			else if(addr=="/bass_button_1") {
+				if(data.press==1) {
+					console.log("Record!");
+					// On and then Off toggles recording on
+					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+				} else {
+					console.log("Stop recording")
+
+					// On and then off toggles it off again.
+					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
 				}
+			}
+			else if(addr=="/bass_tilt_1") {
+				var tilt = Math.map(data.y, 0, 0.3, 127, 0, true);
+				output.sendMessage([MIDI.CH2.CONTROL, 31, tilt]);
 			}
 
 
+			//  ______   ______    __   __  __   __  _______ 
+			// |      | |    _ |  |  | |  ||  |_|  ||       |
+			// |  _    ||   | ||  |  | |  ||       ||  _____|
+			// | | |   ||   |_||_ |  |_|  ||       || |_____ 
+			// | |_|   ||    __  ||       ||       ||_____  |
+			// |       ||   |  | ||       || ||_|| | _____| |
+			// |______| |___|  |_||_______||_|   |_||_______|
 
-			 //  ___                    
-			 // |   \ _ _ _  _ _ __  ___
-			 // | |) | '_| || | '  \(_-<
-			 // |___/|_|  \_,_|_|_|_/__/
+
+
+
+			//  __   __  _______  _______  _______  ___      _______ 
+			// |  | |  ||       ||       ||   _   ||   |    |       |
+			// |  |_|  ||   _   ||       ||  |_|  ||   |    |  _____|
+			// |       ||  | |  ||       ||       ||   |    | |_____ 
+			// |       ||  |_|  ||      _||       ||   |___ |_____  |
+			//  |     | |       ||     |_ |   _   ||       | _____| |
+			//   |___|  |_______||_______||__| |__||_______||_______|
+
+
+
 
 
 		} catch(e){
@@ -272,9 +291,19 @@ stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
 
 	if(key=='s') {
-		var message = [CONTROL, 22, 1];
+		var message = [MIDI.CH1.CONTROL, 22, 1];
 		output.sendMessage(message);
 		console.log(message);
+	}
+
+	if(key=='n') {
+		output.sendMessage([MIDI.CH2.NOTEON, 28, 1]);
+	}
+	if(key=='r') {
+		output.sendMessage([MIDI.CH2.CONTROL, 29, 1]);
+	}
+	if(key=='p') {
+		output.sendMessage([MIDI.CH2.CONTROL, 30, 1]);
 	}
 
 	// ctrl-c ( end of text )

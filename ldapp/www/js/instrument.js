@@ -23,53 +23,40 @@ nx.onload = function() {
 	console.log("iface", iface);
 	switch( iface ){
 			
-		 //   ___                   _            ___          _   _    
-		 //  / __|_ _ __ _ _ _ _  _| |__ _ _ _  / __|_  _ _ _| |_| |_  
-		 // | (_ | '_/ _` | ' \ || | / _` | '_| \__ \ || | ' \  _| ' \ 
-		 //  \___|_| \__,_|_||_\_,_|_\__,_|_|   |___/\_, |_||_\__|_||_|
-		 //                                          |__/              
-		case "gran1":
-			createControl("gran", "range", 1);
+		//  ___   _  _______  __   __  _______ 
+		// |   | | ||       ||  | |  ||       |
+		// |   |_| ||    ___||  |_|  ||  _____|
+		// |      _||   |___ |       || |_____ 
+		// |     |_ |    ___||_     _||_____  |
+		// |    _  ||   |___   |   |   _____| |
+		// |___| |_||_______|  |___|  |_______|
+                      
+		case "keys1":
+			createControl("keys", "range", 1);
 			break;
 
-		case "gran2":
-			var controls = createControl("gran", "multislider", 1);
+		case "keys2":
+			var controls = createControl("keys", "multislider", 1);
 			controls.setNumberOfSliders(5);
 			break;
 
-		case "gran3":
-			createControl("button", 4);
+		case "keys3":
+			createControl("keys", "button", 4);
 			break;
 
-		case "gran4":
-			createControl("gran", "button", 3);
+		case "keys4":
+			createControl("keys", "button", 3);
 			break;
 
-		case "gran5":
-			createControl("gran", "button", 2);
+		case "keys5":
+			createControl("keys", "button", 2);
 			break;
 
-		case "grantilt":
-			createControl("gran", "tilt", 1);
+		case "keystilt":
+			createControl("keys", "tilt", 1);
 			break;
 
-
-
-		 //  ___          _   _           _            
-		 // / __|_  _ _ _| |_| |_  ___ __(_)______ _ _ 
-		 // \__ \ || | ' \  _| ' \/ -_|_-< |_ / -_) '_|
-		 // |___/\_, |_||_\__|_||_\___/__/_/__\___|_|  
-		 //      |__/                                  
-
-		 case "synth1":
-
-		 	var control = createControl("synth", "keyboard", 1);
-		 	control.octaves = 1;
-		 	control.multitouch = true;
-		 	control.init();
-		 	break;
-
-	 	case "synthParticles":
+	 	case "keysParticles":
 
 	 		var control = createControl("synth", "keyboard", 3);
 	 		control.octaves = 1;
@@ -93,8 +80,23 @@ nx.onload = function() {
 
 	 		break;
 
-		case "synth2":
-			var controls = createControl("synth", "multislider", 1);
+		//  _______  _______  _______  _______ 
+		// |  _    ||   _   ||       ||       |
+		// | |_|   ||  |_|  ||  _____||  _____|
+		// |       ||       || |_____ | |_____ 
+		// |  _   | |       ||_____  ||_____  |
+		// | |_|   ||   _   | _____| | _____| |
+		// |_______||__| |__||_______||_______|
+	
+		case "bass1":
+			var control = createControl("bass", "keyboard", 1);
+			control.octaves = 1;
+			control.multitouch = true;
+			control.init();
+			break;
+
+		case "bass2":
+			var controls = createControl("bass", "multislider", 1);
 			 
 			controls.setNumberOfSliders(2);
 
@@ -104,13 +106,14 @@ nx.onload = function() {
 
 			break;
 
-		case "synth3":
-			createControl("synth", "button", 1);
+		case "bass3":
+			createControl("bass", "button", 1);
 
 			break;
 
-		case "synth4":
-			var controls = createControl("synth", "multislider", 3);
+		case "bass4":
+
+			var controls = createControl("bass", "multislider", 3);
 			 
 			controls.setNumberOfSliders(5);
 
@@ -128,8 +131,8 @@ nx.onload = function() {
 			break;
 			  
 
-		case "synth5":
-			var controls = createControl("synth", "multislider", 4);
+		case "bass5":
+			var controls = createControl("bass", "multislider", 4);
 			 
 			controls.setNumberOfSliders(10);
 
@@ -147,18 +150,20 @@ nx.onload = function() {
 
 			break;
 
-
-		case "synthtilt":
-			createControl("synth", "tilt", 1);
+		case "basstilt":
+			createControl("bass", "tilt", 1);
 
 			break;
 
 
-		 //  ___                    
-		 // |   \ _ _ _  _ _ __  ___
-		 // | |) | '_| || | '  \(_-<
-		 // |___/|_|  \_,_|_|_|_/__/
-		                         
+		//  ______   ______    __   __  __   __  _______ 
+		// |      | |    _ |  |  | |  ||  |_|  ||       |
+		// |  _    ||   | ||  |  | |  ||       ||  _____|
+		// | | |   ||   |_||_ |  |_|  ||       || |_____ 
+		// | |_|   ||    __  ||       ||       ||_____  |
+		// |       ||   |  | ||       || ||_|| | _____| |
+		// |______| |___|  |_||_______||_|   |_||_______|
+	    
 	    case "drums1":
 		    createControl("drum", "button", 1);
 		    break;
@@ -194,8 +199,24 @@ nx.onload = function() {
 		    break;
 
 		case "drumstilt":
-		    createControl("drum", "tilt", 1);
+		    var control = createControl("drum", "tilt", 1);
+		    control.text = "something";
 		    break;
+
+
+
+
+		//  __   __  _______  _______  _______  ___      _______ 
+		// |  | |  ||       ||       ||   _   ||   |    |       |
+		// |  |_|  ||   _   ||       ||  |_|  ||   |    |  _____|
+		// |       ||  | |  ||       ||       ||   |    | |_____ 
+		// |       ||  |_|  ||      _||       ||   |___ |_____  |
+		//  |     | |       ||     |_ |   _   ||       | _____| |
+		//   |___|  |_______||_______||__| |__||_______||_______|
+
+
+
+
 		 // __      _______ ___ ___ 
 		 // \ \    / /_   _| __|__ \
 		 //  \ \/\/ /  | | | _|  /_/
