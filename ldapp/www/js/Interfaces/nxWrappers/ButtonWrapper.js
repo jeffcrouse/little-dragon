@@ -143,9 +143,8 @@ function ButtonWrapper( options )
 
 
 	var tween;
-	scope.onHandleInput = function( event ) {
-		console.log( event );
-	
+	scope.onHandleInput = function( event )
+	{
 		if(tween) {
 			tween.stop();
 
