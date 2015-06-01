@@ -180,6 +180,24 @@ nx.onload = function() {
 		    createControl("drum", "button", 4);
 		    break;
 
+	   case "drumsParticles":
+
+		   var control = createControl("drum", "button", 4);
+
+		   ldInterface = BlendParticles({
+		     controller: control,
+		     spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+		     numSpritesX: 30,
+		     spriteSize: 150,
+		     spriteBlending: 2,
+		     spriteOpacity: .34,
+		     spread: .2,
+		     c0: new THREE.Color( 0x34FFFF ),
+		     c1: new THREE.Color( 0xFF34FF ),
+		   });
+
+		   break;
+
 		case "drums5":
 			var controls = createControl("drum", "multislider", 4);
 			 

@@ -143,8 +143,8 @@ function ButtonWrapper( options )
 
 
 	var tween;
-	scope.onHandleInput = function( data ) {
-		// console.log( e );
+	scope.onHandleInput = function( event ) {
+		console.log( event );
 	
 		if(tween) {
 			tween.stop();
@@ -152,7 +152,7 @@ function ButtonWrapper( options )
 			TWEEN.remove( tween );
 		}
 		
-		if(data.press == 1)
+		if(event.data.press == 1)
 		{
 
 			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )

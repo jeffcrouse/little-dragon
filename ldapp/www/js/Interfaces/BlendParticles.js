@@ -22,7 +22,7 @@ function BlendParticles( options )
 	var spread = options.spread !== undefined ? options.spread : 0;
 
 	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0 );
-console.log( 'spread: ' + spread );
+	console.log( 'spread: ' + spread );
 
 	var spriteRotation = options.spriteRotation || 0;
 
