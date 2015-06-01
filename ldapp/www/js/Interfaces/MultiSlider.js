@@ -1,10 +1,8 @@
 // MultSlider.js
 
-
-
-console.log( "create three scene here", THREE );
-
 function MultiSliderInterface ( options ) {
+
+	console.log( controller );
 
 	var controller = options.controller;
 

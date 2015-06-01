@@ -61,12 +61,37 @@ nx.onload = function() {
 		 // |___/\_, |_||_\__|_||_\___/__/_/__\___|_|  
 		 //      |__/                                  
 
-		case "synth1":
-			var control = createControl("synth", "keyboard", 1);
-			control.octaves = 1;
-			control.multitouch = true;
-			control.init();
-			break;
+		 case "synth1":
+
+		 	var control = createControl("synth", "keyboard", 1);
+		 	control.octaves = 1;
+		 	control.multitouch = true;
+		 	control.init();
+		 	break;
+
+	 	case "synthParticles":
+
+	 		var control = createControl("synth", "keyboard", 3);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.init();
+
+
+	 		ldInterface = BlendParticles({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			numSpritesX: 40,
+	 			spriteSize: 100,
+	 			spriteNoiseAmount: .1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x34FFFF ),
+	 			c1: new THREE.Color( 0xFF34FF ),
+	 		});
+
+
+	 		break;
 
 		case "synth2":
 			var controls = createControl("synth", "multislider", 1);
@@ -198,8 +223,8 @@ function createControl(instrument, type, number){
   var settings = {
                     "id": id, 
                     "parent":"controls",
-                    "w": "1280px", //window.innerWidth, // 
-                    "h": "800px" //window.innerHeight, // 
+                    "w": "1280px",
+                    "h": "720px" // "800px"
                   }
   var widget = nx.add(type, settings)
     .on('*', function(data) {

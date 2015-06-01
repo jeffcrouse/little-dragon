@@ -1,7 +1,8 @@
-// MultiSliderWrapper.js
+// KeyboardWrapper.js
 
-function MultiSliderWrapper( options )
+function KeyboardWrapper( options )
 {
+
 	var scope = this;
 
 	var randf = THREE.Math.randFloat;
@@ -22,7 +23,8 @@ function MultiSliderWrapper( options )
 	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
 	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
-	var NUM_SLIDERS = controller.sliders;
+	// var NUM_SLIDERS = controller.sliders;
+	var keys = controller.keys;
 
 	var WIDTH = 1280; // controller.width;
 	var HEIGHT = 720; // controller.height;
@@ -55,63 +57,73 @@ function MultiSliderWrapper( options )
 	scene.add( clearingMesh );
 
 
-	//sliders
-	sliders = [];
+	var keyGeometry = new THREE.BoxGeometry( 1, 1, .1 );
+	var keyMat = new THREE.MeshBasicMaterial( {
+		side: 2,
+		// transparent: true,
+		// opacity: .3,
+		color: 0xbbbbbb // 0x8899aa
+	} );
 
-	var sliderMat = new THREE.MeshBasicMaterial( { color: "white" } );
 
-	var sliderGeometry = new THREE.BoxGeometry(1,1,.1, 2, 10 );
+	var keyMap = {}
+	for(var i in keys )
+	{
+		var mat = keyMat.clone();
+		var m = new THREE.Mesh( keyGeometry, mat );
 
-	var xStep = WIDTH / NUM_SLIDERS;
+		m.position.x = keys[i].x + keys[i].w * .5 - HALF_WIDTH;
 
-	for(var i=0; i<NUM_SLIDERS; i++)
-	{	
-		//	create a child mesh that is centered in the top half of the slider 
-		var m = new THREE.Mesh( sliderGeometry, sliderMat.clone() );
-		m.position.x = xStep * (i+.5) - HALF_WIDTH;
-		m.position.y = HEIGHT;
-		m.scale.x = xStep;
-		m.scale.y = HEIGHT;
-		m.scale.z = 100
+		m.scale.x = keys[i].w;
+		m.scale.y = keys[i].h;
+
 		scene.add( m );
 
-		// var rgb = v3(randf(-1, 1), randf(-1, 1), randf(-1, 1) ).normalize().multiplyScalar( 1.2 );
-		// m.material.color.setRGB( Math.abs(rgb.x), Math.abs(rgb.y), Math.abs(rgb.z) );
+		keyMap[keys[i].note] = m;
 
-		sliders[i] = m;
+		if(keys[i].h !== HEIGHT)
+		{
+			m.material.color.setRGB( m.material.color.r * .5,  m.material.color.r * .5,  m.material.color.b * .5 );		
+			m.position.y = keys[i].y + (HEIGHT - keys[i].h) * .5  + 10;
+		}
+
+		m.orig_color = m.material.color.clone();
+
+		m.ld_on = 0;
 	}
-
 
 	function draw( renderer )
 	{
+		for(var i in keyMap )
+		{
+			if(keyMap[i].ld_on == 0)	keyMap[i].material.color.lerp( keyMap[i].orig_color, .1 );
+		}
 		renderer.render( scene, camera, renderTarget, autoClear );
 	}
-
-	function setSliderHieght( index, value )
-	{
-		if(sliders[index])
-		{
-			sliders[index].position.y = (value - 1) * HEIGHT;
-			// var k = cos( value * PI ) * -.5 + .5;
-			var k = value;//  1. - smootherstep( 1. - value );
-
-			sliders[index].material.color.copy( c0 ).lerp( c1, k );
-		}
-	}
-
 
 	scope.onHandleInput = function() {
 		// console.log( "scope.onHandleInput" );
 	}
 
 
-	function handleInput( data )
+	function handleInput( event )
 	{
-		scope.onHandleInput( data );
+		scope.onHandleInput( event );
+		
+		var m = keyMap[event.data.note];
 
-		for( var i in data.list ) {
-			setSliderHieght( i, data.list[i] );
-		}
+		m.ld_on = event.data.on;
+
+		m.material.color.setRGB( 1, 1, 1 );
+
+		// new TWEEN.Tween( m.material.color )
+		// 	.to({r: 1, g: 1, b: 1}, 250)
+		// 	.onComplete( function (){
+		// 		new TWEEN.Tween( m.material.color )
+		// 			.to(m.orig_color, 250)
+		// 			.start()
+		// 	})
+		// 	.start()
 	}
 
 	return {
@@ -119,7 +131,6 @@ function MultiSliderWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		setSliderHieght: setSliderHieght,
 		c0: c0,
 		c1: c1,
 		handleInput: handleInput,
