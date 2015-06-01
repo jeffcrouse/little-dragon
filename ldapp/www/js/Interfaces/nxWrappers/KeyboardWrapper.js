@@ -83,8 +83,10 @@ function KeyboardWrapper( options )
 
 		if(keys[i].h !== HEIGHT)
 		{
-			m.material.color.setRGB( m.material.color.r * .5,  m.material.color.r * .5,  m.material.color.b * .5 );		
+			m.material.color.copy( c1 );
 			m.position.y = keys[i].y + (HEIGHT - keys[i].h) * .5  + 10;
+		}else{
+			m.material.color.copy( c0 );
 		}
 
 		m.orig_color = m.material.color.clone();
@@ -114,7 +116,9 @@ function KeyboardWrapper( options )
 
 		m.ld_on = event.data.on;
 
-		m.material.color.setRGB( 1, 1, 1 );
+		m.material.color.r = Math.min(m.orig_color.r * 3, 1.25);
+		m.material.color.g = Math.min(m.orig_color.g * 3, 1.25);
+		m.material.color.b = Math.min(m.orig_color.b * 3, 1.25);
 
 		// new TWEEN.Tween( m.material.color )
 		// 	.to({r: 1, g: 1, b: 1}, 250)

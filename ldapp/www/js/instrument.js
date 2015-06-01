@@ -68,13 +68,13 @@ nx.onload = function() {
 	 			controller: control,
 	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
 	 			numSpritesX: 40,
-	 			spriteSize: 100,
+	 			spriteSize: 75,
 	 			spriteNoiseAmount: .1,
 	 			spriteOpacity: .5,
 	 			spread: 0,
 	 			spreadOffset: new THREE.Vector2( 0, 0 ),
-	 			c0: new THREE.Color( 0x34FFFF ),
-	 			c1: new THREE.Color( 0xFF34FF ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
 	 		});
 
 
