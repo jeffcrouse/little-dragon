@@ -19,31 +19,14 @@ var MIDI = {
 }
 
 var FULL_VELOCITY = 127;
-Math.map = function (value, istart, istop, ostart, ostop) {
-	return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+Math.clamp = function(num, min, max) {
+	if(min>max) console.warn("Math.clamp: min > max");
+	return Math.min(Math.max(num, min), max);
+};
+Math.map = function (value, istart, istop, ostart, ostop, clamp) {
+	var val = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
 }
-
-
-var MidiRecorder = function() {
-
-	var self = this;
-	var recording = false;
-	var start = null;
-	var end = null;
-	var list = [];
-
-	this.onMidi = function(midi) {
-
-	}
-
-	this.clear = function() {
-		list.clear();
-	}
-
-}
-
-var synthRecorder = null;
-
 
 
 /************************
@@ -64,7 +47,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	var oscServer = new osc.Server(osc_port, addr);
 	oscServer.on("message", function (msg, rinfo) {
-		console.log(msg);
+		//console.log(msg);
 		try {
 			var addr = msg.shift();
 			var data = JSON.parse(msg.shift());
@@ -166,7 +149,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				if(data.on==0) {
 					midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
 				} else {
-					var velocity = Math.map(data.on, 0, 127, 65, 127);
+					var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
 					midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
 				}
 				output.sendMessage(midiMessage);
@@ -180,11 +163,23 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			}
 
 			else if(addr=="/synth_button_1") {
-				if(!synthRecorder) {
-					synthRecorder = new MidiRecorder() 
+				if(data.press==1) {
+					console.log("Record!");
+					// On and then Off toggles recording on
+					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+				} else {
+					console.log("Stop recording")
+
+					// On and then off toggles it off again.
+					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
 				}
 			}
-
+			else if(addr=="/synth_tilt_1") {
+				var tilt = Math.map(data.y, 0, 0.3, 127, 0, true);
+				output.sendMessage([MIDI.CH2.CONTROL, 31, tilt]);
+			}
 
 
 			 //  ___                    
@@ -272,9 +267,19 @@ stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
 
 	if(key=='s') {
-		var message = [CONTROL, 22, 1];
+		var message = [MIDI.CH1.CONTROL, 22, 1];
 		output.sendMessage(message);
 		console.log(message);
+	}
+
+	if(key=='n') {
+		output.sendMessage([MIDI.CH2.NOTEON, 28, 1]);
+	}
+	if(key=='r') {
+		output.sendMessage([MIDI.CH2.CONTROL, 29, 1]);
+	}
+	if(key=='p') {
+		output.sendMessage([MIDI.CH2.CONTROL, 30, 1]);
 	}
 
 	// ctrl-c ( end of text )

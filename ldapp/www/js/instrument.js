@@ -85,6 +85,7 @@ nx.onload = function() {
 			break;
 
 		case "synth4":
+
 			var controls = createControl("synth", "multislider", 3);
 			 
 			controls.setNumberOfSliders(5);
@@ -169,7 +170,8 @@ nx.onload = function() {
 		    break;
 
 		case "drumstilt":
-		    createControl("drum", "tilt", 1);
+		    var control = createControl("drum", "tilt", 1);
+		    control.text = "something";
 		    break;
 		 // __      _______ ___ ___ 
 		 // \ \    / /_   _| __|__ \
