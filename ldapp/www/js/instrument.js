@@ -14,7 +14,6 @@ var lighten = function(color, percent) {
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
 }
-
 var px = function(num){ return num+"px"; }
 
 
@@ -56,7 +55,7 @@ nx.onload = function() {
 			break;
 
 		case "keys4":
-			createControl("keys", "button", 3);
+			createControl("keys", "multitouch", 3);
 			break;
 
 		case "keys5":
@@ -259,7 +258,15 @@ nx.onload = function() {
 
 }
 
-
+// Round all of the floats in an object (for optimized network sending)
+function roundFloats(obj) {
+    for (var k in obj) {
+        if (typeof obj[k] == "object" && obj[k] !== null) 
+        	 roundFloats( obj[k] ); // recurse objects
+        else if(typeof obj[k] == 'number' && obj[k] % 1 != 0)
+        	obj[k] = parseFloat( obj[k].toFixed(3) );
+    }
+}
 
 function createControl(instrument, type, number, options){
 	var id = [instrument, type, number].join("_");
@@ -267,14 +274,19 @@ function createControl(instrument, type, number, options){
 	var settings = $.extend(defaults, options);
 
 	var widget = nx.add(type, settings).on('*', function(data) {
-		// console.log(data);
+		roundFloats(data);
+
 		if(ldInterface){
 			var eventObject = {"event":id, "data":data};
 			ldInterface.widgetEvent( eventObject );
 		}
 		if(osc) {
 			var addr = "/" + id;
-			osc.send(addr, JSON.stringify(data));
+			console.log(addr, JSON.stringify(data));
+			osc.send(addr, JSON.stringify(data), null,
+				function(err){ console.error( "osc.send", err ); } );
+		} else {
+			console.warn("OSC not yet constructed!")
 		}
 	});
 	// widget.colors.fill("#F0F0F0");
@@ -309,7 +321,7 @@ var onDeviceReady = function() {
 	console.log("Watching for _osc._udp.local.");
 	ZeroConf.watch("_osc._udp.local.", function(event){
 		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld") {
+		if(event.action=="added" && event.service.name=="ld-jeff") {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
 			console.log("Found LittleDragon OSC server", host, port);
