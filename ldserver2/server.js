@@ -49,7 +49,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	var oscServer = new osc.Server(osc_port, addr);
 	oscServer.on("message", function (msg, rinfo) {
-		//console.log(msg);
+		console.log(msg);
+		
 		try {
 			var addr = msg.shift();
 			var data = JSON.parse(msg.shift());

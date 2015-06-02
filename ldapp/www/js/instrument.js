@@ -10,7 +10,11 @@ loop();
 var osc = null;				// The OSC sender object
 var ldInterface = null;		// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
-
+var lighten = function(color, percent) {
+    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+}
+var px = function(num){ return num+"px"; }
 
 nx.onload = function() {
 
@@ -41,11 +45,16 @@ nx.onload = function() {
 			break;
 
 		case "keys3":
-			createControl("keys", "button", 4);
+			var controls = createControl("keys", "keyboard", 1);
+			controls.multitouch = true;
+			controls.octaves = 1;
+			controls.keypattern = ['w','w','w','w'];
+			controls.lineWidth = 20;
+			controls.init();
 			break;
 
 		case "keys4":
-			createControl("keys", "button", 3);
+			createControl("keys", "multitouch", 3);
 			break;
 
 		case "keys5":
@@ -56,13 +65,23 @@ nx.onload = function() {
 			createControl("keys", "tilt", 1);
 			break;
 
-	 	case "keysParticles":
 
-	 		var control = createControl("synth", "keyboard", 3);
+
+		//  _______  _______  _______  _______ 
+		// |  _    ||   _   ||       ||       |
+		// | |_|   ||  |_|  ||  _____||  _____|
+		// |       ||       || |_____ | |_____ 
+		// |  _   | |       ||_____  ||_____  |
+		// | |_|   ||   _   | _____| | _____| |
+		// |_______||__| |__||_______||_______|
+	
+		case "bass1":
+	 	case "bassParticles":
+
+	 		var control = createControl("bass", "keyboard", 3);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
 	 		control.init();
-
 
 	 		ldInterface = BlendParticles({
 	 			controller: control,
@@ -76,24 +95,8 @@ nx.onload = function() {
 	 			c0: new THREE.Color( 0x44CCDD),
 	 			c1: new THREE.Color( 0xCC44DD ),
 	 		});
-
-
 	 		break;
 
-		//  _______  _______  _______  _______ 
-		// |  _    ||   _   ||       ||       |
-		// | |_|   ||  |_|  ||  _____||  _____|
-		// |       ||       || |_____ | |_____ 
-		// |  _   | |       ||_____  ||_____  |
-		// | |_|   ||   _   | _____| | _____| |
-		// |_______||__| |__||_______||_______|
-	
-		case "bass1":
-			var control = createControl("bass", "keyboard", 1);
-			control.octaves = 1;
-			control.multitouch = true;
-			control.init();
-			break;
 
 		case "bass2":
 			var controls = createControl("bass", "multislider", 1);
@@ -165,22 +168,7 @@ nx.onload = function() {
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
 	    case "drums1":
-		    createControl("drum", "button", 1);
-		    break;
-
-	    case "drums2":
-		    createControl("drum", "button", 2);
-		    break;
-
-		case "drums3":
-		    createControl("drum", "button", 3);
-		    break;
-
-		case "drums4":
-		    createControl("drum", "button", 4);
-		    break;
-
-	   case "drumsParticles":
+		case "drumsParticles":
 
 		   var control = createControl("drum", "button", 4);
 
@@ -197,6 +185,18 @@ nx.onload = function() {
 		   });
 
 		   break;
+
+	    case "drums2":
+		    createControl("drum", "button", 2);
+		    break;
+
+		case "drums3":
+		    createControl("drum", "button", 3);
+		    break;
+
+		case "drums4":
+		    createControl("drum", "button", 4);
+		    break;
 
 		case "drums5":
 			var controls = createControl("drum", "multislider", 4);
@@ -257,32 +257,41 @@ nx.onload = function() {
 
 }
 
-function createControl(instrument, type, number){
-  var id = [instrument, type, number].join("_");
-  var settings = {
-                    "id": id, 
-                    "parent":"controls",
-                    "w": "1280px",
-                    "h": "720px" // "800px"
-                  }
-  var widget = nx.add(type, settings)
-    .on('*', function(data) {
-      // console.log(data);
-      var eventObject = {"event":id, 
-                          "data":data};
+// Round all of the floats in an object (for optimized network sending)
+function roundFloats(obj) {
+    for (var k in obj) {
+        if (typeof obj[k] == "object" && obj[k] !== null) 
+        	 roundFloats( obj[k] ); // recurse objects
+        else if(typeof obj[k] == 'number' && obj[k] % 1 != 0)
+        	obj[k] = parseFloat( obj[k].toFixed(3) );
+    }
+}
 
-      if(ldInterface){
-        ldInterface.widgetEvent( eventObject );
-      }
-      //navigator.vibrate(100);
-      var addr = "/"+id;
+function createControl(instrument, type, number, options){
+	var id = [instrument, type, number].join("_");
+	var defaults = {"id": id, "parent":"controls", "w": "1280px", "h": "720px"};
+	var settings = $.extend(defaults, options);
 
-      if(osc) osc.send(addr, JSON.stringify(data));
-    });
-    // widget.colors.fill("#F0F0F0");
-    // widget.colorize("#F0F0F0"); 
-    console.log(widget.colors.fill);
-    return widget;
+	var widget = nx.add(type, settings).on('*', function(data) {
+		roundFloats(data);
+
+		if(ldInterface){
+			var eventObject = {"event":id, "data":data};
+			ldInterface.widgetEvent( eventObject );
+		}
+		if(osc) {
+			var addr = "/" + id;
+			//console.log(addr, JSON.stringify(data));
+			osc.send(addr, JSON.stringify(data), null,
+				function(err){ console.error( "osc.send", err ); } );
+		} else {
+			console.warn("OSC not yet constructed!")
+		}
+	});
+	// widget.colors.fill("#F0F0F0");
+	// widget.colorize("#F0F0F0"); 
+	console.log(widget.colors.fill);
+	return widget;
 }
 
 
@@ -311,7 +320,7 @@ var onDeviceReady = function() {
 	console.log("Watching for _osc._udp.local.");
 	ZeroConf.watch("_osc._udp.local.", function(event){
 		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld") {
+		if(event.action=="added" && event.service.name=="ld" && osc==null) {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
 			console.log("Found LittleDragon OSC server", host, port);
