@@ -2725,7 +2725,7 @@ keyboard.prototype.draw = function() {
 
 	with (this.context) {
 		strokeStyle = this.colors.border;
-		lineWidth = 1;
+		lineWidth = this.lineWidth;
 			
 		for (var i in this.wkeys) {
 			fillStyle = this.wkeys[i].on ? this.colors.border : this.colors.fill
@@ -2811,6 +2811,7 @@ keyboard.prototype.whichKey = function (x, y){
 }
 
 keyboard.prototype.click = function(e) {
+  // JRC -- disabled because it doesn't work!
   /*
 	if (this.clickPos.touches.length>1 || this.multitouch) {
 
@@ -2864,7 +2865,7 @@ keyboard.prototype.move = function(e) {
 }
 
 keyboard.prototype.release = function(e) {
-  console.log("keyboard.prototype.release");
+  //console.log("keyboard.prototype.release");
 	if (this.clickPos.touches.length>1 || this.multitouch) {
 		this.keysinuse = new Array();
 		for (var j=0;j<this.clickPos.touches.length;j++) { 
