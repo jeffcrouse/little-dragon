@@ -322,6 +322,42 @@ stdin.on( 'data', function( key ){
 
 
 
+
+/*******************************************************************
+███╗   ███╗██╗██████╗ ██╗    ██╗███╗   ██╗██████╗ ██╗   ██╗████████╗
+████╗ ████║██║██╔══██╗██║    ██║████╗  ██║██╔══██╗██║   ██║╚══██╔══╝
+██╔████╔██║██║██║  ██║██║    ██║██╔██╗ ██║██████╔╝██║   ██║   ██║   
+██║╚██╔╝██║██║██║  ██║██║    ██║██║╚██╗██║██╔═══╝ ██║   ██║   ██║   
+██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
+╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
+*******************************************************************/
+
+var input = new midi.input();
+
+var devices = {};
+for(var i=0; i<input.getPortCount(); i++) {
+	var name = input.getPortName(i);
+	devices[name] = i;
+	console.log(i, name);
+}
+if("USB Uno MIDI Interface" in devices)
+{
+	input.openPort(devices["USB Uno MIDI Interface"]);
+	input.on('message', function(deltaTime, message) {
+
+		var func = message[0];
+		var note = message[1];
+		var vel = message[2] / FULL_VELOCITY;
+		vel = parseFloat(vel.toFixed(3));
+
+		console.log(func, note, vel)
+	});
+}
+	
+
+
+
+
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
 process.on('uncaughtException', function(err) {
