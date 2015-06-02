@@ -281,7 +281,7 @@ function createControl(instrument, type, number, options){
 		}
 		if(osc) {
 			var addr = "/" + id;
-			console.log(addr, JSON.stringify(data));
+			//console.log(addr, JSON.stringify(data));
 			osc.send(addr, JSON.stringify(data), null,
 				function(err){ console.error( "osc.send", err ); } );
 		} else {
@@ -320,7 +320,7 @@ var onDeviceReady = function() {
 	console.log("Watching for _osc._udp.local.");
 	ZeroConf.watch("_osc._udp.local.", function(event){
 		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld") {
+		if(event.action=="added" && event.service.name=="ld" && osc==null) {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
 			console.log("Found LittleDragon OSC server", host, port);
