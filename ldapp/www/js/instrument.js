@@ -289,20 +289,60 @@ function createControl(instrument, type, number, options){
 var onDeviceReady = function() {
 	// Print out some useful info
 	console.log('deviceready');
-	console.log( navigator.userAgent );
-	console.log( device.uuid );
+	console.log( "navigator.userAgent", navigator.userAgent );
+	console.log( "device.uuid", device.uuid );
 
+	// Called when device is paused
 	var onPause = function(e) {
 		if(oscSender) {
 			console.log("/leave", JSON.stringify({"ip": myIP, "iface": iface}));
 			oscSender.send("/leave", JSON.stringify({"ip": myIP, "iface": iface}));
 		}
 	}
+
+	// Called when device is resumed
 	var onResume = function(e) {
 		if(oscSender) {
 			console.log("/join", JSON.stringify({"ip": myIP, "iface": iface}));
 			oscSender.send("/join", JSON.stringify({"ip": myIP, "iface": iface}));
 		}
+	}
+
+	// Called when ZeroConf gets a notification of an available service 
+	var onZeroConf = function(event){
+		console.log("ZeroConf service", event);
+
+		if(event.action=="added" && event.service.addresses.length && 
+			event.service.name=="ld-jeff" && oscSender==null) {
+			var host =  event.service.addresses[0];
+			var port =  event.service.port;
+
+			// Construct the osc
+			console.log("Found LittleDragon OSC server", host, port);
+			oscSender = new window.OSCSender(host, port);
+
+			// Now that we have an OSCSender, get the IP address of the device 
+			// so that we can send a "/join" message to the server
+			networkinterface.getIPAddress(onIPAddress);
+		}
+	}
+
+	// Called when networkinterface gets the IP address of the device.
+	// Announce to the server that we are here, 
+	// also set up a listener to listen for messages from the server
+	var onIPAddress = function (ip) { 
+		myIP = ip;
+		console.log("myIP", myIP);
+
+		onResume();
+
+		oscListener = new window.OSCListener(3333);
+		var onSuccess =  function(){ console.log("listening for OSC on port", 3333); };
+		var onError = function(){ console.error("failed to open OSC port for listening"); };
+		oscListener.startListening(onSuccess, onError);
+		oscListener.on("/tick", function(data){
+			console.log("/tick", data);
+		});
 	}
 
 	// Disable as many buttons as possible.
@@ -315,43 +355,11 @@ var onDeviceReady = function() {
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
 
-	// Keep the phone awake
-	// We are doing this in index.js -- do we need to do it again?
-	// var onSuccess = function(){ console.log("!! We are awake!"); }
-	// var onError = function(){ console.error("!! Couldn't keep device awake!"); }
-	// window.plugins.insomnia.keepAwake(onSuccess, onError);
-
 
 	// Listen for the OSC server to advertise itself
 	var zeroConfAddr = "_osc._udp.local.";
-	console.log("Watching for", zeroConfAddr);
-	ZeroConf.watch(zeroConfAddr, function(event){
-		console.log("ZeroConf service", event);
-
-		if(event.action=="added" && event.service.addresses.length && 
-			event.service.name=="ld-jeff" && oscSender==null) {
-			var host =  event.service.addresses[0];
-			var port =  event.service.port;
-
-			// Construct the osc
-			console.log("Found LittleDragon OSC server", host, port);
-			oscSender = new window.OSCSender(host, port);
-			networkinterface.getIPAddress(function (ip) { 
-				myIP = ip;
-				console.log("myIP", myIP);
-
-				onResume();
-
-				oscListener = new window.OSCListener(port);
-				var onSuccess =  function(){ console.log("listening for OSC on port", port); };
-				var onError = function(){ console.error("failed to open OSC port for listening"); };
-				oscListener.startListening(onSuccess, onError);
-				oscListener.on("/tick", function(data){
-					console.log("/tick", data);
-				});
-			});
-		}
-	});
+	console.log("Listen for zeroconf service", zeroConfAddr);
+	ZeroConf.watch(zeroConfAddr, onZeroConf);
 }
 document.addEventListener('deviceready', onDeviceReady, false);
 
