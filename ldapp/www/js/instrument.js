@@ -16,7 +16,6 @@ var lighten = function(color, percent) {
 }
 var px = function(num){ return num+"px"; }
 
-
 nx.onload = function() {
 
 	nx.sendsTo("js");
@@ -321,7 +320,7 @@ var onDeviceReady = function() {
 	console.log("Watching for _osc._udp.local.");
 	ZeroConf.watch("_osc._udp.local.", function(event){
 		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld-jeff") {
+		if(event.action=="added" && event.service.name=="ld") {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
 			console.log("Found LittleDragon OSC server", host, port);
