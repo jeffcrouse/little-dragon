@@ -1,20 +1,9 @@
-/*
-var loop = function() {
-	navigator.vibrate(100);
-	osc.send("/test", [1, 2, 3, 4, new Date()]);
-	setTimeout(loop, 1000);
-}
-loop();
-*/
 
-var osc = null;				// The OSC sender object
-var ldInterface = null;		// WebGL layer (?)
+var oscSender = null;					// The OSC sender object (send to the server)
+var oscListener = null;					// Receive OSC from the server
+var myIP = null;
+var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
-var lighten = function(color, percent) {
-    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
-}
-var px = function(num){ return num+"px"; }
 
 nx.onload = function() {
 
@@ -279,13 +268,14 @@ function createControl(instrument, type, number, options){
 			var eventObject = {"event":id, "data":data};
 			ldInterface.widgetEvent( eventObject );
 		}
-		if(osc) {
+
+		if(oscSender) {
 			var addr = "/" + id;
 			//console.log(addr, JSON.stringify(data));
-			osc.send(addr, JSON.stringify(data), null,
-				function(err){ console.error( "osc.send", err ); } );
+			oscSender.send(addr, JSON.stringify(data), null,
+				function(err){ console.error( "oscSender.send", err ); } );
 		} else {
-			console.warn("OSC not yet constructed!")
+			console.warn("oscSender not yet constructed!")
 		}
 	});
 	// widget.colors.fill("#F0F0F0");
@@ -302,6 +292,19 @@ var onDeviceReady = function() {
 	console.log( navigator.userAgent );
 	console.log( device.uuid );
 
+	var onPause = function(e) {
+		if(oscSender) {
+			console.log("/leave", JSON.stringify({"ip": myIP, "iface": iface}));
+			oscSender.send("/leave", JSON.stringify({"ip": myIP, "iface": iface}));
+		}
+	}
+	var onResume = function(e) {
+		if(oscSender) {
+			console.log("/join", JSON.stringify({"ip": myIP, "iface": iface}));
+			oscSender.send("/join", JSON.stringify({"ip": myIP, "iface": iface}));
+		}
+	}
+
 	// Disable as many buttons as possible.
 	var _stop = function(e){ e.preventDefault(); };
 	document.addEventListener("backbutton", _stop, false);
@@ -309,22 +312,44 @@ var onDeviceReady = function() {
 	document.addEventListener("searchbutton", _stop, false);
 	document.addEventListener("startcallbutton", _stop, false);
 	document.addEventListener("endcallbutton", _stop, false);
-
+	document.addEventListener("pause", onPause, false);
+	document.addEventListener("resume", onResume, false);
 
 	// Keep the phone awake
-	var onSuccess = function(){ console.log("!! We are awake!"); }
-	var onError = function(){ console.error("!! Couldn't keep device awake!"); }
-	window.plugins.insomnia.keepAwake(onSuccess, onError);
+	// We are doing this in index.js -- do we need to do it again?
+	// var onSuccess = function(){ console.log("!! We are awake!"); }
+	// var onError = function(){ console.error("!! Couldn't keep device awake!"); }
+	// window.plugins.insomnia.keepAwake(onSuccess, onError);
+
 
 	// Listen for the OSC server to advertise itself
-	console.log("Watching for _osc._udp.local.");
-	ZeroConf.watch("_osc._udp.local.", function(event){
+	var zeroConfAddr = "_osc._udp.local.";
+	console.log("Watching for", zeroConfAddr);
+	ZeroConf.watch(zeroConfAddr, function(event){
 		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld" && osc==null) {
+
+		if(event.action=="added" && event.service.addresses.length && 
+			event.service.name=="ld-jeff" && oscSender==null) {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
+
+			// Construct the osc
 			console.log("Found LittleDragon OSC server", host, port);
-			osc = new window.OSCSender(host, port);
+			oscSender = new window.OSCSender(host, port);
+			networkinterface.getIPAddress(function (ip) { 
+				myIP = ip;
+				console.log("myIP", myIP);
+
+				onResume();
+
+				oscListener = new window.OSCListener(port);
+				var onSuccess =  function(){ console.log("listening for OSC on port", port); };
+				var onError = function(){ console.error("failed to open OSC port for listening"); };
+				oscListener.startListening(onSuccess, onError);
+				oscListener.on("/tick", function(data){
+					console.log("/tick", data);
+				});
+			});
 		}
 	});
 }

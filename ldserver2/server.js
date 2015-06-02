@@ -3,6 +3,7 @@ var util = require('util');
 var express = require('express');
 var osc = require('node-osc');
 var midi = require('midi');
+var oscClient = require("./oscClient");
 
 
 // Set up MIDI
@@ -48,174 +49,176 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 	console.log("osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
+	var oscClients = {};
+
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
 		
-		try {
-			var addr = msg.shift();
-			var data = JSON.parse(msg.shift());
-			var midiMessage;
-	
+		var addr = msg.shift();
+		var data = JSON.parse(msg.shift());
+		var midiMessage;
+		
 
-			
-			//  ___   _  _______  __   __  _______ 
-			// |   | | ||       ||  | |  ||       |
-			// |   |_| ||    ___||  |_|  ||  _____|
-			// |      _||   |___ |       || |_____ 
-			// |     |_ |    ___||_     _||_____  |
-			// |    _  ||   |___   |   |   _____| |
-			// |___| |_||_______|  |___|  |_______|
+		if(addr == "/join") {
+			oscClients[data.iface] = new oscClient(data);
+		} 
 
-			if(addr=="/keys_button_1"){
-				if(data.press == 1) 
-					midiMessage = [MIDI.CH1.NOTEON, 64, 127];
-				else 
-					midiMessage = [MIDI.CH1.NOTEON, 64, 0];//note off
-				output.sendMessage(midiMessage);
+		else if(addr == "/leave") {
+			oscClients[data.iface].close();
+			delete oscClients[data.iface];
+		} 
+		
+
+		//  ___   _  _______  __   __  _______ 
+		// |   | | ||       ||  | |  ||       |
+		// |   |_| ||    ___||  |_|  ||  _____|
+		// |      _||   |___ |       || |_____ 
+		// |     |_ |    ___||_     _||_____  |
+		// |    _  ||   |___   |   |   _____| |
+		// |___| |_||_______|  |___|  |_______|
+
+		else if(addr=="/keys_button_1"){
+			if(data.press == 1) 
+				midiMessage = [MIDI.CH1.NOTEON, 64, 127];
+			else 
+				midiMessage = [MIDI.CH1.NOTEON, 64, 0];//note off
+			output.sendMessage(midiMessage);
+		}
+
+		else if(addr=="/keys_button_2"){
+			if(data.press == 1) 
+				midiMessage = [MIDI.CH1.NOTEON, 66, 127];
+			else 
+				midiMessage = [MIDI.CH1.NOTEON, 66, 0];//note off
+			output.sendMessage(midiMessage);
+		}
+
+		else if(addr=="/keys_button_3"){
+			if(data.press == 1) 
+				midiMessage = [MIDI.CH1.NOTEON, 67, 127];
+			else 
+				midiMessage = [MIDI.CH1.NOTEON, 67, 0];//note off
+			output.sendMessage(midiMessage);
+		}
+
+		else if(addr=="/keys_button_4"){
+			if(data.press == 1) 
+				midiMessage = [MIDI.CH1.NOTEON, 69, 127];
+			else 
+				midiMessage = [MIDI.CH1.NOTEON, 69, 0];//note off
+			output.sendMessage(midiMessage);
+		}
+
+		else if(addr=="/keys_button_5"){
+			if(data.press == 1) 
+				midiMessage = [MIDI.CH1.NOTEON, 71, 127];
+			else 
+				midiMessage = [MIDI.CH1.NOTEON, 71, 0];//note off
+			output.sendMessage(midiMessage);
+		}
+
+		else if(addr=="/keys_range_1") {
+			//filePos		
+			midiMessage = [MIDI.CH1.CONTROL, 22, data.start * 100];
+			output.sendMessage(midiMessage);
+			//grain
+			midiMessage = [MIDI.CH1.CONTROL, 24, (data.stop - data.start) * 150];
+			// console.log(json.data.stop - json.data.start);
+			output.sendMessage(midiMessage);
+		}
+
+		else if(addr=="/keys_multislider_1") {	
+			var slider = Object.keys(data)[0];
+			var value = parseFloat(data[slider]);
+			var control;		
+
+			if(slider == "0"){//attack
+				control = 25;
 			}
-
-			else if(addr=="/keys_button_2"){
-				if(data.press == 1) 
-					midiMessage = [MIDI.CH1.NOTEON, 66, 127];
-				else 
-					midiMessage = [MIDI.CH1.NOTEON, 66, 0];//note off
-				output.sendMessage(midiMessage);
+			else if(slider == "1"){//decay
+				control = 26;
 			}
-
-			else if(addr=="/keys_button_3"){
-				if(data.press == 1) 
-					midiMessage = [MIDI.CH1.NOTEON, 67, 127];
-				else 
-					midiMessage = [MIDI.CH1.NOTEON, 67, 0];//note off
-				output.sendMessage(midiMessage);
+			else if(slider == "2"){//sustain
+				control = 27;
 			}
-
-			else if(addr=="/keys_button_4"){
-				if(data.press == 1) 
-					midiMessage = [MIDI.CH1.NOTEON, 69, 127];
-				else 
-					midiMessage = [MIDI.CH1.NOTEON, 69, 0];//note off
-				output.sendMessage(midiMessage);
+			else if(slider == "3"){//release
+				control = 28;
 			}
+			midiMessage = [MIDI.CH1.CONTROL, control, value * 127];
+			output.sendMessage(midiMessage);
+		}
 
-			else if(addr=="/keys_button_5"){
-				if(data.press == 1) 
-					midiMessage = [MIDI.CH1.NOTEON, 71, 127];
-				else 
-					midiMessage = [MIDI.CH1.NOTEON, 71, 0];//note off
-				output.sendMessage(midiMessage);
+		else if(addr=="/pan") {	
+			//TODO: use x, y and z.	
+			midiMessage = [MIDI.CH1.CONTROL, 29, data.y];
+			output.sendMessage(midiMessage);
+		}
+
+
+
+		//  _______  _______  _______  _______ 
+		// |  _    ||   _   ||       ||       |
+		// | |_|   ||  |_|  ||  _____||  _____|
+		// |       ||       || |_____ | |_____ 
+		// |  _   | |       ||_____  ||_____  |
+		// | |_|   ||   _   | _____| | _____| |
+		// |_______||__| |__||_______||_______|
+
+		else if(addr=="/bass_keyboard_1") {
+			if(data.on==0) {
+				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
+			} else {
+				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
+				midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
 			}
+			output.sendMessage(midiMessage);
+		}
 
-			else if(addr=="/keys_range_1") {
-				//filePos		
-				midiMessage = [CONTROL, 22, data.start * 100];
-				output.sendMessage(midiMessage);
-				//grain
-				midiMessage = [CONTROL, 24, (data.stop - data.start) * 150];
-				// console.log(json.data.stop - json.data.start);
-				output.sendMessage(midiMessage);
+		else if(addr=="/bass_multislider_1") {
+			var reverb = data.list["0"] * FULL_VELOCITY;
+			var delay = data.list["1"] * FULL_VELOCITY;
+			output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
+			output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+		}
+
+		else if(addr=="/bass_button_1") {
+			if(data.press==1) {
+				console.log("Record!");
+				// On and then Off toggles recording on
+				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+			} else {
+				console.log("Stop recording")
+
+				// On and then off toggles it off again.
+				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
 			}
-
-			else if(addr=="/keys_multislider_1") {	
-				var slider = Object.keys(data)[0];
-				var value = parseFloat(data[slider]);
-				var control;		
-
-				if(slider == "0"){//attack
-					control = 25;
-				}
-				else if(slider == "1"){//decay
-					control = 26;
-				}
-				else if(slider == "2"){//sustain
-					control = 27;
-				}
-				else if(slider == "3"){//release
-					control = 28;
-				}
-				midiMessage = [CONTROL, control, value * 127];
-				output.sendMessage(midiMessage);
-			}
-
-			else if(addr=="/pan") {	
-				//TODO: use x, y and z.	
-				midiMessage = [CONTROL, 29, data.y];
-				output.sendMessage(midiMessage);
-			}
+		}
+		else if(addr=="/bass_tilt_1") {
+			var tilt = Math.map(data.y, 0, 0.3, 127, 0, true);
+			output.sendMessage([MIDI.CH2.CONTROL, 31, tilt]);
+		}
 
 
-
-			//  _______  _______  _______  _______ 
-			// |  _    ||   _   ||       ||       |
-			// | |_|   ||  |_|  ||  _____||  _____|
-			// |       ||       || |_____ | |_____ 
-			// |  _   | |       ||_____  ||_____  |
-			// | |_|   ||   _   | _____| | _____| |
-			// |_______||__| |__||_______||_______|
-	
-			else if(addr=="/bass_keyboard_1") {
-				if(data.on==0) {
-					midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
-				} else {
-					var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-					midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
-				}
-				output.sendMessage(midiMessage);
-			}
-
-			else if(addr=="/bass_multislider_1") {
-				var reverb = data.list["0"] * FULL_VELOCITY;
-				var delay = data.list["1"] * FULL_VELOCITY;
-				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
-			}
-
-			else if(addr=="/bass_button_1") {
-				if(data.press==1) {
-					console.log("Record!");
-					// On and then Off toggles recording on
-					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
-				} else {
-					console.log("Stop recording")
-
-					// On and then off toggles it off again.
-					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
-				}
-			}
-			else if(addr=="/bass_tilt_1") {
-				var tilt = Math.map(data.y, 0, 0.3, 127, 0, true);
-				output.sendMessage([MIDI.CH2.CONTROL, 31, tilt]);
-			}
-
-
-			//  ______   ______    __   __  __   __  _______ 
-			// |      | |    _ |  |  | |  ||  |_|  ||       |
-			// |  _    ||   | ||  |  | |  ||       ||  _____|
-			// | | |   ||   |_||_ |  |_|  ||       || |_____ 
-			// | |_|   ||    __  ||       ||       ||_____  |
-			// |       ||   |  | ||       || ||_|| | _____| |
-			// |______| |___|  |_||_______||_|   |_||_______|
+		//  ______   ______    __   __  __   __  _______ 
+		// |      | |    _ |  |  | |  ||  |_|  ||       |
+		// |  _    ||   | ||  |  | |  ||       ||  _____|
+		// | | |   ||   |_||_ |  |_|  ||       || |_____ 
+		// | |_|   ||    __  ||       ||       ||_____  |
+		// |       ||   |  | ||       || ||_|| | _____| |
+		// |______| |___|  |_||_______||_|   |_||_______|
 
 
 
 
-			//  __   __  _______  _______  _______  ___      _______ 
-			// |  | |  ||       ||       ||   _   ||   |    |       |
-			// |  |_|  ||   _   ||       ||  |_|  ||   |    |  _____|
-			// |       ||  | |  ||       ||       ||   |    | |_____ 
-			// |       ||  |_|  ||      _||       ||   |___ |_____  |
-			//  |     | |       ||     |_ |   _   ||       | _____| |
-			//   |___|  |_______||_______||__| |__||_______||_______|
-
-
-
-
-
-		} catch(e){
-       		console.error("Invalid JSON object in OSC message", e)
-   		}
+		//  __   __  _______  _______  _______  ___      _______ 
+		// |  | |  ||       ||       ||   _   ||   |    |       |
+		// |  |_|  ||   _   ||       ||  |_|  ||   |    |  _____|
+		// |       ||  | |  ||       ||       ||   |    | |_____ 
+		// |       ||  |_|  ||      _||       ||   |___ |_____  |
+		//  |     | |       ||     |_ |   _   ||       | _____| |
+		//   |___|  |_______||_______||__| |__||_______||_______|
 
 	});
 });
@@ -237,7 +240,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 var mdns = require('mdns');
 console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld"});
+var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-jeff"});
 ad.start();
 
 
@@ -316,5 +319,14 @@ stdin.on( 'data', function( key ){
 	// write the key to stdout all normal like
 	//process.stdout.write( key );
 });
+
+
+
+// catch the uncaught errors that weren't wrapped in a domain or try catch statement
+// do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
+process.on('uncaughtException', function(err) {
+    // handle the error safely
+    console.error(err)
+})
 
 
