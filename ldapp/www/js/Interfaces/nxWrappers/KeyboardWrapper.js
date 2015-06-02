@@ -98,7 +98,7 @@ function KeyboardWrapper( options )
 	{
 		for(var i in keyMap )
 		{
-			if(keyMap[i].ld_on == 0)	keyMap[i].material.color.lerp( keyMap[i].orig_color, .1 );
+			if(keyMap[i].ld_on == 0)	keyMap[i].material.color.lerp( keyMap[i].orig_color, .2 );
 		}
 		renderer.render( scene, camera, renderTarget, autoClear );
 	}
