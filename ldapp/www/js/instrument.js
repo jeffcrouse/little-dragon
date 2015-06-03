@@ -124,7 +124,7 @@ nx.onload = function() {
 	 	case "bassParticles":
 	 		var controls = createControl("bass", "multislider", 4);
 			 
-			controls.setNumberOfSliders(10);
+			controls.setNumberOfSliders(4);
 
 			ldInterface = BlendParticles({
 				controller: controls,
@@ -141,12 +141,13 @@ nx.onload = function() {
 
 
 		case "bass2":
-			var control = createControl("bass", "keyboard", 1);
-	 		control.octaves = 1;
-	 		control.multitouch = true;
-	 		controls.keypattern = ['w','w','w'];
+
+			var controls = createControl("bass", "keyboard", 1);
+			controls.multitouch = true;
+			controls.octaves = 1;
+			controls.keypattern = ['w','w','w'];
 			controls.lineWidth = 20;
-	 		control.init();
+			controls.init();
 
 	 		ldInterface = BlendParticles({
 	 			controller: control,
@@ -166,8 +167,8 @@ nx.onload = function() {
 			var control = createControl("bass", "keyboard", 2);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		controls.keypattern = ['w','w','w'];
-			controls.lineWidth = 20;
+	 		control.keypattern = ['w','w','w'];
+			control.lineWidth = 20;
 	 		control.init();
 
 	 		ldInterface = BlendParticles({
@@ -188,8 +189,8 @@ nx.onload = function() {
 			var control = createControl("bass", "keyboard", 3);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		controls.keypattern = ['w','w','w'];
-			controls.lineWidth = 20;
+	 		control.keypattern = ['w','w','w'];
+			control.lineWidth = 20;
 	 		control.init();
 
 	 		ldInterface = BlendParticles({
@@ -212,8 +213,8 @@ nx.onload = function() {
 			var control = createControl("bass", "keyboard", 4);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		controls.keypattern = ['w','w','w'];
-			controls.lineWidth = 20;
+	 		control.keypattern = ['w','w','w'];
+			control.lineWidth = 20;
 	 		control.init();
 
 	 		ldInterface = BlendParticles({
