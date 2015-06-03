@@ -27,7 +27,19 @@ nx.onload = function() {
 	nx.setViewport(0.5);
 
 	console.log("iface", iface);
-	switch( iface ){
+	switch( iface ){		
+		//  __   __  _______  ___   _______  _______ 
+		// |  | |  ||       ||   | |       ||       |
+		// |  |_|  ||   _   ||   | |       ||    ___|
+		// |       ||  | |  ||   | |       ||   |___ 
+		// |       ||  |_|  ||   | |      _||    ___|
+		//  |     | |       ||   | |     |_ |   |___ 
+		//   |___|  |_______||___| |_______||_______|
+		   
+		case "voicefx":
+			var controls = createControl("keys", "multislider", 1);
+			controls.setNumberOfSliders(4);
+			break;
 			
 		//  ___   _  _______  __   __  _______ 
 		// |   | | ||       ||  | |  ||       |
@@ -38,34 +50,76 @@ nx.onload = function() {
 		// |___| |_||_______|  |___|  |_______|
                       
 		case "keys1":
-			createControl("keys", "range", 1);
+			var controls = createControl("keys", "multislider", 1);
+			controls.setNumberOfSliders(4);
 			break;
 
 		case "keys2":
-			var controls = createControl("keys", "multislider", 1);
-			controls.setNumberOfSliders(5);
+			var controls = createControl("keys", "multislider", 2);
+			controls.setNumberOfSliders(4);
 			break;
 
 		case "keys3":
 			var controls = createControl("keys", "keyboard", 1);
 			controls.multitouch = true;
 			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w'];
+			controls.keypattern = ['w','w','w'];
 			controls.lineWidth = 20;
 			controls.init();
 			break;
 
 		case "keys4":
-			createControl("keys", "button", 3);
+			var controls = createControl("keys", "keyboard", 2);
+			controls.multitouch = true;
+			controls.octaves = 1;
+			controls.keypattern = ['w','w','w'];
+			controls.lineWidth = 20;
+			controls.init();
 			break;
 
 		case "keys5":
-			createControl("keys", "button", 2);
+			var controls = createControl("keys", "keyboard", 3);
+			controls.multitouch = true;
+			controls.octaves = 1;
+			controls.keypattern = ['w','w','w'];
+			controls.lineWidth = 20;
+			controls.init();
 			break;
 
 		case "keystilt":
 			createControl("keys", "tilt", 1);
 			break;
+
+		//GRANULAR SYNTH INTERFACE
+		// case "keys1":
+		// 	createControl("keys", "range", 1);
+		// 	break;
+
+		// case "keys2":
+		// 	var controls = createControl("keys", "multislider", 1);
+		// 	controls.setNumberOfSliders(5);
+		// 	break;
+
+		// case "keys3":
+		// 	var controls = createControl("keys", "keyboard", 1);
+		// 	controls.multitouch = true;
+		// 	controls.octaves = 1;
+		// 	controls.keypattern = ['w','w','w','w'];
+		// 	controls.lineWidth = 20;
+		// 	controls.init();
+		// 	break;
+
+		// case "keys4":
+		// 	createControl("keys", "button", 3);
+		// 	break;
+
+		// case "keys5":
+		// 	createControl("keys", "button", 2);
+		// 	break;
+
+		// case "keystilt":
+		// 	createControl("keys", "tilt", 1);
+		// 	break;
 
 
 
@@ -79,65 +133,7 @@ nx.onload = function() {
 	
 		case "bass1":
 	 	case "bassParticles":
-
-	 		var control = createControl("bass", "keyboard", 3);
-	 		control.octaves = 1;
-	 		control.multitouch = true;
-	 		control.init();
-
-	 		ldInterface = BlendParticles({
-	 			controller: control,
-	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 			numSpritesX: 40,
-	 			spriteSize: 75,
-	 			spriteNoiseAmount: .1,
-	 			spriteOpacity: .5,
-	 			spread: 0,
-	 			spreadOffset: new THREE.Vector2( 0, 0 ),
-	 			c0: new THREE.Color( 0x44CCDD),
-	 			c1: new THREE.Color( 0xCC44DD ),
-	 		});
-	 		break;
-
-
-		case "bass2":
-			var controls = createControl("bass", "multislider", 1);
-			 
-			controls.setNumberOfSliders(2);
-
-			ldInterface = MultiSliderInterface({
-				controller: controls
-			});
-
-			break;
-
-		case "bass3":
-			createControl("bass", "button", 1);
-
-			break;
-
-		case "bass4":
-
-			var controls = createControl("bass", "multislider", 3);
-			 
-			controls.setNumberOfSliders(5);
-
-			ldInterface = BlendParticles({
-				controller: controls,
-				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-				numSpritesX: 20,
-				spriteSize: 150,
-				spriteBlending: 2,
-				spriteOpacity: .45,
-				c0: new THREE.Color( 0x34FFFF ),
-				c1: new THREE.Color( 0xFF34FF ),
-			});
-
-			break;
-			  
-
-		case "bass5":
-			var controls = createControl("bass", "multislider", 4);
+	 		var controls = createControl("bass", "multislider", 4);
 			 
 			controls.setNumberOfSliders(10);
 
@@ -152,6 +148,97 @@ nx.onload = function() {
 				c1: new THREE.Color( 0xFF34FF ),
 				spriteNoiseAmount: 0
 			});
+	 		break;
+
+
+		case "bass2":
+			var control = createControl("bass", "keyboard", 1);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		controls.keypattern = ['w','w','w'];
+			controls.lineWidth = 20;
+	 		control.init();
+
+	 		ldInterface = BlendParticles({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			numSpritesX: 40,
+	 			spriteSize: 75,
+	 			spriteNoiseAmount: .1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
+	 		});
+			break;
+
+		case "bass3":
+			var control = createControl("bass", "keyboard", 2);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		controls.keypattern = ['w','w','w'];
+			controls.lineWidth = 20;
+	 		control.init();
+
+	 		ldInterface = BlendParticles({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			numSpritesX: 40,
+	 			spriteSize: 75,
+	 			spriteNoiseAmount: .1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
+	 		});
+			break;
+
+		case "bass4":
+			var control = createControl("bass", "keyboard", 3);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		controls.keypattern = ['w','w','w'];
+			controls.lineWidth = 20;
+	 		control.init();
+
+	 		ldInterface = BlendParticles({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			numSpritesX: 40,
+	 			spriteSize: 75,
+	 			spriteNoiseAmount: .1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
+	 		});
+
+			break;
+			  
+
+		case "bass5":
+			var control = createControl("bass", "keyboard", 4);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		controls.keypattern = ['w','w','w'];
+			controls.lineWidth = 20;
+	 		control.init();
+
+	 		ldInterface = BlendParticles({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			numSpritesX: 40,
+	 			spriteSize: 75,
+	 			spriteNoiseAmount: .1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
+	 		});
 
 			break;
 
@@ -309,7 +396,7 @@ var onDeviceReady = function() {
 	console.log("Watching for _osc._udp.local.");
 	ZeroConf.watch("_osc._udp.local.", function(event){
 		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld") {
+		if(event.action=="added" && event.service.name=="ld-luisa") {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
 			console.log("Found LittleDragon OSC server", host, port);

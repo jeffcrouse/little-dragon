@@ -29,6 +29,17 @@ Math.map = function (value, istart, istop, ostart, ostop, clamp) {
 	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
 }
 
+//pink dragon is in F#m + Eb
+//notes we want: 
+//o
+// D F# G# C# B F# A E
+// octave: 0
+// B A E0 F0#
+
+// —-> 4 buttons per phone
+// var tonic = "F#"
+// var scale = {'c1':, 'f#1', 'a1', 'b1', 'd2', 'f#2', 'g#2', 'c#2', 'b2', };
+// D ---- 38
 
 
 /************************
@@ -49,12 +60,76 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	var oscServer = new osc.Server(osc_port, addr);
 	oscServer.on("message", function (msg, rinfo) {
-		//console.log(msg);
+		console.log(msg);
 		try {
 			var addr = msg.shift();
 			var data = JSON.parse(msg.shift());
 			var midiMessage;
-	
+			//  __   __  _______  ___   _______  _______ 
+			// |  | |  ||       ||   | |       ||       |
+			// |  |_|  ||   _   ||   | |       ||    ___|
+			// |       ||  | |  ||   | |       ||   |___ 
+			// |       ||  |_|  ||   | |      _||    ___|
+			//  |     | |       ||   | |     |_ |   |___ 
+			//   |___|  |_______||___| |_______||_______|
+			//   
+		   	if(addr=="/voicefx_multitouch_1"){
+			   	var reverb = data.list["0"] * FULL_VELOCITY;
+				var delay = data.list["1"] * FULL_VELOCITY;
+				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
+				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+
+		   	//voice control channels start at 100
+		   	
+		   	
+		   	//Multitouch ––keeping for now just in case:
+		 //   	if(addr=="/voicefx_multitouch_1"){
+		 //   		var messages = [];
+		 //   		//delay
+			// 	if(data.touch0 && data.touch0.x > 0){
+			// 		//dry/wet
+			// 		control = 102;
+					
+			// 		//max x coming in from nexus is 0.5
+			// 		//TODO: check why 
+			// 		value = data.touch0.x * 2;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+
+			// 		//scale
+			// 		control = 103; 
+			// 		//min y coming in from nexus is 0.5
+			// 		//TODO: check why 
+			// 		value = (data.touch0.y - 0.5) * 2;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+
+			// 	} 
+
+			// 	if(data.touch1 && data.touch1.x > 0){
+			// 		//feedback
+			// 		control = 104;
+			// 		//TODO: fix range
+			// 		value = data.touch1.x;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+
+			// 		//dry/wet
+			// 		control = 105;
+			// 		value = data.touch1.y;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+					
+			// 	}
+
+			// 	for(var i = 0; i < messages.length; i++){
+			// 		output.sendMessage(messages[i]);
+			// 	}
+				
+				
+			// }
+
+			
 
 			
 			//  ___   _  _______  __   __  _______ 
@@ -152,6 +227,13 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			// | |_|   ||   _   | _____| | _____| |
 			// |_______||__| |__||_______||_______|
 	
+			else if(addr=="/bass_multislider_1") {
+				var reverb = data.list["0"] * FULL_VELOCITY;
+				var delay = data.list["1"] * FULL_VELOCITY;
+				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
+				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+			}
+
 			else if(addr=="/bass_keyboard_1") {
 				if(data.on==0) {
 					midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
@@ -160,13 +242,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
 				}
 				output.sendMessage(midiMessage);
-			}
-
-			else if(addr=="/bass_multislider_1") {
-				var reverb = data.list["0"] * FULL_VELOCITY;
-				var delay = data.list["1"] * FULL_VELOCITY;
-				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
 			}
 
 			else if(addr=="/bass_button_1") {
@@ -236,7 +311,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 var mdns = require('mdns');
 console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld"});
+var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
 ad.start();
 
 
@@ -297,13 +372,19 @@ stdin.on( 'data', function( key ){
 	}
 
 	if(key=='n') {
-		output.sendMessage([MIDI.CH2.NOTEON, 28, 1]);
+		output.sendMessage([MIDI.CH2.NOTEON, 102, 1]);
 	}
-	if(key=='r') {
-		output.sendMessage([MIDI.CH2.CONTROL, 29, 1]);
+	if(key=='a') {
+		output.sendMessage([MIDI.CH4.CONTROL, 102, 1]);
 	}
-	if(key=='p') {
-		output.sendMessage([MIDI.CH2.CONTROL, 30, 1]);
+	if(key=='s') {
+		output.sendMessage([MIDI.CH4.CONTROL, 103, 1]);
+	}
+	if(key=='d') {
+		output.sendMessage([MIDI.CH4.CONTROL, 104, 1]);
+	}
+	if(key=='f') {
+		output.sendMessage([MIDI.CH4.CONTROL, 105, 1]);
 	}
 
 	// ctrl-c ( end of text )
