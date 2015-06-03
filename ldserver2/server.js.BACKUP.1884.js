@@ -62,8 +62,106 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 	console.log("listening for osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
-	var oscClients = {};
+<<<<<<< HEAD
+	oscServer.on("message", function (msg, rinfo) {
+		console.log(msg);
+		try {
+			var addr = msg.shift();
+			var data = JSON.parse(msg.shift());
+			var midiMessage;
+			//  __   __  _______  ___   _______  _______ 
+			// |  | |  ||       ||   | |       ||       |
+			// |  |_|  ||   _   ||   | |       ||    ___|
+			// |       ||  | |  ||   | |       ||   |___ 
+			// |       ||  |_|  ||   | |      _||    ___|
+			//  |     | |       ||   | |     |_ |   |___ 
+			//   |___|  |_______||___| |_______||_______|
+			//   
+		   	if(addr=="/voicefx_multitouch_1"){
+			   	var reverb = data.list["0"] * FULL_VELOCITY;
+				var delay = data.list["1"] * FULL_VELOCITY;
+				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
+				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
 
+		   	//voice control channels start at 100
+		   	
+		   	
+		   	//Multitouch ––keeping for now just in case:
+		 //   	if(addr=="/voicefx_multitouch_1"){
+		 //   		var messages = [];
+		 //   		//delay
+			// 	if(data.touch0 && data.touch0.x > 0){
+			// 		//dry/wet
+			// 		control = 102;
+					
+			// 		//max x coming in from nexus is 0.5
+			// 		//TODO: check why 
+			// 		value = data.touch0.x * 2;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+
+			// 		//scale
+			// 		control = 103; 
+			// 		//min y coming in from nexus is 0.5
+			// 		//TODO: check why 
+			// 		value = (data.touch0.y - 0.5) * 2;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+
+			// 	} 
+
+			// 	if(data.touch1 && data.touch1.x > 0){
+			// 		//feedback
+			// 		control = 104;
+			// 		//TODO: fix range
+			// 		value = data.touch1.x;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+
+			// 		//dry/wet
+			// 		control = 105;
+			// 		value = data.touch1.y;
+			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
+			// 		messages.push(midiMessage);
+					
+			// 	}
+
+			// 	for(var i = 0; i < messages.length; i++){
+			// 		output.sendMessage(messages[i]);
+			// 	}
+				
+				
+			// }
+
+			
+
+			
+			//  ___   _  _______  __   __  _______ 
+			// |   | | ||       ||  | |  ||       |
+			// |   |_| ||    ___||  |_|  ||  _____|
+			// |      _||   |___ |       || |_____ 
+			// |     |_ |    ___||_     _||_____  |
+			// |    _  ||   |___   |   |   _____| |
+			// |___| |_||_______|  |___|  |_______|
+
+			if(addr=="/keys_button_1"){
+				if(data.press == 1) 
+					midiMessage = [MIDI.CH1.NOTEON, 64, 127];
+				else 
+					midiMessage = [MIDI.CH1.NOTEON, 64, 0];//note off
+				output.sendMessage(midiMessage);
+			}
+
+			else if(addr=="/keys_button_2"){
+				if(data.press == 1) 
+					midiMessage = [MIDI.CH1.NOTEON, 66, 127];
+				else 
+					midiMessage = [MIDI.CH1.NOTEON, 66, 0];//note off
+				output.sendMessage(midiMessage);
+			}
+=======
+	var oscClients = {};
+>>>>>>> 39f0a8e419b0bbb7cea2773681c5eb2c704aa4ce
 
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
@@ -154,6 +252,49 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			else if(slider == "1"){//decay
 				control = 26;
 			}
+<<<<<<< HEAD
+
+
+
+			//  _______  _______  _______  _______ 
+			// |  _    ||   _   ||       ||       |
+			// | |_|   ||  |_|  ||  _____||  _____|
+			// |       ||       || |_____ | |_____ 
+			// |  _   | |       ||_____  ||_____  |
+			// | |_|   ||   _   | _____| | _____| |
+			// |_______||__| |__||_______||_______|
+	
+			else if(addr=="/bass_multislider_1") {
+				var reverb = data.list["0"] * FULL_VELOCITY;
+				var delay = data.list["1"] * FULL_VELOCITY;
+				output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
+				output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+			}
+
+			else if(addr=="/bass_keyboard_1") {
+				if(data.on==0) {
+					midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
+				} else {
+					var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
+					midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
+				}
+				output.sendMessage(midiMessage);
+			}
+
+			else if(addr=="/bass_button_1") {
+				if(data.press==1) {
+					console.log("Record!");
+					// On and then Off toggles recording on
+					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+				} else {
+					console.log("Stop recording")
+
+					// On and then off toggles it off again.
+					output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+					output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+				}
+=======
 			else if(slider == "2"){//sustain
 				control = 27;
 			}
@@ -180,38 +321,17 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// | |_|   ||   _   | _____| | _____| |
 		// |_______||__| |__||_______||_______|
 
-		else if(addr=="/bass_multislider_1") {
-			var reverb = data.list["0"] * FULL_VELOCITY;
-			var delay = data.list["1"] * FULL_VELOCITY;
-			output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-			output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
-		}
-
 		else if(addr=="/bass_keyboard_1") {
 			if(data.on==0) {
 				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
 			} else {
 				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
 				midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
+>>>>>>> 39f0a8e419b0bbb7cea2773681c5eb2c704aa4ce
 			}
 			output.sendMessage(midiMessage);
 		}
 
-		else if(addr=="/bass_button_1") {
-			if(data.press==1) {
-				console.log("Record!");
-				// On and then Off toggles recording on
-				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
-			} else {
-				console.log("Stop recording")
-
-				// On and then off toggles it off again.
-				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
-			}
-
-		}
 		else if(addr=="/bass_multislider_1") {
 			var reverb = data.list["0"] * FULL_VELOCITY;
 			var delay = data.list["1"] * FULL_VELOCITY;
@@ -237,7 +357,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var tilt = Math.map(data.y, 0, 0.3, 127, 0, true);
 			output.sendMessage([MIDI.CH2.CONTROL, 31, tilt]);
 		}
-	
+
 
 		//  ______   ______    __   __  __   __  _______ 
 		// |      | |    _ |  |  | |  ||  |_|  ||       |
@@ -258,61 +378,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		//  |     | |       ||     |_ |   _   ||       | _____| |
 		//   |___|  |_______||_______||__| |__||_______||_______|
 
-		// if(addr=="/voicefx_multitouch_1"){
-		// 	   	var reverb = data.list["0"] * FULL_VELOCITY;
-		// 		var delay = data.list["1"] * FULL_VELOCITY;
-		// 		output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-		// 		output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
-
-		   	//voice control channels start at 100
-		   	
-		   	
-		   	//Multitouch ––keeping for now just in case:
-		 //   	if(addr=="/voicefx_multitouch_1"){
-		 //   		var messages = [];
-		 //   		//delay
-			// 	if(data.touch0 && data.touch0.x > 0){
-			// 		//dry/wet
-			// 		control = 102;
-					
-			// 		//max x coming in from nexus is 0.5
-			// 		//TODO: check why 
-			// 		value = data.touch0.x * 2;
-			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
-			// 		messages.push(midiMessage);
-
-			// 		//scale
-			// 		control = 103; 
-			// 		//min y coming in from nexus is 0.5
-			// 		//TODO: check why 
-			// 		value = (data.touch0.y - 0.5) * 2;
-			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
-			// 		messages.push(midiMessage);
-
-			// 	} 
-
-			// 	if(data.touch1 && data.touch1.x > 0){
-			// 		//feedback
-			// 		control = 104;
-			// 		//TODO: fix range
-			// 		value = data.touch1.x;
-			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
-			// 		messages.push(midiMessage);
-
-			// 		//dry/wet
-			// 		control = 105;
-			// 		value = data.touch1.y;
-			// 		midiMessage = [MIDI.CH4.CONTROL, control, value * 127];
-			// 		messages.push(midiMessage);
-					
-			// 	}
-
-			// 	for(var i = 0; i < messages.length; i++){
-			// 		output.sendMessage(messages[i]);
-			// 	}
-				
-				
-			// }
 	});
 });
 

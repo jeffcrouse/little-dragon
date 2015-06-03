@@ -1,22 +1,9 @@
-/*
-var loop = function() {
-	navigator.vibrate(100);
-	osc.send("/test", [1, 2, 3, 4, new Date()]);
-	setTimeout(loop, 1000);
-}
-loop();
-*/
 
-var osc = null;				// The OSC sender object
-var ldInterface = null;		// WebGL layer (?)
+var oscSender = null;					// The OSC sender object (send to the server)
+var oscListener = null;					// Receive OSC from the server
+var myIP = null;
+var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
-var lighten = function(color, percent) {
-    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
-}
-
-var px = function(num){ return num+"px"; }
-
 
 nx.onload = function() {
 
@@ -69,12 +56,14 @@ nx.onload = function() {
 			break;
 
 		case "keys4":
+
 			var controls = createControl("keys", "keyboard", 2);
 			controls.multitouch = true;
 			controls.octaves = 1;
 			controls.keypattern = ['w','w','w'];
 			controls.lineWidth = 20;
 			controls.init();
+
 			break;
 
 		case "keys5":
@@ -346,7 +335,15 @@ nx.onload = function() {
 
 }
 
-
+// Round all of the floats in an object (for optimized network sending)
+function roundFloats(obj) {
+    for (var k in obj) {
+        if (typeof obj[k] == "object" && obj[k] !== null) 
+        	 roundFloats( obj[k] ); // recurse objects
+        else if(typeof obj[k] == 'number' && obj[k] % 1 != 0)
+        	obj[k] = parseFloat( obj[k].toFixed(3) );
+    }
+}
 
 function createControl(instrument, type, number, options){
 	var id = [instrument, type, number].join("_");
@@ -354,14 +351,20 @@ function createControl(instrument, type, number, options){
 	var settings = $.extend(defaults, options);
 
 	var widget = nx.add(type, settings).on('*', function(data) {
-		// console.log(data);
+		roundFloats(data);
+
 		if(ldInterface){
 			var eventObject = {"event":id, "data":data};
 			ldInterface.widgetEvent( eventObject );
 		}
-		if(osc) {
+
+		if(oscSender) {
 			var addr = "/" + id;
-			osc.send(addr, JSON.stringify(data));
+			console.log(addr, JSON.stringify(data));
+			oscSender.send(addr, JSON.stringify(data), null,
+				function(err){ console.error( "oscSender.send", err ); } );
+		} else {
+			console.warn("oscSender not yet constructed!")
 		}
 	});
 	// widget.colors.fill("#F0F0F0");
@@ -375,8 +378,61 @@ function createControl(instrument, type, number, options){
 var onDeviceReady = function() {
 	// Print out some useful info
 	console.log('deviceready');
-	console.log( navigator.userAgent );
-	console.log( device.uuid );
+	console.log( "navigator.userAgent", navigator.userAgent );
+	console.log( "device.uuid", device.uuid );
+
+	// Called when device is paused
+	var onPause = function(e) {
+		if(oscSender) {
+			console.log("/leave", JSON.stringify({"ip": myIP, "iface": iface}));
+			oscSender.send("/leave", JSON.stringify({"ip": myIP, "iface": iface}));
+		}
+	}
+
+	// Called when device is resumed
+	var onResume = function(e) {
+		if(oscSender) {
+			console.log("/join", JSON.stringify({"ip": myIP, "iface": iface}));
+			oscSender.send("/join", JSON.stringify({"ip": myIP, "iface": iface}));
+		}
+	}
+
+	// Called when ZeroConf gets a notification of an available service 
+	var onZeroConf = function(event){
+		console.log("ZeroConf service", event);
+
+		if(event.action=="added" && event.service.addresses.length && 
+			event.service.name=="ld-luisa" && oscSender==null) {
+			var host =  event.service.addresses[0];
+			var port =  event.service.port;
+
+			// Construct the osc
+			console.log("Found LittleDragon OSC server", host, port);
+			oscSender = new window.OSCSender(host, port);
+
+			// Now that we have an OSCSender, get the IP address of the device 
+			// so that we can send a "/join" message to the server
+			networkinterface.getIPAddress(onIPAddress);
+		}
+	}
+
+	// Called when networkinterface gets the IP address of the device.
+	// Announce to the server that we are here, 
+	// also set up a listener to listen for messages from the server
+	var onIPAddress = function (ip) { 
+		myIP = ip;
+		console.log("myIP", myIP);
+
+		onResume();
+
+		oscListener = new window.OSCListener(3333);
+		var onSuccess =  function(){ console.log("listening for OSC on port", 3333); };
+		var onError = function(){ console.error("failed to open OSC port for listening"); };
+		oscListener.startListening(onSuccess, onError);
+		oscListener.on("/tick", function(data){
+			console.log("/tick", data);
+		});
+	}
 
 	// Disable as many buttons as possible.
 	var _stop = function(e){ e.preventDefault(); };
@@ -385,24 +441,14 @@ var onDeviceReady = function() {
 	document.addEventListener("searchbutton", _stop, false);
 	document.addEventListener("startcallbutton", _stop, false);
 	document.addEventListener("endcallbutton", _stop, false);
+	document.addEventListener("pause", onPause, false);
+	document.addEventListener("resume", onResume, false);
 
-
-	// Keep the phone awake
-	var onSuccess = function(){ console.log("!! We are awake!"); }
-	var onError = function(){ console.error("!! Couldn't keep device awake!"); }
-	window.plugins.insomnia.keepAwake(onSuccess, onError);
 
 	// Listen for the OSC server to advertise itself
-	console.log("Watching for _osc._udp.local.");
-	ZeroConf.watch("_osc._udp.local.", function(event){
-		console.log("ZeroConf service", event);
-		if(event.action=="added" && event.service.name=="ld-luisa") {
-			var host =  event.service.addresses[0];
-			var port =  event.service.port;
-			console.log("Found LittleDragon OSC server", host, port);
-			osc = new window.OSCSender(host, port);
-		}
-	});
+	var zeroConfAddr = "_osc._udp.local.";
+	console.log("Listen for zeroconf service", zeroConfAddr);
+	ZeroConf.watch(zeroConfAddr, onZeroConf);
 }
 document.addEventListener('deviceready', onDeviceReady, false);
 
