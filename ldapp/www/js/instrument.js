@@ -271,7 +271,7 @@ function createControl(instrument, type, number, options){
 
 		if(oscSender) {
 			var addr = "/" + id;
-			//console.log(addr, JSON.stringify(data));
+			console.log(addr, JSON.stringify(data));
 			oscSender.send(addr, JSON.stringify(data), null,
 				function(err){ console.error( "oscSender.send", err ); } );
 		} else {

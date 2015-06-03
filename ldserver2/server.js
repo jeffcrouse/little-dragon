@@ -1,6 +1,7 @@
 var path = require('path');
 var util = require('util');
 var express = require('express');
+var bodyParser = require('body-parser');
 var osc = require('node-osc');
 var midi = require('midi');
 var oscClient = require("./oscClient");
@@ -19,8 +20,8 @@ var MIDI = {
 	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 },	// DRUMS
 	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 }	// VOCALS
 }
-
 var FULL_VELOCITY = 127;
+
 Math.clamp = function(num, min, max) {
 	if(min>max) console.warn("Math.clamp: min > max");
 	return Math.min(Math.max(num, min), max);
@@ -44,9 +45,10 @@ var http_port = 3000;
 var http_addr = null;
 var osc_port = 3333;
 require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
+
 	http_addr = util.format("http://%s:%s", addr, http_port);
 	console.log('http_addr', http_addr);
-	console.log("osc", addr, osc_port);
+	console.log("listening for osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
 	var oscClients = {};
@@ -58,6 +60,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		var data = JSON.parse(msg.shift());
 		var midiMessage;
 		
+		if(io) io.sockets.emit(addr, data);
+
 
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
@@ -255,21 +259,37 @@ ad.start();
 ███████╗██╔╝ ██╗██║     ██║  ██║███████╗███████║███████║
 ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 ********************************************************/
+// This is where the projector visuals will be served!
 
-// Just keeping this around in case we want the phones to load some amount
-// of information from the server 
 
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function(req, res) {
+server.listen(http_port);
+
+app.get('/', function (req, res) {
 	var data = {"title": 'Little Dragon Server'};
 	res.render('index', data);
 });
 
-app.listen(http_port);
+app.get('/projector/:num', function(req, res) {
+	var data = {"title": 'Little Dragon Projection', 'num': req.params.num};
+	res.render('projector', data);
+});
+
+io.on('connection', function (socket) {
+	socket.emit('hello', { hello: 'world' });	
+	// socket.on('my other event', function (data) {
+	// 	console.log(data);
+	// });
+});
 
 
 
@@ -288,6 +308,7 @@ app.listen(http_port);
 * This makes it easier to do the mapping in Ableton
 * http://stackoverflow.com/questions/5006821/nodejs-how-to-read-keystrokes-from-stdin
 */
+/*
 var stdin = process.stdin;
 stdin.setRawMode( true );
 stdin.resume();
@@ -320,6 +341,39 @@ stdin.on( 'data', function( key ){
 	//process.stdout.write( key );
 });
 
+*/
+
+
+/**********************************************
+██╗     ██╗ ██████╗ ██╗  ██╗████████╗███████╗
+██║     ██║██╔════╝ ██║  ██║╚══██╔══╝██╔════╝
+██║     ██║██║  ███╗███████║   ██║   ███████╗
+██║     ██║██║   ██║██╔══██║   ██║   ╚════██║
+███████╗██║╚██████╔╝██║  ██║   ██║   ███████║
+╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+**********************************************/
+
+/*
+var OPC = require("./opc");
+var client = new OPC('localhost', 7890);
+function draw() {
+    var millis = new Date().getTime();
+
+    for (var pixel = 0; pixel < 512; pixel++)
+    {
+        var t = pixel * 0.2 + millis * 0.002;
+        var red = 128 + 96 * Math.sin(t);
+        var green = 128 + 96 * Math.sin(t + 0.1);
+        var blue = 128 + 96 * Math.sin(t + 0.3);
+
+        client.setPixel(pixel, red, green, blue);
+    }
+    client.writePixels();
+}
+
+setInterval(draw, 30);
+*/
+
 
 
 
@@ -331,7 +385,7 @@ stdin.on( 'data', function( key ){
 ██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
 ╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
 *******************************************************************/
-
+/*
 var input = new midi.input();
 
 var devices = {};
@@ -340,6 +394,7 @@ for(var i=0; i<input.getPortCount(); i++) {
 	devices[name] = i;
 	console.log(i, name);
 }
+
 if("USB Uno MIDI Interface" in devices)
 {
 	input.openPort(devices["USB Uno MIDI Interface"]);
@@ -353,9 +408,7 @@ if("USB Uno MIDI Interface" in devices)
 		console.log(func, note, vel)
 	});
 }
-	
-
-
+*/
 
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
