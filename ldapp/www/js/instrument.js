@@ -313,7 +313,7 @@ var onDeviceReady = function() {
 		console.log("ZeroConf service", event);
 
 		if(event.action=="added" && event.service.addresses.length && 
-			event.service.name=="ld-jeff" && oscSender==null) {
+			event.service.name=="ld" && oscSender==null) {
 			var host =  event.service.addresses[0];
 			var port =  event.service.port;
 

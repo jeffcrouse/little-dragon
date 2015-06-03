@@ -244,7 +244,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 var mdns = require('mdns');
 console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-jeff"});
+var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld"});
 ad.start();
 
 
