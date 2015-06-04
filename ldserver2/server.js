@@ -40,8 +40,11 @@ Math.map = function (value, istart, istop, ostart, ostop, clamp) {
 
 // —-> 4 buttons per phone
 // var tonic = "F#"
-// var scale = {'c1':, 'f#1', 'a1', 'b1', 'd2', 'f#2', 'g#2', 'c#2', 'b2', };
+// var scale = {'e1':16; 'f#1', 'a1', 'b1', 'd2', 'f#2', 'g#2', 'b3', 'c#3', , };
 // D ---- 38
+// 
+
+var scale = [16+12, 18+12, 21+12, 23+12, 25+12, 26+12, 28+12, 30+12, 32+12, 35+12, 37+12, 16+12];
 
 
 /************************
@@ -185,53 +188,93 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var delay = data.list["1"] * FULL_VELOCITY;
 			output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
 			output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+
+			//RECORD AND PLAY BACK EXAMPLE
+			// if(data.press==1) {
+			// 	console.log("Record!");
+			// 	// On and then Off toggles recording on
+			// 	output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+			// 	output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+			// } else {
+			// 	console.log("Stop recording")
+
+			// 	// On and then off toggles it off again.
+			// 	output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
+			// 	output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+			// }
+			// 
+			// REVERB AND DELAY
+			// var reverb = data.list["0"] * FULL_VELOCITY;
+			// var delay = data.list["1"] * FULL_VELOCITY;
+			// output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
+			// output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
 		}
 
 		else if(addr=="/bass_keyboard_1") {
 			if(data.on==0) {
 				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
 			} else {
+				var note;
+				if(data.note == 48)
+					note = scale[0];
+				else if(data.note == 49)
+					note = scale[1];
+				else if(data.note == 50)
+					note = scale[2];
+
 				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-				midiMessage = [MIDI.CH2.NOTEON, data.note, velocity];
+				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
 			}
 			output.sendMessage(midiMessage);
 		}
 
-		else if(addr=="/bass_button_1") {
-			if(data.press==1) {
-				console.log("Record!");
-				// On and then Off toggles recording on
-				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+		else if(addr=="/bass_keyboard_2") {
+			if(data.on==0) {
+				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
 			} else {
-				console.log("Stop recording")
-
-				// On and then off toggles it off again.
-				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+				if(data.note == 48)
+					note = scale[3];
+				else if(data.note == 49)
+					note = scale[4];
+				else if(data.note == 50)
+					note = scale[5];
+				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
+				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
 			}
+			output.sendMessage(midiMessage);
+			
 
 		}
-		else if(addr=="/bass_multislider_1") {
-			var reverb = data.list["0"] * FULL_VELOCITY;
-			var delay = data.list["1"] * FULL_VELOCITY;
-			output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-			output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+		else if(addr=="/bass_keyboard_3") {
+			if(data.on==0) {
+				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
+			} else {
+				if(data.note == 48)
+					note = scale[6];
+				else if(data.note == 49)
+					note = scale[7];
+				else if(data.note == 50)
+					note = scale[8];
+				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
+				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
+			}
+			output.sendMessage(midiMessage);
 		}
 
-		else if(addr=="/bass_button_1") {
-			if(data.press==1) {
-				console.log("Record!");
-				// On and then Off toggles recording on
-				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+		else if(addr=="/bass_keyboard_4") {
+			if(data.on==0) {
+				midiMessage = [MIDI.CH2.NOTEOFF, note, 0];
 			} else {
-				console.log("Stop recording")
-
-				// On and then off toggles it off again.
-				output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-				output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
+				if(data.note == 48)
+					note = scale[9];
+				else if(data.note == 49)
+					note = scale[10];
+				else if(data.note == 50)
+					note = scale[11];
+				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
+				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
 			}
+			output.sendMessage(midiMessage);
 		}
 		else if(addr=="/bass_tilt_1") {
 			var tilt = Math.map(data.y, 0, 0.3, 127, 0, true);

@@ -141,7 +141,6 @@ nx.onload = function() {
 
 
 		case "bass2":
-
 			var controls = createControl("bass", "keyboard", 1);
 			controls.multitouch = true;
 			controls.octaves = 1;
