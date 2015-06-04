@@ -192,6 +192,22 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
+<<<<<<< HEAD
+			var controls = createControl("bass", "multislider", 3);
+			 
+			controls.setNumberOfSliders(5);
+
+			ldInterface = BlendParticles({
+				controller: controls,
+				spritePath: "textures/hexagon.png", 
+				numSpritesX: 20,
+				spriteSize: 150,
+				spriteBlending: 2,
+				spriteOpacity: .45,
+				c0: new THREE.Color( 0x34FFFF ),
+				c1: new THREE.Color( 0xFF34FF ),
+			});
+=======
 	 		ldInterface = BlendParticles({
 	 			controller: control,
 	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
@@ -204,6 +220,7 @@ nx.onload = function() {
 	 			c0: new THREE.Color( 0x44CCDD),
 	 			c1: new THREE.Color( 0xCC44DD ),
 	 		});
+>>>>>>> origin/master
 
 			break;
 			  
