@@ -36,14 +36,14 @@ for(var i=0; i<pixel_count_top; i++) {
 
 for(var i=0; i<pixel_count_inside; i++) {
 	var x = Math.map(i, 0, pixel_count_inside, 0, 1, true);
-	var y = 0;
+	var y = 0.5;
 	model[pixel] = { point: [x, y, 0] };
 	pixel++;
 }
 
 for(var i=0; i<pixel_count_inside; i++) {
 	var x = Math.map(i, 0, pixel_count_inside, 0, 1, true);
-	var y = 0;
+	var y = 1;
 	model[pixel] = { point: [x, y, 0] };
 	pixel++;
 }
