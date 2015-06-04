@@ -74,7 +74,7 @@ nx.onload = function() {
 
 	 		ldInterface = BlendParticles({
 	 			controller: control,
-	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			spritePath: "textures/hexagon.png", 
 	 			numSpritesX: 40,
 	 			spriteSize: 75,
 	 			spriteNoiseAmount: .1,
@@ -111,7 +111,7 @@ nx.onload = function() {
 
 			ldInterface = BlendParticles({
 				controller: controls,
-				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+				spritePath: "textures/hexagon.png", 
 				numSpritesX: 20,
 				spriteSize: 150,
 				spriteBlending: 2,
@@ -163,7 +163,7 @@ nx.onload = function() {
 
 		   ldInterface = BlendParticles({
 		     controller: control,
-		     spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+		     spritePath: "textures/hexagon.png", 
 		     numSpritesX: 30,
 		     spriteSize: 150,
 		     spriteBlending: 2,
@@ -194,7 +194,7 @@ nx.onload = function() {
 
 			ldInterface = BlendParticles({
 				controller: controls,
-				spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+				spritePath: "textures/hexagon.png", 
 				numSpritesX: 50,
 				spriteSize: 75,
 				spriteBlending: 2,

@@ -3,8 +3,6 @@
 
 function BlendParticles( options )
 {
-	console.log( "holy fucking shit" );
-
 	var WIDGET_TYPE = undefined;
 
 	var WIDGETS = {
@@ -36,12 +34,10 @@ function BlendParticles( options )
 
 	var NUM_SLIDERS = controller.sliders || 0;
 
-	var WIDTH = 1280; // controller.width;
-	var HEIGHT = 720; // controller.height;
+	var WIDTH = options.width || 1280; 
+	var HEIGHT = options.height || 720; 
 	var ASPECT_RATIO = WIDTH / HEIGHT;
-
-	var HALF_WIDTH = WIDTH * .5;
-	var HALF_HEIGHT = HEIGHT * .5;
+	var HALF_WIDTH = WIDTH * .5, HALF_HEIGHT = HEIGHT * .5;
 
 	var stats = undefined;
 
