@@ -2,6 +2,7 @@
 
 function MultiSliderWrapper( options )
 {
+	var scope = this;
 
 	var randf = THREE.Math.randFloat;
 	var mapLinear = THREE.Math.mapLinear;
@@ -23,8 +24,8 @@ function MultiSliderWrapper( options )
 
 	var NUM_SLIDERS = controller.sliders;
 
-	var WIDTH = controller.width;
-	var HEIGHT = controller.height;
+	var WIDTH = 1280; // controller.width;
+	var HEIGHT = 720; // controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
 	var HALF_WIDTH = WIDTH * .5;
@@ -74,10 +75,17 @@ function MultiSliderWrapper( options )
 		m.scale.z = 100
 		scene.add( m );
 
-		var rgb = v3(randf(-1, 1), randf(-1, 1), randf(-1, 1) ).normalize().multiplyScalar( 1.2 );
-		m.material.color.setRGB( Math.abs(rgb.x), Math.abs(rgb.y), Math.abs(rgb.z) );
+		// var rgb = v3(randf(-1, 1), randf(-1, 1), randf(-1, 1) ).normalize().multiplyScalar( 1.2 );
+		// m.material.color.setRGB( Math.abs(rgb.x), Math.abs(rgb.y), Math.abs(rgb.z) );
 
 		sliders[i] = m;
+
+		if( i%2 )
+		{
+			m.material.color.r *= .75;
+			m.material.color.g *= .75;
+			m.material.color.b *= .75;
+		} 
 	}
 
 
@@ -98,11 +106,18 @@ function MultiSliderWrapper( options )
 		}
 	}
 
-	function handleInput( e )
+
+	scope.onHandleInput = function() {
+		// console.log( "scope.onHandleInput" );
+	}
+
+
+	function handleInput( data )
 	{
-		// console.log( e );
-		for( var i in e.data.list ) {
-			setSliderHieght( i, e.data.list[i] );
+		scope.onHandleInput( data );
+
+		for( var i in data.list ) {
+			setSliderHieght( i, data.list[i] );
 		}
 	}
 
@@ -114,8 +129,7 @@ function MultiSliderWrapper( options )
 		setSliderHieght: setSliderHieght,
 		c0: c0,
 		c1: c1,
-		handleInput: handleInput
-
-		
+		handleInput: handleInput,
+		scope: scope
 	}
 }

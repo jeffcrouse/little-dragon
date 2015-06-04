@@ -372,7 +372,7 @@ manager.prototype.setLabels = function(onoff) {
 manager.prototype.blockMove = function(e) {
   if (e.target.tagName == 'CANVAS') {
      e.preventDefault();
-     e.stopPropogation();
+     //e.stopPropogation();
   }
 }
 },{"../utils/timing":7,"../utils/transmit":8,"../widgets":16,"events":37,"util":41}],3:[function(require,module,exports){
@@ -2725,7 +2725,7 @@ keyboard.prototype.draw = function() {
 
 	with (this.context) {
 		strokeStyle = this.colors.border;
-		lineWidth = 1;
+		lineWidth = this.lineWidth;
 			
 		for (var i in this.wkeys) {
 			fillStyle = this.wkeys[i].on ? this.colors.border : this.colors.fill
@@ -2811,7 +2811,10 @@ keyboard.prototype.whichKey = function (x, y){
 }
 
 keyboard.prototype.click = function(e) {
+  // JRC -- disabled because it doesn't work!
+  /*
 	if (this.clickPos.touches.length>1 || this.multitouch) {
+
 		if (this.clickPos.touches.length>=2 && this.oneleft) {
 			this.oneleft = false;
 		}
@@ -2829,9 +2832,11 @@ keyboard.prototype.click = function(e) {
 		this.fingers[0].key = this.whichKey(this.clickPos.x, this.clickPos.y);
 		this.toggle(this.fingers[0].key)
 	}
+  */
 }
 
 keyboard.prototype.move = function(e) {
+  //console.log("keyboard.prototype.move");
 	var debug = document.getElementById("debug");
 	if (this.clickPos.touches.length>1 || this.multitouch) {
 		this.keysinuse = new Array();
@@ -2860,6 +2865,7 @@ keyboard.prototype.move = function(e) {
 }
 
 keyboard.prototype.release = function(e) {
+  //console.log("keyboard.prototype.release");
 	if (this.clickPos.touches.length>1 || this.multitouch) {
 		this.keysinuse = new Array();
 		for (var j=0;j<this.clickPos.touches.length;j++) { 

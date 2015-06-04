@@ -4,6 +4,9 @@
 # Audio files
 *.aif
 
+# Live clip files
+*.asd
+
 .DS_Store
 
 .sublime-project
