@@ -61,10 +61,10 @@ var first_opc_pixel = 0;
 // This should probably always be 0 (??)
 var first_output_pixel = 0; 
 
-// How many pixels total?
-var pixel_count = 512;
 
 
+var pixel_count_top = 345;
+var pixel_count_inside = 305; // number of pixels in a single strip inside the structure
 
 // 
 //	Acrylic top
@@ -75,34 +75,32 @@ var acrylic = {
 	"serial": "FFFFFFFFFFFF00180017200214134D44",
 	"led": false,
 	"map": [
-		[ channel, first_opc_pixel, first_output_pixel, pixel_count ]
+		[ channel, first_opc_pixel, first_output_pixel, pixel_count_top ]
 	]
 };
-
+first_opc_pixel+=pixel_count_top;
 
 
 // 
 //	Up-facing ring
 //
-first_opc_pixel+=pixel_count;
-pixel_count = 512;	// change this to the actual number of pixels
+
 var up_facing1 = {
 	"type": "fadecandy",
 	"serial": "FFFFFFFFFFFF00180017200214134D44",
 	"led": false,
 	"map": [
-		[ channel, first_opc_pixel, first_output_pixel, pixel_count ]
+		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
 	]
 };
+first_opc_pixel+=pixel_count_inside;
 
-first_opc_pixel+=pixel_count;
-pixel_count = 512;	// change this to the actual number of pixels
 var up_facing2 = {
 	"type": "fadecandy",
 	"serial": "FFFFFFFFFFFF00180017200214134D44",
 	"led": false,
 	"map": [
-		[ channel, first_opc_pixel, first_output_pixel, pixel_count ]
+		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
 	]
 };
 
@@ -111,30 +109,28 @@ var up_facing2 = {
 // 
 //	Down-facing ring
 //
-first_opc_pixel+=pixel_count;
-pixel_count = 512; 		// change this to the actual number of pixels
+first_opc_pixel+=pixel_count_inside;
+
 var down_facing1 = {
 	"type": "fadecandy",
 	"serial": "FFFFFFFFFFFF00180017200214134D44",
 	"led": false,
 	"map": [
-		[ channel, first_opc_pixel, first_output_pixel, pixel_count ]
+		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
 	]
 };
 
 
-first_opc_pixel+=pixel_count;
-pixel_count = 512; 		// change this to the actual number of pixels
+first_opc_pixel+=pixel_count_inside;
+
 var down_facing2 = {
 	"type": "fadecandy",
 	"serial": "FFFFFFFFFFFF00180017200214134D44",
 	"led": false,
 	"map": [
-		[ channel, first_opc_pixel, first_output_pixel, pixel_count ]
+		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
 	]
 };
-
-
 
 
 
@@ -146,7 +142,7 @@ settings.devices.push( down_facing2 );
 
 
 var text = JSON.stringify(settings, null, 4);
-fs.writeFile("fadecandy.json", text, function(err) {
+fs.writeFile("config.json", text, function(err) {
     if(err) {
 		return console.log(err);
     }
