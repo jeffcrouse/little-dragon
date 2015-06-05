@@ -36,7 +36,9 @@ console.log( 'params', params );
 
 			time: {type: 'f', value: 0},
 
-			noiseScale: {type: 'f', value: params.noiseScale || 0 },
+			noiseScale: {type: 'f', value: params.noiseScale || 0.005 },
+
+			noiseAmount: {type: 'f', value: params.noiseAmount || 1 },
 
 			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 }
 
@@ -50,6 +52,7 @@ console.log( 'params', params );
 		'uniform float scale;',
 		'uniform float time;',
 		'uniform float noiseScale;',
+		'uniform float noiseAmount;',
 		'uniform float spriteRotation;',
 
 		'uniform sampler2D pMap;',
@@ -117,7 +120,7 @@ console.log( 'params', params );
 		'	vAlpha = 1.;//pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
 
 		'	vec4 q;',
-		'	float angle = d * spriteRotation;',
+		'	float angle = d * spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) );',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',

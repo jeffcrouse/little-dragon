@@ -25,6 +25,12 @@ function TouchLines( options )
 
 	var spriteRotation = getQueryVariable("rotation") || options.spriteRotation || Math.PI;
 
+	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
+
+	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
+
+	var timeScale = getQueryVariable("timeScale") || options.timeScale || 1;
+
 	var spriteSize = pSize || options.spriteSize || 100;
 
 	var spread = options.spread !== undefined ? options.spread : 0;
@@ -265,6 +271,7 @@ function TouchLines( options )
 		return g;
 	}
 
+	var linesGeometry, linesMat;
 	function setup()
 	{
 
@@ -278,13 +285,15 @@ function TouchLines( options )
 
 
 		//	LINES
-		var linesGeometry = getLineGeometry();
-		var linesMat = new LinesMaterial({
+		linesGeometry = getLineGeometry();
+		linesMat = new LinesMaterial({
 			pMap: widget.renderTarget || debugImage,
 			lineLength: lineLength,
 			lineWidth: lineWidth,
 			spriteRotation: spriteRotation,
-			colorRamp: colorRamp
+			colorRamp: colorRamp,
+			noiseScale: noiseScale,
+			noiseAmount: noiseAmount
 		});
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
@@ -297,6 +306,10 @@ function TouchLines( options )
 		if(stats)	stats.update();
 
 		var elapsedTime = clock.getElapsedTime();
+
+		if(linesMat) {
+			linesMat.uniforms.time.value = elapsedTime * timeScale;
+		}
 
 		// // points.material.uniforms.time.value += .003;
 		// // 
