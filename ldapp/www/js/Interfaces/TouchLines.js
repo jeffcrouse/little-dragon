@@ -27,6 +27,8 @@ function TouchLines( options )
 
 	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
 
+	var timeScale = getQueryVariable("timeScale") || options.timeScale || .5;
+
 	var spriteSize = pSize || options.spriteSize || 100;
 
 	var spread = options.spread !== undefined ? options.spread : 0;
@@ -303,7 +305,7 @@ function TouchLines( options )
 		var elapsedTime = clock.getElapsedTime();
 
 		if(linesMat) {
-			linesMat.uniforms.time.value = elapsedTime * .5;
+			linesMat.uniforms.time.value = elapsedTime * timeScale;
 		}
 
 		// // points.material.uniforms.time.value += .003;
