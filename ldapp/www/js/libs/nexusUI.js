@@ -2833,10 +2833,39 @@ keyboard.prototype.click = function(e) {
 		this.toggle(this.fingers[0].key)
 	}
   */
+  console.log("keyboard.prototype.click");
+
+  // START Pasted in from keyboard.prototype.move -- JRC
+  var debug = document.getElementById("debug");
+  if (this.clickPos.touches.length>1 || this.multitouch) {
+    this.keysinuse = new Array();
+    for (var j=0;j<this.clickPos.touches.length;j++) {
+      this.fingers[j] = {
+        key: this.whichKey(this.clickPos.touches[j].x, this.clickPos.touches[j].y)
+      }
+      if (!this.fingers[j].key.on) {
+        this.toggle(this.fingers[j].key, true)
+      }
+      this.keysinuse.push(this.fingers[j].key.index)
+    }
+    for (var j=0;j<this.keys.length;j++) {
+      if (this.keys[j].on  && this.keysinuse.indexOf(this.keys[j].index)<0) {
+        this.toggle(this.keys[j], false);
+      }
+    }
+  } else {
+    this.fingers[0].pkey = this.fingers[0].key;
+    this.fingers[0].key = this.whichKey(this.clickPos.x, this.clickPos.y);
+    if (this.fingers[0].key && this.fingers[0].key.index != this.fingers[0].pkey.index) {
+      this.toggle(this.fingers[0].key, true);
+      this.toggle(this.fingers[0].pkey, false);
+    }
+  }
+   // END Pasted in from keyboard.prototype.move -- JRC
 }
 
 keyboard.prototype.move = function(e) {
-  //console.log("keyboard.prototype.move");
+  console.log("keyboard.prototype.move");
 	var debug = document.getElementById("debug");
 	if (this.clickPos.touches.length>1 || this.multitouch) {
 		this.keysinuse = new Array();
