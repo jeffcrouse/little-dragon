@@ -95,7 +95,7 @@ function TouchLines( options )
 
 
 	//WIDGET
-	var widget, controlID = controller.canvasID;
+	var widget, controlID = controller.canvasID, numSpacers = 0;
 
 	if(controlID.indexOf( "multislider" ) > -1)
 	{
@@ -115,6 +115,10 @@ function TouchLines( options )
 	{
 		console.log( "keyboard" );
 		WIDGET_TYPE = WIDGETS.SYNTH;
+
+		numSpacers = options.controller.keys.length;
+
+		console.log( 'numSpacers: ' + numSpacers );
 
 		widget = KeyboardWrapper( options );
 
@@ -240,9 +244,17 @@ function TouchLines( options )
 						   .5, -.5, 0
 						 ];
 
+		var spacersStep = 1;
+		if(numSpacers)	spacersStep = numX / numSpacers;
+
 		for(var i = 0, j=0, k=0, x=0, y=0, index=0; i<=numX; i++ ) {
 
 			x = i * spacing - HALF_WIDTH;
+
+			if(numSpacers && (i % spacersStep) < 2)
+			{
+				x += 100000;
+			}
 
 			for(j=0; j<=numY; j++ ) {
 

@@ -22,7 +22,7 @@ var LDKeyMaterial = function( params ) {
 			opacity: {type: 'f', value: params.opacity || 1 },
 			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
 			weight: {type: 'f', value: params.u || 0 },
-			falloff: {type: 'f', value: params.u || .45 },
+			falloff: {type: 'f', value: params.u || .5 },
 		},
 
 		vertexShader: [
@@ -60,7 +60,7 @@ var LDKeyMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	float grad = weight * pow(1. - min( 1., distance( vUv.y, u) / falloff), 2.);',
+		'	float grad = weight * pow(1. - min( 1., distance( vUv.y, u) / falloff), 3.);',
 
 		'	gl_FragColor = vec4( color * grad, 1.);',
 
