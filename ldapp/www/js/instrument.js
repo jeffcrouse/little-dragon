@@ -5,6 +5,7 @@ var myIP = null;
 var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
 
+
 nx.onload = function() {
 
 	nx.sendsTo("js");
@@ -24,8 +25,8 @@ nx.onload = function() {
 		//   |___|  |_______||___| |_______||_______|
 		   
 		case "voicefx":
-			var controls = createControl("keys", "multislider", 1);
-			controls.setNumberOfSliders(4);
+			var controls = createControl("vocals", "multislider", 1);
+			controls.setNumberOfSliders(2);
 			break;
 			
 		//  ___   _  _______  __   __  _______ 
@@ -42,41 +43,46 @@ nx.onload = function() {
 			break;
 
 		case "keys2":
-			var controls = createControl("keys", "multislider", 2);
-			controls.setNumberOfSliders(4);
-			break;
-
-		case "keys3":
 			var controls = createControl("keys", "keyboard", 1);
 			controls.multitouch = true;
 			controls.octaves = 1;
-			controls.keypattern = ['w','w','w'];
+			controls.keypattern = ['w','w','w','w','w','w','w'];
+			controls.lineWidth = 20;
+			controls.init();
+			break;
+
+		case "keys3":
+			var controls = createControl("keys", "keyboard", 2);
+			controls.multitouch = true;
+			controls.octaves = 1;
+			controls.keypattern = ['w','w','w','w','w','w','w'];
 			controls.lineWidth = 20;
 			controls.init();
 			break;
 
 		case "keys4":
 
-			var controls = createControl("keys", "keyboard", 2);
+			var controls = createControl("keys", "keyboard", 3);
 			controls.multitouch = true;
 			controls.octaves = 1;
-			controls.keypattern = ['w','w','w'];
+			controls.keypattern = ['w','w','w','w','w','w','w'];
 			controls.lineWidth = 20;
 			controls.init();
 
 			break;
 
 		case "keys5":
-			var controls = createControl("keys", "keyboard", 3);
+			var controls = createControl("keys", "keyboard", 4);
 			controls.multitouch = true;
 			controls.octaves = 1;
-			controls.keypattern = ['w','w','w'];
+			controls.keypattern = ['w','w','w','w','w','w','w'];
 			controls.lineWidth = 20;
 			controls.init();
 			break;
 
 		case "keystilt":
 			createControl("keys", "tilt", 1);
+			control.text = "pan";
 			break;
 
 		//GRANULAR SYNTH INTERFACE
@@ -246,21 +252,26 @@ nx.onload = function() {
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
 	    case "drums1":
-		case "drumsParticles":
+	    	var control = createControl("drum", "matrix", 1);
+	    	control.row = 1;
+	    	control.col = 4;
+	    	control.sequence( 120 );
+	    	control.init();
+		// case "drumsParticles":
 
-		   var control = createControl("drum", "button", 4);
+		//    var control = createControl("drum", "button", 4);
 
-		   ldInterface = BlendParticles({
-		     controller: control,
-		     spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-		     numSpritesX: 30,
-		     spriteSize: 150,
-		     spriteBlending: 2,
-		     spriteOpacity: .34,
-		     spread: .2,
-		     c0: new THREE.Color( 0x34FFFF ),
-		     c1: new THREE.Color( 0xFF34FF ),
-		   });
+		//    ldInterface = BlendParticles({
+		//      controller: control,
+		//      spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+		//      numSpritesX: 30,
+		//      spriteSize: 150,
+		//      spriteBlending: 2,
+		//      spriteOpacity: .34,
+		//      spread: .2,
+		//      c0: new THREE.Color( 0x34FFFF ),
+		//      c1: new THREE.Color( 0xFF34FF ),
+		//    });
 
 		   break;
 
