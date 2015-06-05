@@ -121,6 +121,7 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "bass1":
+
 	 	case "bassParticles":
 	 		var controls = createControl("bass", "multislider", 4);
 			 
@@ -153,7 +154,7 @@ nx.onload = function() {
 	 			spritePath: "textures/hexagon.png", 
 	 			numSpritesX: 40,
 	 			spriteSize: 75,
-	 			spriteNoiseAmount: .1,
+	 			spriteNoiseAmount: 1,
 	 			spriteOpacity: .5,
 	 			spread: 0,
 	 			spreadOffset: new THREE.Vector2( 0, 0 ),
@@ -170,11 +171,11 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		ldInterface = BlendParticles({
+	 		ldInterface = TouchLines({
 	 			controller: control,
 	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 			numSpritesX: 40,
-	 			spriteSize: 75,
+	 			numSpritesX: 142,
+	 			spriteSize: 20,
 	 			spriteNoiseAmount: .1,
 	 			spriteOpacity: .5,
 	 			spread: 0,
