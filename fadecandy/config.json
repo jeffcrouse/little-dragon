@@ -15,7 +15,7 @@
     "devices": [
         {
             "type": "fadecandy",
-            "serial": "FFFFFFFFFFFF00180017200214134D44",
+            "serial": "EEIYNZRLRLOJAVUB",
             "led": false,
             "map": [
                 [
@@ -28,7 +28,7 @@
         },
         {
             "type": "fadecandy",
-            "serial": "FFFFFFFFFFFF00180017200214134D44",
+            "serial": "MKAWEKHJBZSFKREH",
             "led": false,
             "map": [
                 [
@@ -41,7 +41,7 @@
         },
         {
             "type": "fadecandy",
-            "serial": "FFFFFFFFFFFF00180017200214134D44",
+            "serial": "RRBFXZFLTHWLEFMN",
             "led": false,
             "map": [
                 [
@@ -54,7 +54,7 @@
         },
         {
             "type": "fadecandy",
-            "serial": "FFFFFFFFFFFF00180017200214134D44",
+            "serial": "CUMKRFUWZZSPETUZ",
             "led": false,
             "map": [
                 [
