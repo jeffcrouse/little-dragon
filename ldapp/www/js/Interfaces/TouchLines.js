@@ -27,6 +27,8 @@ function TouchLines( options )
 
 	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
 
+	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
+
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || 1;
 
 	var spriteSize = pSize || options.spriteSize || 100;
@@ -290,7 +292,8 @@ function TouchLines( options )
 			lineWidth: lineWidth,
 			spriteRotation: spriteRotation,
 			colorRamp: colorRamp,
-			noiseScale: noiseScale
+			noiseScale: noiseScale,
+			noiseAmount: noiseAmount
 		});
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
