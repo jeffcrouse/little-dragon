@@ -265,6 +265,7 @@ function TouchLines( options )
 		return g;
 	}
 
+	var linesGeometry, linesMat;
 	function setup()
 	{
 
@@ -278,8 +279,8 @@ function TouchLines( options )
 
 
 		//	LINES
-		var linesGeometry = getLineGeometry();
-		var linesMat = new LinesMaterial({
+		linesGeometry = getLineGeometry();
+		linesMat = new LinesMaterial({
 			pMap: widget.renderTarget || debugImage,
 			lineLength: lineLength,
 			lineWidth: lineWidth,
@@ -297,6 +298,10 @@ function TouchLines( options )
 		if(stats)	stats.update();
 
 		var elapsedTime = clock.getElapsedTime();
+
+		if(linesMat) {
+			linesMat.uniforms.time.value = elapsedTime * .5;
+		}
 
 		// // points.material.uniforms.time.value += .003;
 		// // 
