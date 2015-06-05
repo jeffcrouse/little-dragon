@@ -235,25 +235,55 @@ nx.onload = function() {
 			
 		    var control = createControl("drum", "button", 1);
 
-			
+				
+			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
 			  controller: control,
 			  colorRampPath: "textures/drums/drum-1.jpg",
-			  numSpritesX: 30,
-			  lineWidth: 5,
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
 			});
 		   break;
 
 	    case "drums2":
-		    createControl("drum", "button", 2);
+		    var control = createControl("drum", "button", 2);
+
+		    ldInterface = TouchLines({
+		      controller: control,
+		      colorRampPath: "textures/drums/drum-2.jpg",
+		      lineWidth: 4,
+		      lineLength: 20,
+		      rotation: 3,
+		      noiseScale: .005
+		    });
 		    break;
 
 		case "drums3":
-		    createControl("drum", "button", 3);
+		    var control = createControl("drum", "button", 3);
+
+		    ldInterface = TouchLines({
+		      controller: control,
+		      colorRampPath: "textures/drums/drum-3.jpg",
+		      lineWidth: 4,
+		      lineLength: 20,
+		      rotation: 3,
+		      noiseScale: .005
+		    });
 		    break;
 
 		case "drums4":
-		    createControl("drum", "button", 4);
+		    var control = createControl("drum", "button", 4);
+
+		    ldInterface = TouchLines({
+		      controller: control,
+		      colorRampPath: "textures/drums/drum-4.jpg",
+		      lineWidth: 4,
+		      lineLength: 20,
+		      rotation: 3,
+		      noiseScale: .005
+		    });
 		    break;
 
 		

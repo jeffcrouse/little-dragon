@@ -29,7 +29,7 @@ function TouchLines( options )
 
 	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
 
-	var timeScale = getQueryVariable("timeScale") || options.timeScale || 1;
+	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
 
 	var spriteSize = pSize || options.spriteSize || 100;
 
