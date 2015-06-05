@@ -155,15 +155,15 @@ function ButtonWrapper( options )
 		{
 
 			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: 1000, y: 1000}, 300)
-				.easing( TWEEN.Easing.Bounce.Out )
+				.to( {x: 1000, y: 1000}, 150)
+				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 
 		} else {
 
 			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: radius, y: radius}, 1000)
-				.easing( TWEEN.Easing.Bounce.Out )
+				.to( {x: radius, y: radius}, 500)
+				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 
 		}
