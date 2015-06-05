@@ -117,7 +117,7 @@ console.log( 'params', params );
 		'	vAlpha = 1.;//pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
 
 		'	vec4 q;',
-		'	float angle = d * spriteRotation + noise3( center * noiseScale + vec3(0., 0., time) );',
+		'	float angle = d * spriteRotation + noise3( center * noiseScale + vec3(0., time, 0.) );',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
