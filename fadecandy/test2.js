@@ -13,18 +13,26 @@ Math.map = function (value, istart, istop, ostart, ostop, clamp) {
     return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
 }
 
-var sigma = 0;
+var red = Math.random();
+var green = Math.random();
+var blue = Math.random();
+
 var draw = function() {
     var now = new Date().getTime();
     var deltaTime = now - lastFrame;
     lastFrame = now;
 
-    sigma += deltaTime / 1000;
-   
-    var val = Math.map(Math.cos(sigma), -1, 1, 0, 255);
+    red += deltaTime / 300;
+    green += deltaTime / 400;
+    blue += deltaTime / 500;
+
+    var r = Math.map(Math.cos(red), -1, 1, 50, 255);
+    var g = Math.map(Math.cos(green), -1, 1, 50, 255);
+    var b = Math.map(Math.cos(blue), -1, 1, 50, 255);
+
     for (var pixel = 0; pixel < 512; pixel++)
     {
-        client.setPixel(pixel, val, val, val);
+        client.setPixel(pixel, r, g, b);
     }
     client.writePixels();
 }
