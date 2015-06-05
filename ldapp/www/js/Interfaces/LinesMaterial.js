@@ -7,13 +7,13 @@ var LinesMaterial = function( params ) {
 
 	var isLineShader = params.lineShader || false;
 
-	console.log( '#define numTouches '+ params.touches.length );
+console.log( 'params', params );
 
 	var matParams = {
 		transparent: true,
 		blending: params.blending || 0,
-		depthTest: params.depthTest || false,
-		depthWrite: params.depthWrite !== undefined ? params.depthWrite : false,
+		depthTest: params.depthTest || true,
+		depthWrite: params.depthWrite !== undefined ? params.depthWrite : true,
 		side: params.side || 2,// 0 = backFaceCull, 1 = frontFaceCull, 2 = doubleSided
 		linewidth: 1,
 
@@ -21,28 +21,40 @@ var LinesMaterial = function( params ) {
 
 		uniforms: {
 			map: {type: 't', value: params.map },
+
 			pMap: {type: 't', value: params.pMap},
+
+			colorRamp: {type: 't', value: params.colorRamp},
+
 			color: {type: 'c', value: params.color || new THREE.Color( 1, 1, 1 ) },
+
 			opacity: {type: 'f', value: params.opacity || 1.},
-			size: { type: 'f', value: params.size || 10},
+
+			lineLength: { type: 'f', value: params.lineLength || 20},
+
+			lineWidth: { type: 'f', value: params.lineWidth || 4},
+
 			time: {type: 'f', value: 0},
+
 			noiseScale: {type: 'f', value: params.noiseScale || 0 },
-			spriteRotation: {type: 'f', value: params.spriteRotation || 0 },
-			touches: {type: 'v3v', value: params.touches }
+
+			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 }
+
 		},
 
 		vertexShader: [
-		'uniform vec3 touches['+ params.touches.length+'];',
+		// 'uniform vec3 touches['+ params.touches.length+'];',
 		'uniform vec3 color;',
-		'uniform float size;',
+		'uniform float lineLength;',
+		'uniform float lineWidth;',
 		'uniform float scale;',
 		'uniform float time;',
 		'uniform float noiseScale;',
 		'uniform float spriteRotation;',
 
-		'#define numTouches '+ params.touches.length,
-
 		'uniform sampler2D pMap;',
+
+		'uniform sampler2D colorRamp;',
 
 		'attribute vec2 positions;',
 
@@ -84,40 +96,34 @@ var LinesMaterial = function( params ) {
 		'        return v*(q.w*q.w - dot(q.xyz,q.xyz)) + 2.0*q.xyz*dot(q.xyz,v) + 2.0*q.w*cross(q.xyz,v);',
 		'}',
 
+		'float toGrey(vec3 rgb){',
+		'	return dot(rgb, vec3(0.299, 0.587, 0.114));',
+		'}',
+
 		'void main() {',
 
-		'	vec3 center = vec3(uv, 0.);',
+		'	vec2 fUv = ( uv / vec2( 1280., 720.) ) + .5;',
 
-		'	float lineWidth = 3.;',
+		'	float d = toGrey(texture2D( pMap, fUv ).xyz);',
 
-		'	float lineLength = 10.;',
+		'	vec3 center = vec3( uv, 0.);',
 
 		'	vec3 pos = vec3( vec2( lineLength, lineWidth ) * position.xy, 0.);',
 
-		'	vUv = position.xy * .5 + .5;',
+		'	vUv = position.xy + .5;',
 
-		'	float nearestTouch = 1000000.;',
 
-		'	for( int i=0; i<numTouches; i++){',
-		'		float d = min( nearestTouch, distance(center.xy, touches[i].xy)  );',
-		'		nearestTouch = min( nearestTouch, d / max(touches[i].z, .01) );',
-		'	}',
-		// '	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );',
-
-		// '	vAlpha = .5;',
-
-		'	vColor = vec3( 128. / nearestTouch  + .1 );',
-		'	vAlpha = pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
-
-		// '	gl_PointSize =  size * vAlpha + (pow(noise3( position + vec3(0., time, 0.) ),2.) * size) * noiseScale;',
+		'	vColor = texture2D( colorRamp, vec2(d) ).xyz;',
+		'	vAlpha = 1.;//pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
 
 		'	vec4 q;',
-		'	float angle = 128. / nearestTouch ;',
+		'	float angle = d * spriteRotation;',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
 		'	q.w = cos(angle / 2.);',
 
+		'	center.z += d * 10.;',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( qrot_2(q, pos) + center, 1.0 );',
 
@@ -130,6 +136,8 @@ var LinesMaterial = function( params ) {
 		'# define TWO_PI ' + (Math.PI * 2),
 
 		'uniform sampler2D map;',
+
+		'uniform sampler2D pMap;',
 
 		'uniform float opacity;',
 
@@ -151,7 +159,7 @@ var LinesMaterial = function( params ) {
 		'{',
 		// '	float alpha = texture2D( map, vUv ).w * opacity * vAlpha;',
 
-		'	gl_FragColor = vec4( vColor, opacity * vAlpha);',
+		'	gl_FragColor = vec4( vColor, 1.);',
 
 		// '	vec2 uv = qrot_2(q, vec3(gl_PointCoord.xy * 2. - 1., 0.)).xy * .5 + .5;',
 
