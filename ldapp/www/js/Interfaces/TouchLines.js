@@ -27,7 +27,7 @@ function TouchLines( options )
 
 	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
 
-	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
+	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 0;
 
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
 
