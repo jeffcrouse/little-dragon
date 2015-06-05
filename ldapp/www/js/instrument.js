@@ -145,7 +145,7 @@ nx.onload = function() {
 	 		
 	 		ldInterface = TouchLines({
 	 		  controller: control,
-	 		  colorRampPath: "textures/drums/drum-4.jpg",
+	 		  colorRampPath: "textures/bass/bass2.jpg",
 	 		  lineWidth: 4,
 	 		  lineLength: 20,
 	 		  rotation: 3,

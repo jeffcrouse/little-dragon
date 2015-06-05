@@ -22,7 +22,7 @@ var LDKeyMaterial = function( params ) {
 			opacity: {type: 'f', value: params.opacity || 1 },
 			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
 			weight: {type: 'f', value: params.u || 0 },
-			falloff: {type: 'f', value: params.u || .35 },
+			falloff: {type: 'f', value: params.u || .45 },
 		},
 
 		vertexShader: [
