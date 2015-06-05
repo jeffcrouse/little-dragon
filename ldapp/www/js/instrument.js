@@ -251,9 +251,9 @@ nx.onload = function() {
 
 		   var control = createControl("drum", "button", 4);
 
-		   ldInterface = BlendParticles({
+		   ldInterface = TouchLines({
 		     controller: control,
-		     spritePath: "textures/hexagon.png", 
+		     colorRampPath: "textures/drum-1.jpg", 
 		     numSpritesX: 30,
 		     spriteSize: 150,
 		     spriteBlending: 2,
@@ -355,8 +355,8 @@ function createControl(instrument, type, number, options){
 		roundFloats(data);
 
 		if(ldInterface){
-			var eventObject = {"event":id, "data":data};
-			ldInterface.widgetEvent( eventObject );
+			// var eventObject = {"event":id, "data":data};
+			ldInterface.widgetEvent( data );
 		}
 
 		if(oscSender) {
