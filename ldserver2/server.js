@@ -33,27 +33,11 @@ Math.map = function (value, istart, istop, ostart, ostop, clamp) {
 }
 
 //pink dragon is in F#m + Eb
-//notes we want: 
-//o
-// D F# G# C# B F# A E
-// octave: 0
-// B A E0 F0#
-
-// —-> 4 buttons per phone
-// var tonic = "F#"
-// var scale = {'e1':16; 'f#1':18; 'a1':21; 'b1':23; 'd2':25; 'f#2':26; 'g#2':28; 'b3':30; 'c#3':32 };
-// D ---- 38
-// 
-
-//bass notes
-var scale = [16+12, 18+12, 21+12, 23+12, 25+12, 26+12, 28+12, 30+12, 32+12, 35+12, 37+12, 16+12];
-var scaleKeys = [64, 62, 63, 64, 64];
-
-var root = teoria.note('f2');
+var root = teoria.note('f#2');
 var scaleKeys = root.scale('minor');
+var scaleBass = teoria.note('f#1').scale('minor');
 
 //keys notes
-
 
 /************************
  ██████╗ ███████╗ ██████╗
@@ -113,10 +97,11 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			output.sendMessage([MIDI.CH1.CONTROL, 1, frequency]);
 			output.sendMessage([MIDI.CH1.CONTROL, 2, resonance]);
 
-			var reverb = data.list["2"] * FULL_VELOCITY;
-			var delay = data.list["3"] * FULL_VELOCITY;
-			output.sendMessage([MIDI.CH1.CONTROL, 3, reverb]);
-			output.sendMessage([MIDI.CH1.CONTROL, 4, delay]);
+			//LFO
+			var lfoVolume = data.list["2"] * FULL_VELOCITY;
+			var lfoPan = data.list["3"] * FULL_VELOCITY;
+			output.sendMessage([MIDI.CH1.CONTROL, 3, lfoVolume]);
+			output.sendMessage([MIDI.CH1.CONTROL, 4, lfoPan]);
 
 		}
 
@@ -148,43 +133,13 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					break;
 			}
 			
-			sendNote(note.midi(), velocity);
+			sendNote(note.midi(), velocity, MIDI.CH1);
+
 			var fifth = note.interval('P5');
 			fifth.octave = note.octave;
-			sendNote(fifth.midi(), velocity);
-
-			console.log(note.interval('P5').midi());
+			sendNote(fifth.midi(), velocity, MIDI.CH1);
 			
 		}
-
-		
-
-		// else if(addr=="/keys_multislider_1") {	
-		// 	var slider = Object.keys(data)[0];
-		// 	var value = parseFloat(data[slider]);
-		// 	var control;		
-
-		// 	if(slider == "0"){//attack
-		// 		control = 25;
-		// 	}
-		// 	else if(slider == "1"){//decay
-		// 		control = 26;
-		// 	}
-		// 	else if(slider == "2"){//sustain
-		// 		control = 27;
-		// 	}
-		// 	else if(slider == "3"){//release
-		// 		control = 28;
-		// 	}
-		// 	midiMessage = [MIDI.CH1.CONTROL, control, value * 127];
-		// 	output.sendMessage(midiMessage);
-		// }
-
-		// else if(addr=="/pan") {	
-		// 	//TODO: use x, y and z.	
-		// 	midiMessage = [MIDI.CH1.CONTROL, 29, data.y];
-		// 	output.sendMessage(midiMessage);
-		// }
 
 
 
@@ -197,106 +152,70 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |_______||__| |__||_______||_______|
 
 		else if(addr=="/bass_multislider_1") {
-			var reverb = data.list["0"] * FULL_VELOCITY;
-			var delay = data.list["1"] * FULL_VELOCITY;
-			output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-			output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+			
+			var attack = data.list["0"] * FULL_VELOCITY;
+			var decay = data.list["1"] * FULL_VELOCITY;
+			var sustain = data.list["2"] * FULL_VELOCITY;
+			var release = data.list["3"] * FULL_VELOCITY;
 
-			//RECORD AND PLAY BACK EXAMPLE
-			// if(data.press==1) {
-			// 	console.log("Record!");
-			// 	// On and then Off toggles recording on
-			// 	output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-			// 	output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
-			// } else {
-			// 	console.log("Stop recording")
-
-			// 	// On and then off toggles it off again.
-			// 	output.sendMessage([MIDI.CH2.NOTEON, 29, 1]);
-			// 	output.sendMessage([MIDI.CH2.NOTEOFF, 29, 1]);
-			// }
-			// 
-			// REVERB AND DELAY
-			// var reverb = data.list["0"] * FULL_VELOCITY;
-			// var delay = data.list["1"] * FULL_VELOCITY;
-			// output.sendMessage([MIDI.CH2.CONTROL, 1, reverb]);
-			// output.sendMessage([MIDI.CH2.CONTROL, 2, delay]);
+			output.sendMessage([MIDI.CH2.CONTROL, 1, attack]);
+			output.sendMessage([MIDI.CH2.CONTROL, 2, decay]);
+			output.sendMessage([MIDI.CH2.CONTROL, 3, sustain]);
+			output.sendMessage([MIDI.CH2.CONTROL, 4, release]);
 		}
 
 		else if(addr=="/bass_tilt_1") {
 			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
 
-			midiMessage = [MIDI.CH1.CONTROL, 5, pan];
+			midiMessage = [MIDI.CH2.CONTROL, 5, pan];
 			output.sendMessage(midiMessage);
 		}
 
-		else if(addr=="/bass_keyboard_1") {
-			if(data.on==0) {
-				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
-			} else {
-				var note;
-				if(data.note == 48)
-					note = scale[0];
-				else if(data.note == 49)
-					note = scale[1];
-				else if(data.note == 50)
-					note = scale[2];
+		else if(addr.substring(0,15)=="/bass_keyboard_"){
+			var velocity = data.on;
 
-				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
-			}
-			output.sendMessage(midiMessage);
-		}
+			var keyboardNumber = addr.substring(15, 16); //phone 1, phone 2, phone 3, phone 4?
+			var keyPos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
+			var note;
 
-		else if(addr=="/bass_keyboard_2") {
-			if(data.on==0) {
-				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
-			} else {
-				if(data.note == 48)
-					note = scale[3];
-				else if(data.note == 49)
-					note = scale[4];
-				else if(data.note == 50)
-					note = scale[5];
-				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
+			switch(keyboardNumber){
+				case '1':
+					if(keyPos == 0){
+						note = scaleBass.notes()[6];
+						note.octave = 0;
+					}
+					else{
+						note = scaleBass.notes()[keyPos - 1];
+						note.octave = 1;
+					}	
+					break;
+
+				case '2':
+					note = scaleBass.notes()[keyPos + 3];
+					note.octave = 1;
+					break;
+
+				case '3':
+					if(keyPos == 0){
+						note = scaleBass.notes()[6];
+						note.octave = 1;
+					}
+					else{
+						note = scaleBass.notes()[keyPos - 1];
+						note.octave = 2;
+					}	
+					break;
+
+				case '4':
+					note = scaleBass.notes()[keyPos + 3];
+					note.octave = 2;
+					break;
 			}
-			output.sendMessage(midiMessage);
 			
-
-		}
-		else if(addr=="/bass_keyboard_3") {
-			if(data.on==0) {
-				midiMessage = [MIDI.CH2.NOTEOFF, data.note, 0];
-			} else {
-				if(data.note == 48)
-					note = scale[6];
-				else if(data.note == 49)
-					note = scale[7];
-				else if(data.note == 50)
-					note = scale[8];
-				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
-			}
-			output.sendMessage(midiMessage);
+			sendNote(note.midi(), velocity, MIDI.CH2);
 		}
 
-		else if(addr=="/bass_keyboard_4") {
-			if(data.on==0) {
-				midiMessage = [MIDI.CH2.NOTEOFF, note, 0];
-			} else {
-				if(data.note == 48)
-					note = scale[9];
-				else if(data.note == 49)
-					note = scale[10];
-				else if(data.note == 50)
-					note = scale[11];
-				var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-				midiMessage = [MIDI.CH2.NOTEON, note, velocity];
-			}
-			output.sendMessage(midiMessage);
-		}
-
+		// else if(addr=="/bass_keyboard_1") {
 	
 
 		//  ______   ______    __   __  __   __  _______ 
@@ -307,23 +226,47 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 
-		else if(addr=="/drum_matrix_1"){
-
-			if(data.list && data.list[0]==1) {
-				// console.log(data.list[0]);
-				// var velocity = Math.map(data.on, 0, 127, 65, 127); // re-map 0->127 to 65->127
-				midiMessage = [MIDI.CH3.NOTEON, 36, 127];
-				
-			} else {
-				midiMessage = [MIDI.CH3.NOTEOFF, 36, 0];
+		else if(addr.substring(0,13)=="/drum_button_"){
+			var drumNumber = addr.substring(13, 14);
+			
+			var control;
+			switch(drumNumber){
+				case '1': 
+					control = 20;
+					break;
+				case '2': 
+					control = 21;
+					break;
+				case '3': 
+					control = 22;
+					break;
+				case '4': 
+					control = 23;
+					break;
 			}
-			output.sendMessage(midiMessage);
+
+			if(data.press==1) {
+				// console.log("Record drum " + drumNumber + "; control: " + control);
+				// On and then Off toggles recording on
+				// 
+				output.sendMessage([MIDI.CH3.CONTROL, control, 127]);
+				// output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
+				// output.sendMessage([MIDI.CH3.NOTEOFF, control, 1]);
+			} else {
+				// console.log("Stop recording drum " + drumNumber);
+				output.sendMessage([MIDI.CH3.CONTROL, control, 0]);
+
+				// On and then off toggles it off again.
+				// output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
+				// output.sendMessage([MIDI.CH3.NOTEOFF, control, 1]);
+				
+			}
 		}
 
 		else if(addr=="/drum_tilt_1") {
 			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
 			
-			midiMessage = [MIDI.CH1.CONTROL, 5, pan];
+			midiMessage = [MIDI.CH3.CONTROL, 5, pan];
 			output.sendMessage(midiMessage);
 		}
 
@@ -341,8 +284,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		//voice control channels start at 100
 		var reverb = data.list["0"] * FULL_VELOCITY;
 		var delay = data.list["1"] * FULL_VELOCITY;
-		output.sendMessage([MIDI.CH4.CONTROL, 102, reverb]);
-		output.sendMessage([MIDI.CH4.CONTROL, 103, delay]);
+		output.sendMessage([MIDI.CH4.CONTROL, 104, reverb]);
+		output.sendMessage([MIDI.CH4.CONTROL, 105, delay]);
 			
 		 //   	//reverb
 		 //   	var scale = data.list["0"] * FULL_VELOCITY;
@@ -406,11 +349,12 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				
 			// }
 	});
-	var sendNote = function(midiNote, velocity){
+	var sendNote = function(midiNote, velocity, channel){
+		// console.log(midiNote + " " + velocity);
 		if(velocity > 0) //not note off
 			velocity = Math.map(velocity, 0, 127, 65, 127); // re-map 0->127 to 65->127
 
-		midiMessage = [MIDI.CH1.NOTEON, midiNote, velocity];
+		midiMessage = [channel.NOTEON, midiNote, velocity];
 		output.sendMessage(midiMessage);
 	}
 		
@@ -504,32 +448,51 @@ stdin.setRawMode( true );
 stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
-
+	//PROGRAM BASS
 	if(key=='1') {
-		var message = [MIDI.CH1.CONTROL, 1, 1];
+		var message = [MIDI.CH2.CONTROL, 1, 1];
 		output.sendMessage(message);
 	}
 
 	if(key=='2') {
-		var message = [MIDI.CH1.CONTROL, 2, 1];
+		var message = [MIDI.CH2.CONTROL, 2, 1];
 		output.sendMessage(message);
 	}
 
 	if(key=='3') {
-		var message = [MIDI.CH1.CONTROL, 3, 1];
+		var message = [MIDI.CH2.CONTROL, 3, 1];
 		output.sendMessage(message);
 	}
 
 	if(key=='4') {
-		var message = [MIDI.CH1.CONTROL, 4, 1];
+		var message = [MIDI.CH2.CONTROL, 4, 1];
 		output.sendMessage(message);
 	}
 
 	if(key=='5') {
-		var message = [MIDI.CH1.CONTROL, 5, 1];
+		var message = [MIDI.CH2.CONTROL, 5, 1];
 		output.sendMessage(message);
 	}
-	
+	//PROGRAM DRUMS
+	if(key=='q') {
+		var message = [MIDI.CH3.CONTROL, 29, 1];
+		output.sendMessage(message);
+	}
+	if(key=='w') {
+		var message = [MIDI.CH3.CONTROL, 30, 1];
+		output.sendMessage(message);
+	}
+	if(key=='e') {
+		var message = [MIDI.CH3.CONTROL, 31, 1];
+		output.sendMessage(message);
+	}
+	if(key=='r') {
+		var message = [MIDI.CH3.CONTROL, 32, 1];
+		output.sendMessage(message);
+	}
+
+
+	//PROGRAM VOCALS
 	if(key=='a') {
 		output.sendMessage([MIDI.CH4.CONTROL, 102, 1]);
 	}
@@ -542,6 +505,8 @@ stdin.on( 'data', function( key ){
 	if(key=='f') {
 		output.sendMessage([MIDI.CH4.CONTROL, 105, 1]);
 	}
+
+
 
 	// ctrl-c ( end of text )
 	if ( key === '\u0003' ) {

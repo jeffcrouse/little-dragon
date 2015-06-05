@@ -37,7 +37,7 @@ nx.onload = function() {
 		// |    _  ||   |___   |   |   _____| |
 		// |___| |_||_______|  |___|  |_______|
                       
-		case "keys1":
+		case "keyscontrols":
 			var controls = createControl("keys", "multislider", 1);
 			controls.setNumberOfSliders(4);
 			break;
@@ -81,41 +81,9 @@ nx.onload = function() {
 			break;
 
 		case "keystilt":
-			createControl("keys", "tilt", 1);
+			var control = createControl("keys", "tilt", 1);
 			control.text = "pan";
 			break;
-
-		//GRANULAR SYNTH INTERFACE
-		// case "keys1":
-		// 	createControl("keys", "range", 1);
-		// 	break;
-
-		// case "keys2":
-		// 	var controls = createControl("keys", "multislider", 1);
-		// 	controls.setNumberOfSliders(5);
-		// 	break;
-
-		// case "keys3":
-		// 	var controls = createControl("keys", "keyboard", 1);
-		// 	controls.multitouch = true;
-		// 	controls.octaves = 1;
-		// 	controls.keypattern = ['w','w','w','w'];
-		// 	controls.lineWidth = 20;
-		// 	controls.init();
-		// 	break;
-
-		// case "keys4":
-		// 	createControl("keys", "button", 3);
-		// 	break;
-
-		// case "keys5":
-		// 	createControl("keys", "button", 2);
-		// 	break;
-
-		// case "keystilt":
-		// 	createControl("keys", "tilt", 1);
-		// 	break;
-
 
 
 		//  _______  _______  _______  _______ 
@@ -126,49 +94,47 @@ nx.onload = function() {
 		// | |_|   ||   _   | _____| | _____| |
 		// |_______||__| |__||_______||_______|
 	
-		case "bass1":
+		case "basscontrols":
 	 	case "bassParticles":
-	 		var controls = createControl("bass", "multislider", 4);
-			 
+	 		var controls = createControl("bass", "multislider", 1);
 			controls.setNumberOfSliders(4);
 
-			ldInterface = BlendParticles({
-				controller: controls,
-				spritePath: "textures/sphereNormal.png",
-				numSpritesX: 40,
-				spriteSize: 60,
-				spriteBlending: 2,
-				spriteOpacity: .45,
-				c0: new THREE.Color( 0x34FFFF ),
-				c1: new THREE.Color( 0xFF34FF ),
-				spriteNoiseAmount: 0
-			});
+			// ldInterface = BlendParticles({
+			// 	controller: controls,
+			// 	spritePath: "textures/sphereNormal.png",
+			// 	numSpritesX: 40,
+			// 	spriteSize: 60,
+			// 	spriteBlending: 2,
+			// 	spriteOpacity: .45,
+			// 	c0: new THREE.Color( 0x34FFFF ),
+			// 	c1: new THREE.Color( 0xFF34FF ),
+			// 	spriteNoiseAmount: 0
+			// });
 	 		break;
 
-
-		case "bass2":
+		case "bass1":
 			var controls = createControl("bass", "keyboard", 1);
 			controls.multitouch = true;
 			controls.octaves = 1;
-			controls.keypattern = ['w','w','w'];
+			controls.keypattern = ['w','w','w','w'];
 			controls.lineWidth = 20;
 			controls.init();
 
-	 		ldInterface = BlendParticles({
-	 			controller: control,
-	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 			numSpritesX: 40,
-	 			spriteSize: 75,
-	 			spriteNoiseAmount: .1,
-	 			spriteOpacity: .5,
-	 			spread: 0,
-	 			spreadOffset: new THREE.Vector2( 0, 0 ),
-	 			c0: new THREE.Color( 0x44CCDD),
-	 			c1: new THREE.Color( 0xCC44DD ),
-	 		});
+	 		// ldInterface = BlendParticles({
+	 		// 	controller: control,
+	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 		// 	numSpritesX: 40,
+	 		// 	spriteSize: 75,
+	 		// 	spriteNoiseAmount: .1,
+	 		// 	spriteOpacity: .5,
+	 		// 	spread: 0,
+	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
+	 		// 	c0: new THREE.Color( 0x44CCDD),
+	 		// 	c1: new THREE.Color( 0xCC44DD ),
+	 		// });
 			break;
 
-		case "bass3":
+		case "bass2":
 			var control = createControl("bass", "keyboard", 2);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -176,45 +142,45 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		ldInterface = BlendParticles({
-	 			controller: control,
-	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 			numSpritesX: 40,
-	 			spriteSize: 75,
-	 			spriteNoiseAmount: .1,
-	 			spriteOpacity: .5,
-	 			spread: 0,
-	 			spreadOffset: new THREE.Vector2( 0, 0 ),
-	 			c0: new THREE.Color( 0x44CCDD),
-	 			c1: new THREE.Color( 0xCC44DD ),
-	 		});
+	 		// ldInterface = BlendParticles({
+	 		// 	controller: control,
+	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 		// 	numSpritesX: 40,
+	 		// 	spriteSize: 75,
+	 		// 	spriteNoiseAmount: .1,
+	 		// 	spriteOpacity: .5,
+	 		// 	spread: 0,
+	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
+	 		// 	c0: new THREE.Color( 0x44CCDD),
+	 		// 	c1: new THREE.Color( 0xCC44DD ),
+	 		// });
 			break;
 
-		case "bass4":
+		case "bass3":
 			var control = createControl("bass", "keyboard", 3);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		control.keypattern = ['w','w','w'];
+	 		control.keypattern = ['w','w','w','w'];
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		ldInterface = BlendParticles({
-	 			controller: control,
-	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 			numSpritesX: 40,
-	 			spriteSize: 75,
-	 			spriteNoiseAmount: .1,
-	 			spriteOpacity: .5,
-	 			spread: 0,
-	 			spreadOffset: new THREE.Vector2( 0, 0 ),
-	 			c0: new THREE.Color( 0x44CCDD),
-	 			c1: new THREE.Color( 0xCC44DD ),
-	 		});
+	 		// ldInterface = BlendParticles({
+	 		// 	controller: control,
+	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 		// 	numSpritesX: 40,
+	 		// 	spriteSize: 75,
+	 		// 	spriteNoiseAmount: .1,
+	 		// 	spriteOpacity: .5,
+	 		// 	spread: 0,
+	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
+	 		// 	c0: new THREE.Color( 0x44CCDD),
+	 		// 	c1: new THREE.Color( 0xCC44DD ),
+	 		// });
 
 			break;
 			  
 
-		case "bass5":
+		case "bass4":
 			var control = createControl("bass", "keyboard", 4);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -222,24 +188,24 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		ldInterface = BlendParticles({
-	 			controller: control,
-	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 			numSpritesX: 40,
-	 			spriteSize: 75,
-	 			spriteNoiseAmount: .1,
-	 			spriteOpacity: .5,
-	 			spread: 0,
-	 			spreadOffset: new THREE.Vector2( 0, 0 ),
-	 			c0: new THREE.Color( 0x44CCDD),
-	 			c1: new THREE.Color( 0xCC44DD ),
-	 		});
+	 		// ldInterface = BlendParticles({
+	 		// 	controller: control,
+	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 		// 	numSpritesX: 40,
+	 		// 	spriteSize: 75,
+	 		// 	spriteNoiseAmount: .1,
+	 		// 	spriteOpacity: .5,
+	 		// 	spread: 0,
+	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
+	 		// 	c0: new THREE.Color( 0x44CCDD),
+	 		// 	c1: new THREE.Color( 0xCC44DD ),
+	 		// });
 
 			break;
 
 		case "basstilt":
-			createControl("bass", "tilt", 1);
-
+			var control = createControl("bass", "tilt", 1);
+			control.text = "pan";
 			break;
 
 
@@ -251,43 +217,7 @@ nx.onload = function() {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
-	    case "drums1":
-	    	var control = createControl("drum", "matrix", 1);
-	    	control.row = 1;
-	    	control.col = 4;
-	    	control.sequence( 120 );
-	    	control.init();
-		// case "drumsParticles":
-
-		//    var control = createControl("drum", "button", 4);
-
-		//    ldInterface = BlendParticles({
-		//      controller: control,
-		//      spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-		//      numSpritesX: 30,
-		//      spriteSize: 150,
-		//      spriteBlending: 2,
-		//      spriteOpacity: .34,
-		//      spread: .2,
-		//      c0: new THREE.Color( 0x34FFFF ),
-		//      c1: new THREE.Color( 0xFF34FF ),
-		//    });
-
-		   break;
-
-	    case "drums2":
-		    createControl("drum", "button", 2);
-		    break;
-
-		case "drums3":
-		    createControl("drum", "button", 3);
-		    break;
-
-		case "drums4":
-		    createControl("drum", "button", 4);
-		    break;
-
-		case "drums5":
+	    case "drumscontrols":
 			var controls = createControl("drum", "multislider", 4);
 			 
 			controls.setNumberOfSliders(3);
@@ -302,13 +232,45 @@ nx.onload = function() {
 				c0: new THREE.Color( 0x34FFFF ),
 				c1: new THREE.Color( 0xFF34FF ),
 			});
-
 		    break;
 
 		case "drumstilt":
 		    var control = createControl("drum", "tilt", 1);
 		    control.text = "something";
 		    break;
+
+	    case "drums1":
+		// case "drumsParticles":
+		   createControl("drum", "button", 1);
+			
+		   //    var control = createControl("drum", "button", 4);
+
+			//    ldInterface = BlendParticles({
+			//      controller: control,
+			//      spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+			//      numSpritesX: 30,
+			//      spriteSize: 150,
+			//      spriteBlending: 2,
+			//      spriteOpacity: .34,
+			//      spread: .2,
+			//      c0: new THREE.Color( 0x34FFFF ),
+			//      c1: new THREE.Color( 0xFF34FF ),
+			//    });
+		   break;
+
+	    case "drums2":
+		    createControl("drum", "button", 2);
+		    break;
+
+		case "drums3":
+		    createControl("drum", "button", 3);
+		    break;
+
+		case "drums4":
+		    createControl("drum", "button", 4);
+		    break;
+
+		
 
 
 
@@ -462,10 +424,6 @@ var onDeviceReady = function() {
 	ZeroConf.watch(zeroConfAddr, onZeroConf);
 }
 document.addEventListener('deviceready', onDeviceReady, false);
-
-
-
-
 
 
 
