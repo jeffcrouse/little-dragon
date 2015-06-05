@@ -79,6 +79,13 @@ function MultiSliderWrapper( options )
 		// m.material.color.setRGB( Math.abs(rgb.x), Math.abs(rgb.y), Math.abs(rgb.z) );
 
 		sliders[i] = m;
+
+		if( i%2 )
+		{
+			m.material.color.r *= .75;
+			m.material.color.g *= .75;
+			m.material.color.b *= .75;
+		} 
 	}
 
 

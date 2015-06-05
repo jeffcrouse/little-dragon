@@ -29,7 +29,7 @@ var LDButtonMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vUv = vec2( length(position.xy), 1. );',
+		'	vUv = vec2( length(position.xy) );',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
@@ -54,9 +54,9 @@ var LDButtonMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	float u = pow(vUv.x, exponent);',
+		'	float u = 1. - vUv.x;',
 
-
+		// '	u = sin(u * 3.14) * .5 + .5;',
 
 		'	gl_FragColor = vec4( mix( color2, color1, u ), opacity);',
 
@@ -103,7 +103,7 @@ function ButtonWrapper( options )
 
 	var center = new THREE.Vector2( controller.center.x, controller.center.y );
 
-	var radius = center.y - 30; // should probably do somehting better to scale it
+	var radius = 300; // should probably do somehting better to scale it
 
 	var decay = .025;
 
@@ -143,7 +143,7 @@ function ButtonWrapper( options )
 
 
 	var tween;
-	scope.onHandleInput = function( event )
+	scope.onHandleInput = function( data )
 	{
 		if(tween) {
 			tween.stop();
@@ -151,21 +151,25 @@ function ButtonWrapper( options )
 			TWEEN.remove( tween );
 		}
 		
-		if(event.data.press == 1)
+		if( data.press == 1)
 		{
 
-			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )
-				.to( {r: 1, g: 1, b: 1}, 200)
-				.easing( TWEEN.Easing.Bounce.Out )
-				.start()	
+			tween = new TWEEN.Tween( buttonMesh.scale )
+				.to( {x: 1000, y: 1000}, 150)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start()
+
 		} else {
 
-			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )
-				.to( {r: 0, g: 0, b: 0}, 1000)
-				.easing( TWEEN.Easing.Bounce.Out )
+			tween = new TWEEN.Tween( buttonMesh.scale )
+				.to( {x: radius, y: radius}, 500)
+				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
+
 		}
 	}
+
+
 
 	function draw( renderer )
 	{
@@ -176,8 +180,10 @@ function ButtonWrapper( options )
 	function handleInput( data )
 	{
 		scope.onHandleInput( data );
-		// console.log( e );
+		// console.log( data );
 	}
+
+
 
 	return {
 		scene: scene,

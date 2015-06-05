@@ -1,8 +1,14 @@
-// BlendParticles.js
+// TouchLines.js
 
 
-function BlendParticles( options )
+var pSize = getQueryVariable("pSize");
+
+console.log( 'pSize: ' + pSize );
+
+function TouchLines( options )
 {
+	console.log( "touch lines" );
+
 	var WIDGET_TYPE = undefined;
 
 	var WIDGETS = {
@@ -11,18 +17,25 @@ function BlendParticles( options )
 		SYNTH: 2
 	}
 
-	var spritePath = options.spritePath || "/textures/hexagon.png"; // "/textures/sphereNormal.png"
+	var lineLength = getQueryVariable("lineLength") || options.lineLength || 20;
 
-	var numSpritesX = options.numSpritesX || 30;
+	var lineWidth = getQueryVariable("lineWidth") || options.lineWidth || 4;	
 
-	var spriteSize = options.spriteSize || 100;
+	var spacing = getQueryVariable("spacing") || options.spacing || 10;
+
+	var spriteRotation = getQueryVariable("rotation") || options.spriteRotation || Math.PI;
+
+	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
+
+	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
+
+	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
+
+	var spriteSize = pSize || options.spriteSize || 100;
 
 	var spread = options.spread !== undefined ? options.spread : 0;
 
 	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0 );
-	console.log( 'spread: ' + spread );
-
-	var spriteRotation = options.spriteRotation || 0;
 
 	var spriteBlending = options.spriteBlending || 2;
 
@@ -32,7 +45,7 @@ function BlendParticles( options )
 
 	var controller = options.controller;
 
-	var NUM_SLIDERS = controller.sliders || 0;
+	var colorRampPath = options.colorRampPath || "textures/bwGradient.png";
 
 	var WIDTH = options.width || 1280; 
 	var HEIGHT = options.height || 720; 
@@ -41,7 +54,7 @@ function BlendParticles( options )
 
 	var stats = undefined;
 
-	var container = $("<div>", {id: "multisliderContainer"}).css({
+	var container = $("<div>", {id: "linesContainer"}).css({
 		position: "absolute",
 		left: 0,
 		top: 0,
@@ -86,18 +99,21 @@ function BlendParticles( options )
 
 	if(controlID.indexOf( "multislider" ) > -1)
 	{
+		console.log( "multislider" );
 		WIDGET_TYPE = WIDGETS.MULTISLIDER;
 
 		widget = MultiSliderWrapper( options ); 
 	}	
 	else if(controlID.indexOf( "button" ) > -1)
 	{
+		console.log( "button" );
 		WIDGET_TYPE = WIDGETS.BUTTON;
 
 		widget = ButtonWrapper( options ); 
 	}
 	else  if( controlID.indexOf( "keyboard" ) > -1 )
 	{
+		console.log( "keyboard" );
 		WIDGET_TYPE = WIDGETS.SYNTH;
 
 		widget = KeyboardWrapper( options );
@@ -117,11 +133,13 @@ function BlendParticles( options )
 				// console.log( "widget no set recoginzes" );
 			},
 
-			handleInput: function( e ){
-				console.log(e, "little dragon:: widget not recognized" );
+			handleInput: function( data ){
+				console.log( data, "little dragon:: widget not recognized" );
 			}
 		}
 	}
+
+	console.log( 'widget', widget );
 
 	//
 	//	SCENE
@@ -133,148 +151,154 @@ function BlendParticles( options )
 	//
 	
 	camera = new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
+	
 	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
 	// camera.position.z = 100;
 	// camera.lookAt( origin );
 
 
-	var debug_widgetTextureMesh = new THREE.Mesh( new THREE.BoxGeometry( WIDTH * .25, HEIGHT * .25, 10), new THREE.MeshBasicMaterial( {
-		map: widget.renderTarget
-	} ) );
-
-	debug_widgetTextureMesh.visible = false;
-
-	scene.add( debug_widgetTextureMesh );
-
-
-
 	//EDGE COLOR BLOCKS
-	var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
+	var edgeTop = new THREE.Mesh( new THREE.BoxGeometry( WIDTH, 10, 100), new THREE.MeshBasicMaterial( {
 		color: edgeTopColor,
-		depthTest: false,
+		depthTest: true,
+		depthWrite: true,
 		transparent: false
 
 	} ) );
 	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
 		color: edgeBottomColor,
-		depthTest: false,
+		depthTest: true,
+		depthWrite: true,
 		transparent: false
 	} ) );
 
 
-	edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
-	edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
+	edgeTop.position.set( 0, HALF_HEIGHT - 5, 0 );
+	edgeBottom.position.set( 0, -HALF_HEIGHT+5, 0 );
 
 	scene.add( edgeTop );
 	scene.add( edgeBottom );
 
 
-	//
-	//	PARTICLES
-	//	
-	var pointsGeometry = new THREE.Geometry(), v = pointsGeometry.vertices;
+	//LOADING
 
-	var spacing = WIDTH / numSpritesX, 
-		numX = Math.ceil( WIDTH / (spacing * .866) ),
-		numY	= Math.ceil( HEIGHT / spacing ),
-		numPoints = (numX + 2) * (numY + 2),
-		halfSpacing = spacing;
+	var manager = new THREE.LoadingManager();
+	var textureLoader = new THREE.TextureLoader( manager );
+	// var objLoader = new THREE.OBJLoader( manager );
 
-	var geometry = new THREE.BufferGeometry();
-	
-	var positions = new Float32Array( numPoints*3 );
-	var uvs = new Float32Array( numPoints*2 );
+	manager.onProgress = function ( item, loaded, total ) {
+		console.log( item, loaded, total );
+	};
 
-	for(var x=-1, i3=0, i2=0; x<=numX; x++)
-	{
-		for(var y=-1; y<=numY; y++)
-		{
-			var uv = v2( x / (numX-1), y / (numY - 1));
-			// var c = new THREE.Color().setHSL( uv.x, uv.y, .5 );
-			
-			positions[i3] = x * spacing * .866 - HALF_WIDTH;
-			positions[i3+1] = (y + (x%2) * .5) * spacing - HALF_HEIGHT;
-			positions[i3+2] = 0;
+	manager.onLoad = function(){
+		console.log( "\nmanager.onLoad\n\n" );
 
-			uvs[i2] = uv.x;
-			uvs[i2+1] = uv.y;
-
-			i2 += 2;
-			i3 += 3;
-		}
+		begin();
 	}
 
-
-	geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-	geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
-	geometry.computeBoundingBox();
-
-	// var spriteTexture = THREE.ImageUtils.loadTexture( "/textures/hexagon.png" ); "/textures/sphereNormal.png"
-	var spriteTexture = THREE.ImageUtils.loadTexture( spritePath );
-
-	var particleMat = new BlendParticleMaterial({
-		map: spriteTexture,
-		pMap: widget.renderTarget,
-		opacity: spriteOpacity,
-		size: spriteSize,
-		blending: spriteBlending,
-		color: new THREE.Color( 0x0000FF ),
-		noiseScale: spriteNoiseAmount,
-		spriteRotation: spriteRotation
-	} )
-
-	var points = new THREE.PointCloud( geometry, particleMat );
-
-	points.frustumCulled = false;
-
-	scene.add( points );
-
-	var p2 = points.clone();
-	p2.material = particleMat.clone();
-	scene.add( p2 );
-
-	p2.material.uniforms.color.value.set( 0x00FF00 );
-	p2.material.uniforms.map.value = spriteTexture;
+	console.log( 'manager', manager );
 
 
-	var p3 = points.clone();
-	p3.material = particleMat.clone();
-	scene.add( p3 );
+	//load images
+	var debugImage;
+	textureLoader.load( 'textures/gradients_debug.png', function ( t ) {
+		// t.minFilter = THREE.LinearFilter;
+		debugImage = t;
+		// debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
+	});
 
-	p3.material.uniforms.color.value.set( 0xFF0000 );
-	p3.material.uniforms.map.value = spriteTexture;
-
-	p2.material.uniforms.time = p3.material.uniforms.time = points.material.uniforms.time;
-
-	// COLOR SPREAD
-	p2.scale.x = p2.scale.y = 1 + spread * .5;
-	p3.scale.x = p3.scale.y = 1 + spread;
-
-	p2.position.x += spreadOffset.x * .5;
-	p2.position.y += spreadOffset.y * .5;
-
-	p3.position.x += spreadOffset.x ;
-	p3.position.y += spreadOffset.y ;
+	var colorRamp;
+	textureLoader.load( colorRampPath, function ( t ) {
+		colorRamp = t;
+	});
 
 
-	// WIDGET SPECIFIC CALLBACKS
-	switch (WIDGET_TYPE) {
-		case WIDGETS.MULTISLIDER :
+	// var touches = [];
 
-			widget.scope.onHandleInput = function( e ){
-				points.material.uniforms.time.value += .1;
+	// for(var i=0; i<5; i++) {
+	// 	touches[i] = v3(0,0,0);
+	// }
+
+	function getLineGeometry( g ) {
+
+		if( g === undefined )	g = new THREE.BufferGeometry();
+
+		var numX = Math.ceil( WIDTH / spacing );
+		var numY = Math.ceil( HEIGHT / spacing );
+
+		var numFaces = (numX + 1) * (numY + 1);
+
+		var positions = new Float32Array( numFaces * 3 * 6   );
+		var uvs = new Float32Array( numFaces * 2 * 6  );		
+
+		var squarePos = [ -.5,-.5, 0,
+						  -.5, .5, 0,
+						   .5, .5, 0,
+
+						  -.5,-.5, 0,
+						   .5, .5, 0,
+						   .5, -.5, 0
+						 ];
+
+		for(var i = 0, j=0, k=0, x=0, y=0, index=0; i<=numX; i++ ) {
+
+			x = i * spacing - HALF_WIDTH;
+
+			for(j=0; j<=numY; j++ ) {
+
+				for( k=0; k<squarePos.length; k++ ) {
+
+					positions[index + k] = squarePos[k];
+
+				}
+
+				y = j * spacing - HALF_HEIGHT;
+
+				for( k=0; k<squarePos.length; k += 2) {
+
+					uvs[ index * 2 / 3 + k] = x;
+					uvs[ index * 2 / 3 + k + 1] = y;
+				}
+
+				index += squarePos.length;
 			}
+		}
 
-			break;
+		g.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+		g.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
+		g.computeBoundingBox();
 
-		case WIDGETS.BUTTON :
-
-			break;
+		return g;
 	}
 
+	var linesGeometry, linesMat;
 	function setup()
 	{
 
+		// for(var i in touches ){
+		// 	new TWEEN.Tween( touches[i] )
+		// 		.to( {z : 1}, 50 )
+		// 		.delay( randf( 1500, 2500) )
+		// 		.repeat( 100 )
+		// 		.start();
+		// }
+
+
+		//	LINES
+		linesGeometry = getLineGeometry();
+		linesMat = new LinesMaterial({
+			pMap: widget.renderTarget || debugImage,
+			lineLength: lineLength,
+			lineWidth: lineWidth,
+			spriteRotation: spriteRotation,
+			colorRamp: colorRamp,
+			noiseScale: noiseScale,
+			noiseAmount: noiseAmount
+		});
+
+		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
+
+		scene.add( linesMesh );
 	}
 
 	function update()
@@ -283,7 +307,18 @@ function BlendParticles( options )
 
 		var elapsedTime = clock.getElapsedTime();
 
-		points.material.uniforms.time.value += .003;
+		if(linesMat) {
+			linesMat.uniforms.time.value = elapsedTime * timeScale;
+		}
+
+		// // points.material.uniforms.time.value += .003;
+		// // 
+		// for(var i=0; i<touches.length; i++) {
+
+		// 	touches[i].x = (i + .5) * WIDTH / touches.length - HALF_WIDTH;
+		// 	touches[i].y = cos( i + elapsedTime ) * 300;
+		// 	touches[i].z *= .95;
+		// }
 	}
 
 	function draw()
@@ -341,7 +376,7 @@ function BlendParticles( options )
 		animate();
 	}
 
-	begin();
+	// begin();
 
 	return {
 

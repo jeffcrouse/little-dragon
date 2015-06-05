@@ -94,7 +94,12 @@ nx.onload = function() {
 		// | |_|   ||   _   | _____| | _____| |
 		// |_______||__| |__||_______||_______|
 	
+<<<<<<< HEAD
+		case "bass1":
+
+=======
 		case "basscontrols":
+>>>>>>> origin/master
 	 	case "bassParticles":
 	 		var controls = createControl("bass", "multislider", 1);
 			controls.setNumberOfSliders(4);
@@ -120,6 +125,20 @@ nx.onload = function() {
 			controls.lineWidth = 20;
 			controls.init();
 
+<<<<<<< HEAD
+	 		ldInterface = BlendParticles({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", 
+	 			numSpritesX: 40,
+	 			spriteSize: 75,
+	 			spriteNoiseAmount: 1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
+	 		});
+=======
 	 		// ldInterface = BlendParticles({
 	 		// 	controller: control,
 	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
@@ -132,6 +151,7 @@ nx.onload = function() {
 	 		// 	c0: new THREE.Color( 0x44CCDD),
 	 		// 	c1: new THREE.Color( 0xCC44DD ),
 	 		// });
+>>>>>>> origin/master
 			break;
 
 		case "bass2":
@@ -142,6 +162,20 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
+<<<<<<< HEAD
+	 		ldInterface = TouchLines({
+	 			controller: control,
+	 			spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+	 			numSpritesX: 142,
+	 			spriteSize: 20,
+	 			spriteNoiseAmount: .1,
+	 			spriteOpacity: .5,
+	 			spread: 0,
+	 			spreadOffset: new THREE.Vector2( 0, 0 ),
+	 			c0: new THREE.Color( 0x44CCDD),
+	 			c1: new THREE.Color( 0xCC44DD ),
+	 		});
+=======
 	 		// ldInterface = BlendParticles({
 	 		// 	controller: control,
 	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
@@ -154,6 +188,7 @@ nx.onload = function() {
 	 		// 	c0: new THREE.Color( 0x44CCDD),
 	 		// 	c1: new THREE.Color( 0xCC44DD ),
 	 		// });
+>>>>>>> origin/master
 			break;
 
 		case "bass3":
@@ -217,11 +252,56 @@ nx.onload = function() {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
+<<<<<<< HEAD
+	    case "drums1":
+		case "drumsParticles":
+
+		   var control = createControl("drum", "button", 4);
+
+		   ldInterface = TouchLines({
+		     controller: control,
+		     colorRampPath: "textures/drum-1.jpg", 
+		     numSpritesX: 30,
+		     spriteSize: 150,
+		     spriteBlending: 2,
+		     spriteOpacity: .34,
+		     spread: .2,
+		     c0: new THREE.Color( 0x34FFFF ),
+		     c1: new THREE.Color( 0xFF34FF ),
+		   });
+
+		   break;
+
+	    case "drums2":
+		    createControl("drum", "button", 2);
+		    break;
+
+		case "drums3":
+		    createControl("drum", "button", 3);
+		    break;
+
+		case "drums4":
+		    createControl("drum", "button", 4);
+		    break;
+
+		case "drums5":
+=======
 	    case "drumscontrols":
+>>>>>>> origin/master
 			var controls = createControl("drum", "multislider", 4);
 			 
 			controls.setNumberOfSliders(3);
 
+			ldInterface = BlendParticles({
+				controller: controls,
+				spritePath: "textures/hexagon.png", 
+				numSpritesX: 50,
+				spriteSize: 75,
+				spriteBlending: 2,
+				spriteOpacity: .35,
+				c0: new THREE.Color( 0x34FFFF ),
+				c1: new THREE.Color( 0xFF34FF ),
+			});
 		    break;
 
 		case "drumstilt":
@@ -231,59 +311,33 @@ nx.onload = function() {
 
 	    case "drums1":
 		// case "drumsParticles":
-		   // createControl("drum", "button", 1);
+		   createControl("drum", "button", 1);
 			
-		    var control = createControl("drum", "button", 1);
+		   //    var control = createControl("drum", "button", 4);
 
-				
-			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
-			ldInterface = TouchLines({
-			  controller: control,
-			  colorRampPath: "textures/drums/drum-1.jpg",
-			  lineWidth: 4,
-			  lineLength: 20,
-			  rotation: 3,
-			  noiseScale: .005
-			});
+			//    ldInterface = BlendParticles({
+			//      controller: control,
+			//      spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
+			//      numSpritesX: 30,
+			//      spriteSize: 150,
+			//      spriteBlending: 2,
+			//      spriteOpacity: .34,
+			//      spread: .2,
+			//      c0: new THREE.Color( 0x34FFFF ),
+			//      c1: new THREE.Color( 0xFF34FF ),
+			//    });
 		   break;
 
 	    case "drums2":
-		    var control = createControl("drum", "button", 2);
-
-		    ldInterface = TouchLines({
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-2.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+		    createControl("drum", "button", 2);
 		    break;
 
 		case "drums3":
-		    var control = createControl("drum", "button", 3);
-
-		    ldInterface = TouchLines({
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-3.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+		    createControl("drum", "button", 3);
 		    break;
 
 		case "drums4":
-		    var control = createControl("drum", "button", 4);
-
-		    ldInterface = TouchLines({
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+		    createControl("drum", "button", 4);
 		    break;
 
 		
