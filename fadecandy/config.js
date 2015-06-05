@@ -72,7 +72,7 @@ var pixel_count_inside = 305; // number of pixels in a single strip inside the s
 
 var acrylic = {
 	"type": "fadecandy",
-	"serial": "FFFFFFFFFFFF00180017200214134D44",
+	"serial": "EEIYNZRLRLOJAVUB",
 	"led": false,
 	"map": [
 		[ channel, first_opc_pixel, first_output_pixel, pixel_count_top ]
@@ -87,7 +87,7 @@ first_opc_pixel+=pixel_count_top;
 
 var up_facing1 = {
 	"type": "fadecandy",
-	"serial": "FFFFFFFFFFFF00180017200214134D44",
+	"serial": "MKAWEKHJBZSFKREH",
 	"led": false,
 	"map": [
 		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
@@ -97,7 +97,7 @@ first_opc_pixel+=pixel_count_inside;
 
 var up_facing2 = {
 	"type": "fadecandy",
-	"serial": "FFFFFFFFFFFF00180017200214134D44",
+	"serial": "RRBFXZFLTHWLEFMN",
 	"led": false,
 	"map": [
 		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
@@ -113,7 +113,7 @@ first_opc_pixel+=pixel_count_inside;
 
 var down_facing1 = {
 	"type": "fadecandy",
-	"serial": "FFFFFFFFFFFF00180017200214134D44",
+	"serial": "CUMKRFUWZZSPETUZ",
 	"led": false,
 	"map": [
 		[ channel, first_opc_pixel, first_output_pixel, pixel_count_inside ]
