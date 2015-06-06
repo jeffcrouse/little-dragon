@@ -207,7 +207,7 @@ function BlendParticles( options )
 				// var c = new THREE.Color().setHSL( uv.x, uv.y, .5 );
 				
 				positions[i3] = x * spacing * .866 - HALF_WIDTH;
-				positions[i3+1] = (y + (x%2) * .5) * spacing - HALF_HEIGHT;
+				positions[i3+1] = (y + (x%2) * .5 * 0) * spacing - HALF_HEIGHT;
 				positions[i3+2] = 0;
 
 				uvs[i2] = uv.x;
@@ -447,6 +447,19 @@ function BlendParticles( options )
 
 			p2.position.y = spreadY * .5;
 			p3.position.y = spreadY ;
+
+		},
+
+		getRotation: function(){
+			return p2.material.uniforms.spriteRotation.value;
+		},
+
+		setRotation: function( value ){
+
+			
+			if(particleMat)	particleMat.uniforms.spriteRotation.value = value;
+			if(p2)	p2.material.uniforms.spriteRotation.value = value;
+			if(p3)	p3.material.uniforms.spriteRotation.value = value;
 
 		},
 

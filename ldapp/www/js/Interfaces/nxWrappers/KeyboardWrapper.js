@@ -1,4 +1,83 @@
 // KeyboardWrapper.js
+// 
+
+var LDKeyMaterial = function( params ) {
+
+	params = params || {};
+
+	var isLineShader = params.lineShader || false;
+
+	var matParams = {
+		transparent: true,
+		blending: params.blending || 1,
+		depthTest: params.depthTest || false,
+		depthWrite: params.depthWrite !== undefined ? params.depthWrite : false,
+		side: params.side || 2,// 0 = backFaceCull, 1 = frontFaceCull, 2 = doubleSided
+		linewidth: 1,
+
+		// TODO: if radius is staying at 1 lets remove it
+
+		uniforms: {
+			color: {type: 'c', value: params.color || new THREE.Color() },
+			opacity: {type: 'f', value: params.opacity || 1 },
+			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
+			weight: {type: 'f', value: params.u || 0 },
+			falloff: {type: 'f', value: params.u || .5 },
+			minWeight: {type: 'f', value: params.u || .25 },
+		},
+
+		vertexShader: [
+
+		'varying vec2 vUv;',
+
+		'void main() {',
+
+		'	vUv = uv;',
+
+		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+
+		'}'].join('\n'),
+
+		fragmentShader: [
+
+		'uniform float opacity;',
+
+		'uniform float u;',
+
+		'uniform float weight;',
+
+		'uniform float minWeight;',
+
+		'uniform float falloff;',
+
+		'uniform vec3 color;',
+
+		// 'uniform vec3 color2;',
+
+		'varying vec2 vUv;',
+
+		'float mapLinear( in float x, in float a1, in float a2, in float b1, in float b2 ) {',
+		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
+		'}',
+
+		'void main()',
+		'{',
+
+		'	float d = distance( vUv.y, u) / falloff;',
+
+		'	float grad = weight * pow( 1. - min( 1., d ), 3.);',
+
+		'	gl_FragColor = vec4( color * grad, 1.);',
+
+		'}'
+		].join('\n')
+
+	}
+	
+	THREE.ShaderMaterial.call( this, matParams );
+}
+
+LDKeyMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
 function KeyboardWrapper( options )
 {
@@ -21,7 +100,7 @@ function KeyboardWrapper( options )
 	var controller = options.controller;
 	//colors
 	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
+	var c1 = options.c1 || new THREE.Color( 0x000000 );
 
 	// var NUM_SLIDERS = controller.sliders;
 	var keys = controller.keys;
@@ -58,18 +137,19 @@ function KeyboardWrapper( options )
 
 
 	var keyGeometry = new THREE.BoxGeometry( 1, 1, .1 );
-	var keyMat = new THREE.MeshBasicMaterial( {
-		side: 2,
-		// transparent: true,
-		// opacity: .3,
-		color: 0xbbbbbb // 0x8899aa
-	} );
+	// var keyMat = new THREE.MeshBasicMaterial( {
+	// 	side: 2,
+	// 	// transparent: true,
+	// 	// opacity: .3,
+	// 	color: 0xbbbbbb // 0x8899aa
+	// } );
 
 
 	var keyMap = {}
 	for(var i in keys )
 	{
-		var mat = keyMat.clone();
+		var mat = new LDKeyMaterial();
+
 		var m = new THREE.Mesh( keyGeometry, mat );
 
 		m.position.x = keys[i].x + keys[i].w * .5 - HALF_WIDTH;
@@ -81,25 +161,11 @@ function KeyboardWrapper( options )
 
 		keyMap[keys[i].note] = m;
 
-		if(keys[i].h !== HEIGHT)
-		{
-			m.material.color.copy( c1 );
-			m.position.y = keys[i].y + (HEIGHT - keys[i].h) * .5  + 10;
-		}else{
-			m.material.color.copy( c0 );
-		}
-
-		m.orig_color = m.material.color.clone();
-
 		m.ld_on = 0;
 	}
 
 	function draw( renderer )
 	{
-		for(var i in keyMap )
-		{
-			if(keyMap[i].ld_on == 0)	keyMap[i].material.color.lerp( keyMap[i].orig_color, .1 );
-		}
 		renderer.render( scene, camera, renderTarget, autoClear );
 	}
 
@@ -108,26 +174,37 @@ function KeyboardWrapper( options )
 	}
 
 
-	function handleInput( event )
+	var tweenMap = {};
+	function handleInput( data )
 	{
-		scope.onHandleInput( event );
+		console.log( 'data', data );
+
+		scope.onHandleInput( data );
 		
-		var m = keyMap[event.data.note];
+		var m = keyMap[ data.note];
 
-		m.ld_on = event.data.on;
+		if(tweenMap[ data.note ]) {
+			tweenMap[ data.note ].stop();
+			TWEEN.remove( tweenMap[ data.note ] );
+		}
 
-		m.material.color.r = Math.min(m.orig_color.r * 3, 1.25);
-		m.material.color.g = Math.min(m.orig_color.g * 3, 1.25);
-		m.material.color.b = Math.min(m.orig_color.b * 3, 1.25);
+		if(data.on) {
+			m.material.uniforms.u.value = data.on / 128;	
+			m.material.uniforms.weight.value = 1;
 
-		// new TWEEN.Tween( m.material.color )
-		// 	.to({r: 1, g: 1, b: 1}, 250)
-		// 	.onComplete( function (){
-		// 		new TWEEN.Tween( m.material.color )
-		// 			.to(m.orig_color, 250)
-		// 			.start()
-		// 	})
-		// 	.start()
+			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
+				.to({value: 1}, 200)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start();
+
+		}else{
+			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
+				.to({value: 0}, 1000)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start();	
+		}
+
+		m.ld_on = data.on;
 	}
 
 	return {

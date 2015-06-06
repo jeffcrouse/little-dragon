@@ -28,10 +28,11 @@ function APP( _debug )
 	  	texturePath: "images/rainbowGalaxy.jpeg"
 	  },
 	  spritePath: "textures/hexagon.png",
-	  numSpritesX: 120,
-	  spriteSize: 20,
+	  numSpritesX: 40,
+	  spriteSize: 40,
 	  spriteBlending: 2,
 	  spriteOpacity: .34,
+	  spriteRotation: Math.PI,
 	  c0: new THREE.Color( 0x34FFFF ),
 	  c1: new THREE.Color( 0xFF34FF ),
 	  useSideBars: false,
@@ -46,6 +47,7 @@ function APP( _debug )
 		offsetX: ldInterface.getOffsetX(),
 		offsetY: ldInterface.getOffsetY(),
 		count: ldInterface.getNumX(),
+		rotation: 0.00,
 		noiseScale: ldInterface.getNoiseScale(),
 		colorA: ldInterface.getColorA().getHex(),
 		colorB: ldInterface.getColorB().getHex(),
@@ -57,7 +59,7 @@ function APP( _debug )
 	var gui = new dat.GUI();
 
 
-	gui.remember( guiControls );
+	// gui.remember( guiControls );
 
 	var guiContainer = $("<div>", {id: "GUIContainer"});
 	guiContainer.css({
@@ -120,6 +122,10 @@ function APP( _debug )
 
 	gui.add( guiControls, "count", 10, 250 ).onChange( function( value ){
 		ldInterface.setNumberOfParticles( parseInt( value ) );
+	})
+
+	gui.add( guiControls, "rotation", -2.0001, 2.0001 ).step( .001 ).onChange( function( value ){
+		ldInterface.setRotation( value );
 	})
 
 	gui.addColor( guiControls, "colorA" ).onChange( function( value ){

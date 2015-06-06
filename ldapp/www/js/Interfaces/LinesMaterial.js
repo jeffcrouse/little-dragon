@@ -1,17 +1,19 @@
-// BlendParticleMaterial.js
+// LinesMaterial.js
 // 
 // 
-var BlendParticleMaterial = function( params ) {
+var LinesMaterial = function( params ) {
 
 	params = params || {};
 
 	var isLineShader = params.lineShader || false;
 
+console.log( 'params', params );
+
 	var matParams = {
 		transparent: true,
 		blending: params.blending || 0,
-		depthTest: params.depthTest || false,
-		depthWrite: params.depthWrite !== undefined ? params.depthWrite : false,
+		depthTest: params.depthTest || true,
+		depthWrite: params.depthWrite !== undefined ? params.depthWrite : true,
 		side: params.side || 2,// 0 = backFaceCull, 1 = frontFaceCull, 2 = doubleSided
 		linewidth: 1,
 
@@ -19,35 +21,54 @@ var BlendParticleMaterial = function( params ) {
 
 		uniforms: {
 			map: {type: 't', value: params.map },
+
 			pMap: {type: 't', value: params.pMap},
+
+			colorRamp: {type: 't', value: params.colorRamp},
+
 			color: {type: 'c', value: params.color || new THREE.Color( 1, 1, 1 ) },
+
 			opacity: {type: 'f', value: params.opacity || 1.},
-			size: { type: 'f', value: params.size || 10},
+
+			lineLength: { type: 'f', value: params.lineLength || 20},
+
+			lineWidth: { type: 'f', value: params.lineWidth || 4},
+
 			time: {type: 'f', value: 0},
-			noiseScale: {type: 'f', value: params.noiseScale || 0 },
-			spriteRotation: {type: 'f', value: params.spriteRotation || 0 }
+
+			noiseScale: {type: 'f', value: params.noiseScale || 0.005 },
+
+			noiseAmount: {type: 'f', value: params.noiseAmount || 1 },
+
+			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 },
+
+			restAngle: {type: 'f', value: params.restAngle === undefined ? .75 : params.restAngle }
+
 		},
 
 		vertexShader: [
+		// 'uniform vec3 touches['+ params.touches.length+'];',
 		'uniform vec3 color;',
-		'uniform float size;',
+		'uniform float lineLength;',
+		'uniform float lineWidth;',
 		'uniform float scale;',
 		'uniform float time;',
 		'uniform float noiseScale;',
+		'uniform float noiseAmount;',
 		'uniform float spriteRotation;',
-
+		'uniform float restAngle;',
 
 		'uniform sampler2D pMap;',
+
+		'uniform sampler2D colorRamp;',
+
+		'attribute vec2 positions;',
 
 		'varying vec3 vColor;',
 
 		'varying float vAlpha;',
 
 		'varying vec2 vUv;',
-
-		'varying vec4 q;',
-
-		'varying float lineThickness;',
 
 		'# define PI ' + Math.PI,
 		'# define TWO_PI ' + (Math.PI * 2),
@@ -71,28 +92,46 @@ var BlendParticleMaterial = function( params ) {
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
 
+		'//rotate vector',
+		'vec3 qrot(vec4 q, vec3 v){',
+		'        return v + 2.0*cross(q.xyz, cross(q.xyz,v) + q.w*v);',
+		'}',
+
+		'//rotate vector (alternative)',
+		'vec3 qrot_2(vec4 q, vec3 v){',
+		'        return v*(q.w*q.w - dot(q.xyz,q.xyz)) + 2.0*q.xyz*dot(q.xyz,v) + 2.0*q.w*cross(q.xyz,v);',
+		'}',
+
+		'float toGrey(vec3 rgb){',
+		'	return dot(rgb, vec3(0.299, 0.587, 0.114));',
+		'}',
+
 		'void main() {',
 
-		'	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
+		'	vec2 fUv = ( uv / vec2( 1280., 720.) ) + .5;',
 
-		'	vAlpha = .5;',
+		'	float d = toGrey(texture2D( pMap, fUv ).xyz);',
 
-		'	vec4 particleMap = texture2D( pMap, uv );',
-		'	vColor = particleMap.xyz;',
-		'	vAlpha = pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
+		'	vec3 center = vec3( uv, 0.);',
 
-		'	gl_PointSize =  size ;// * vAlpha + (pow(noise3( position + vec3(0., time, 0.) ),2.) * size) * noiseScale;',
-		'	lineThickness = vAlpha * .35;',
+		'	vec3 pos = vec3( vec2( lineLength, lineWidth ) * position.xy, 0.);',
 
-		// '	vec4 q;',
-		'	float angle = vAlpha * spriteRotation;',
+		'	vUv = position.xy + .5;',
+
+
+		'	vColor = texture2D( colorRamp, vec2(d) ).xyz;',
+		'	vAlpha = 1.;',
+
+		'	vec4 q;',
+		'	float angle = (d + .5) * (restAngle + spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
 		'	q.w = cos(angle / 2.);',
 
+		'	center.z += d * 10.;',
 
-		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( qrot_2(q, pos) + center, 1.0 );',
 
 
 		'}'].join('\n'),
@@ -104,6 +143,8 @@ var BlendParticleMaterial = function( params ) {
 
 		'uniform sampler2D map;',
 
+		'uniform sampler2D pMap;',
+
 		'uniform float opacity;',
 
 		'uniform vec3 color;',
@@ -112,49 +153,18 @@ var BlendParticleMaterial = function( params ) {
 
 		'varying vec3 vColor;',
 
-		'varying vec4 q;',
+		'varying vec2 vUv;',
 
-		'varying float lineThickness;',
+		'varying vec4 q;',
 
 		'float mapLinear( in float x, in float a1, in float a2, in float b1, in float b2 ) {',
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
 
-
-		'//rotate vector',
-		'vec3 qrot(vec4 q, vec3 v){',
-		'        return v + 2.0*cross(q.xyz, cross(q.xyz,v) + q.w*v);',
-		'}',
-
-		'//rotate vector (alternative)',
-		'vec3 qrot_2(vec4 q, vec3 v){',
-		'        return v*(q.w*q.w - dot(q.xyz,q.xyz)) + 2.0*q.xyz*dot(q.xyz,v) + 2.0*q.w*cross(q.xyz,v);',
-		'}',
-
 		'void main()',
 		'{',
 
-		'	vec2 uv = qrot_2(q, vec3(gl_PointCoord.xy * 2. - 1., 0.)).xy * .5 + .5;',
-		'	vec2 suv = uv * 2. - 1.;',
-
-		'	float alpha =  mix(0., 1., ( abs(suv.y) < lineThickness && abs(suv.x) < .75 ) ? 1. : 0. ); ',
-		'	alpha = min( alpha, texture2D( map, uv ).w * opacity * vAlpha);',
-
-		'	gl_FragColor = vec4( vColor * color, alpha );',
-
-		// '	vec2 uv = gl_PointCoord.xy * 2. - 1.;',
-
-		// //	CIRCLES
-		// '	float uvLength = dot(uv, uv);',
-		// // '	float uvLength = length(uv);',
-
-		// '	float alphaThreshold = .75;',
-		
-		// '	float alpha = uvLength < alphaThreshold ? 1. : mapLinear(uvLength, alphaThreshold, 1., 1., 0.);',
-
-		// '	vec3 c = color;',
-
-		// '	gl_FragColor = vec4( c, alpha );',
+		'	gl_FragColor = vec4( vColor, 1.);',
 
 		'}'
 		].join('\n')
@@ -164,4 +174,4 @@ var BlendParticleMaterial = function( params ) {
 	THREE.ShaderMaterial.call( this, matParams );
 }
 
-BlendParticleMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LinesMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
