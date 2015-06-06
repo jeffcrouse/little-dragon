@@ -285,7 +285,7 @@ nx.onload = function() {
 		   // createControl("drum", "button", 1);
 			
 		    var control = createControl("drum", "button", 1);
-
+		    // control.mode = "node"; "node" is the actual name of the "aftertouch" mode described in the documentation.
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
