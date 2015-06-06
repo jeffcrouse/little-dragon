@@ -24,7 +24,7 @@ var LDKeyMaterial = function( params ) {
 			weight: {type: 'f', value: params.weight || 0 },
 			falloff: {type: 'f', value: params.falloff || .5 },
 			minWeight: {type: 'f', value: params.minWeight || .25 },
-			overallBrightness: {type: 'f', value: params.overallBrightness || .55 }
+			overallBrightness: {type: 'f', value: params.overallBrightness || .6 }
 		},
 
 		vertexShader: [
@@ -197,13 +197,13 @@ function KeyboardWrapper( options )
 			m.material.uniforms.weight.value = 1;
 
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 1}, 100)
+				.to({value: 1}, 50)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();
 
 		}else{
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 0}, 300)
+				.to({value: 0}, 200)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();	
 		}
