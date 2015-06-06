@@ -28,6 +28,9 @@ var onDeviceReady = function() {
 	});   
 	*/
 
+	screen.lockOrientation('landscape');
+
+
 	// Keep the phone awake
 	var onSuccess = function(){ console.log("!! We are awake!"); }
 	var onError = function(){ console.error("!! Couldn't keep device awake!"); }

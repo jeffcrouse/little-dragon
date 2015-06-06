@@ -14,6 +14,13 @@ nx.onload = function() {
 	nx.colorize("fill", "#00FFFF");  
 	nx.setViewport(0.5);
 
+	if(iface.includes("tilt")) {
+		screen.lockOrientation('portrait');
+	} else {
+		screen.lockOrientation('landscape');
+	}
+	
+
 	console.log("iface", iface);
 	switch( iface ){		
 		//  __   __  _______  ___   _______  _______ 
@@ -140,7 +147,7 @@ nx.onload = function() {
 			break;
 
 		case "keystilt":
-			var control = createControl("keys", "tilt", 1);
+			var control = createControl("keys", "tilt", 1, {"h": "1280px", "w": "720px"});
 			control.text = "pan";
 			break;
 
@@ -246,7 +253,7 @@ nx.onload = function() {
 			break;
 
 		case "basstilt":
-			var control = createControl("bass", "tilt", 1);
+			var control = createControl("bass", "tilt", 1, {"h": "1280px", "w": "720px"});
 			control.text = "pan";
 			break;
 
