@@ -25,8 +25,18 @@ nx.onload = function() {
 		//   |___|  |_______||___| |_______||_______|
 		   
 		case "voicefx":
-			var controls = createControl("vocals", "multislider", 1);
-			controls.setNumberOfSliders(2);
+			var control = createControl("vocals", "multislider", 1);
+			control.setNumberOfSliders(2);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 			
 		//  ___   _  _______  __   __  _______ 
@@ -38,8 +48,18 @@ nx.onload = function() {
 		// |___| |_||_______|  |___|  |_______|
                       
 		case "keyscontrols":
-			var controls = createControl("keys", "multislider", 1);
-			controls.setNumberOfSliders(4);
+			var control = createControl("keys", "multislider", 1);
+			control.setNumberOfSliders(4);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+			
 			break;
 
 		case "keys2":
@@ -95,7 +115,6 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "basscontrols":
-	 	case "bassParticles":
 	 		var control = createControl("bass", "multislider", 1);
 			control.setNumberOfSliders(4);
 			
@@ -202,9 +221,18 @@ nx.onload = function() {
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
 	    case "drumscontrols":
-			var controls = createControl("drum", "multislider", 4);
+			var control = createControl("drum", "multislider", 4);
 			 
-			controls.setNumberOfSliders(3);
+			control.setNumberOfSliders(3);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
 		    break;
 
