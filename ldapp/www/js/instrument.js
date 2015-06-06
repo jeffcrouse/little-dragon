@@ -25,8 +25,18 @@ nx.onload = function() {
 		//   |___|  |_______||___| |_______||_______|
 		   
 		case "voicefx":
-			var controls = createControl("vocals", "multislider", 1);
-			controls.setNumberOfSliders(2);
+			var control = createControl("vocals", "multislider", 1);
+			control.setNumberOfSliders(2);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 			
 		//  ___   _  _______  __   __  _______ 
@@ -38,46 +48,95 @@ nx.onload = function() {
 		// |___| |_||_______|  |___|  |_______|
                       
 		case "keyscontrols":
-			var controls = createControl("keys", "multislider", 1);
-			controls.setNumberOfSliders(4);
+			var control = createControl("keys", "multislider", 1);
+			control.setNumberOfSliders(4);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+			
 			break;
 
 		case "keys2":
-			var controls = createControl("keys", "keyboard", 1);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 1);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-2.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 		case "keys3":
-			var controls = createControl("keys", "keyboard", 2);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 2);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-3.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 		case "keys4":
 
-			var controls = createControl("keys", "keyboard", 3);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 3);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-4.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
 			break;
 
 		case "keys5":
-			var controls = createControl("keys", "keyboard", 4);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 4);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-5.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 		case "keystilt":
@@ -95,43 +154,37 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "basscontrols":
-	 	case "bassParticles":
-	 		var controls = createControl("bass", "multislider", 1);
-			controls.setNumberOfSliders(4);
+	 		var control = createControl("bass", "multislider", 1);
+			control.setNumberOfSliders(4);
+			
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
-			// ldInterface = BlendParticles({
-			// 	controller: controls,
-			// 	spritePath: "textures/sphereNormal.png",
-			// 	numSpritesX: 40,
-			// 	spriteSize: 60,
-			// 	spriteBlending: 2,
-			// 	spriteOpacity: .45,
-			// 	c0: new THREE.Color( 0x34FFFF ),
-			// 	c1: new THREE.Color( 0xFF34FF ),
-			// 	spriteNoiseAmount: 0
-			// });
 	 		break;
 
 		case "bass1":
-			var controls = createControl("bass", "keyboard", 1);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("bass", "keyboard", 1);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
 
-	 		// ldInterface = BlendParticles({
-	 		// 	controller: control,
-	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 		// 	numSpritesX: 40,
-	 		// 	spriteSize: 75,
-	 		// 	spriteNoiseAmount: .1,
-	 		// 	spriteOpacity: .5,
-	 		// 	spread: 0,
-	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
-	 		// 	c0: new THREE.Color( 0x44CCDD),
-	 		// 	c1: new THREE.Color( 0xCC44DD ),
-	 		// });
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+	 		
 			break;
 
 		case "bass2":
@@ -141,7 +194,6 @@ nx.onload = function() {
 	 		control.keypattern = ['w','w','w'];
 			control.lineWidth = 20;
 	 		control.init();
-
 	 		
 	 		ldInterface = TouchLines({
 	 		  controller: control,
@@ -162,18 +214,14 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		// ldInterface = BlendParticles({
-	 		// 	controller: control,
-	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 		// 	numSpritesX: 40,
-	 		// 	spriteSize: 75,
-	 		// 	spriteNoiseAmount: .1,
-	 		// 	spriteOpacity: .5,
-	 		// 	spread: 0,
-	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
-	 		// 	c0: new THREE.Color( 0x44CCDD),
-	 		// 	c1: new THREE.Color( 0xCC44DD ),
-	 		// });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 
 			break;
 			  
@@ -186,18 +234,14 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		// ldInterface = BlendParticles({
-	 		// 	controller: control,
-	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 		// 	numSpritesX: 40,
-	 		// 	spriteSize: 75,
-	 		// 	spriteNoiseAmount: .1,
-	 		// 	spriteOpacity: .5,
-	 		// 	spread: 0,
-	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
-	 		// 	c0: new THREE.Color( 0x44CCDD),
-	 		// 	c1: new THREE.Color( 0xCC44DD ),
-	 		// });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass4.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 
 			break;
 
@@ -216,9 +260,18 @@ nx.onload = function() {
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
 	    case "drumscontrols":
-			var controls = createControl("drum", "multislider", 4);
+			var control = createControl("drum", "multislider", 4);
 			 
-			controls.setNumberOfSliders(3);
+			control.setNumberOfSliders(3);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
 		    break;
 

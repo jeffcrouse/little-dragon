@@ -1,10 +1,5 @@
 // TouchLines.js
 
-
-var pSize = getQueryVariable("pSize");
-
-console.log( 'pSize: ' + pSize );
-
 function TouchLines( options )
 {
 	console.log( "touch lines" );
@@ -30,8 +25,6 @@ function TouchLines( options )
 	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 0;
 
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
-
-	var spriteSize = pSize || options.spriteSize || 100;
 
 	var spread = options.spread !== undefined ? options.spread : 0;
 
@@ -97,34 +90,32 @@ function TouchLines( options )
 	//WIDGET
 	var widget, controlID = controller.canvasID, numSpacers = 0;
 
-	if(controlID.indexOf( "multislider" ) > -1)
-	{
-		console.log( "multislider" );
+	if(controlID.indexOf( "multislider" ) > -1) {
+
 		WIDGET_TYPE = WIDGETS.MULTISLIDER;
 
 		widget = MultiSliderWrapper( options ); 
+
+		numSpacers = options.controller.sliders;
+
 	}	
-	else if(controlID.indexOf( "button" ) > -1)
-	{
-		console.log( "button" );
+	else if(controlID.indexOf( "button" ) > -1) {
+
 		WIDGET_TYPE = WIDGETS.BUTTON;
 
 		widget = ButtonWrapper( options ); 
 	}
-	else  if( controlID.indexOf( "keyboard" ) > -1 )
-	{
-		console.log( "keyboard" );
+	else  if( controlID.indexOf( "keyboard" ) > -1 ) {
+
 		WIDGET_TYPE = WIDGETS.SYNTH;
-
-		numSpacers = options.controller.keys.length;
-
-		console.log( 'numSpacers: ' + numSpacers );
 
 		widget = KeyboardWrapper( options );
 
+		numSpacers = options.controller.keys.length;
+
 	}
-	else 
-	{
+	else {
+
 		console.log( "controlID: ", controlID );
 
 		widget = {
@@ -142,8 +133,6 @@ function TouchLines( options )
 			}
 		}
 	}
-
-	console.log( 'widget', widget );
 
 	//
 	//	SCENE
@@ -205,10 +194,8 @@ function TouchLines( options )
 
 	//load images
 	var debugImage;
-	textureLoader.load( 'textures/gradients_debug.png', function ( t ) {
-		// t.minFilter = THREE.LinearFilter;
+	textureLoader.load( 'textures/hexagon.png', function ( t ) {
 		debugImage = t;
-		// debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
 	});
 
 	var colorRamp;
@@ -251,7 +238,7 @@ function TouchLines( options )
 
 			x = i * spacing - HALF_WIDTH;
 
-			if(numSpacers && (i % spacersStep) < 2)
+			if(numSpacers && (i % spacersStep) < 1)
 			{
 				x += 100000;
 			}
