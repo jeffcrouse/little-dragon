@@ -251,7 +251,7 @@ function TouchLines( options )
 
 			x = i * spacing - HALF_WIDTH;
 
-			if(numSpacers && (i % spacersStep) < 2)
+			if(numSpacers && (i % spacersStep) < 1)
 			{
 				x += 100000;
 			}
