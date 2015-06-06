@@ -1,10 +1,5 @@
 // TouchLines.js
 
-
-var pSize = getQueryVariable("pSize");
-
-console.log( 'pSize: ' + pSize );
-
 function TouchLines( options )
 {
 	console.log( "touch lines" );
@@ -30,8 +25,6 @@ function TouchLines( options )
 	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 0;
 
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
-
-	var spriteSize = pSize || options.spriteSize || 100;
 
 	var spread = options.spread !== undefined ? options.spread : 0;
 
@@ -100,9 +93,16 @@ function TouchLines( options )
 	if(controlID.indexOf( "multislider" ) > -1)
 	{
 		console.log( "multislider" );
+
 		WIDGET_TYPE = WIDGETS.MULTISLIDER;
 
 		widget = MultiSliderWrapper( options ); 
+
+		console.log( 'options', options );
+
+		numSpacers = options.controller.sliders;
+
+		console.log( 'numSpacers: ' + numSpacers );
 	}	
 	else if(controlID.indexOf( "button" ) > -1)
 	{
@@ -114,11 +114,10 @@ function TouchLines( options )
 	else  if( controlID.indexOf( "keyboard" ) > -1 )
 	{
 		console.log( "keyboard" );
+
 		WIDGET_TYPE = WIDGETS.SYNTH;
 
 		numSpacers = options.controller.keys.length;
-
-		console.log( 'numSpacers: ' + numSpacers );
 
 		widget = KeyboardWrapper( options );
 

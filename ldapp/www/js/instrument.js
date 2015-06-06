@@ -96,20 +96,18 @@ nx.onload = function() {
 	
 		case "basscontrols":
 	 	case "bassParticles":
-	 		var controls = createControl("bass", "multislider", 1);
-			controls.setNumberOfSliders(4);
+	 		var control = createControl("bass", "multislider", 1);
+			control.setNumberOfSliders(4);
+			
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
-			// ldInterface = BlendParticles({
-			// 	controller: controls,
-			// 	spritePath: "textures/sphereNormal.png",
-			// 	numSpritesX: 40,
-			// 	spriteSize: 60,
-			// 	spriteBlending: 2,
-			// 	spriteOpacity: .45,
-			// 	c0: new THREE.Color( 0x34FFFF ),
-			// 	c1: new THREE.Color( 0xFF34FF ),
-			// 	spriteNoiseAmount: 0
-			// });
 	 		break;
 
 		case "bass1":
