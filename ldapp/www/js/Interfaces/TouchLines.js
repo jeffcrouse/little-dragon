@@ -90,40 +90,32 @@ function TouchLines( options )
 	//WIDGET
 	var widget, controlID = controller.canvasID, numSpacers = 0;
 
-	if(controlID.indexOf( "multislider" ) > -1)
-	{
-		console.log( "multislider" );
+	if(controlID.indexOf( "multislider" ) > -1) {
 
 		WIDGET_TYPE = WIDGETS.MULTISLIDER;
 
 		widget = MultiSliderWrapper( options ); 
 
-		console.log( 'options', options );
-
 		numSpacers = options.controller.sliders;
 
-		console.log( 'numSpacers: ' + numSpacers );
 	}	
-	else if(controlID.indexOf( "button" ) > -1)
-	{
-		console.log( "button" );
+	else if(controlID.indexOf( "button" ) > -1) {
+
 		WIDGET_TYPE = WIDGETS.BUTTON;
 
 		widget = ButtonWrapper( options ); 
 	}
-	else  if( controlID.indexOf( "keyboard" ) > -1 )
-	{
-		console.log( "keyboard" );
+	else  if( controlID.indexOf( "keyboard" ) > -1 ) {
 
 		WIDGET_TYPE = WIDGETS.SYNTH;
 
-		numSpacers = options.controller.keys.length;
-
 		widget = KeyboardWrapper( options );
 
+		numSpacers = options.controller.keys.length;
+
 	}
-	else 
-	{
+	else {
+
 		console.log( "controlID: ", controlID );
 
 		widget = {
@@ -141,8 +133,6 @@ function TouchLines( options )
 			}
 		}
 	}
-
-	console.log( 'widget', widget );
 
 	//
 	//	SCENE
