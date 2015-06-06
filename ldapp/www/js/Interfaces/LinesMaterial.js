@@ -123,7 +123,7 @@ console.log( 'params', params );
 		'	vAlpha = 1.;',
 
 		'	vec4 q;',
-		'	float angle = ( restAngle + d ) * (spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
+		'	float angle = (d + .5) * (restAngle + spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
@@ -163,29 +163,8 @@ console.log( 'params', params );
 
 		'void main()',
 		'{',
-		// '	float alpha = texture2D( map, vUv ).w * opacity * vAlpha;',
 
 		'	gl_FragColor = vec4( vColor, 1.);',
-
-		// '	vec2 uv = qrot_2(q, vec3(gl_PointCoord.xy * 2. - 1., 0.)).xy * .5 + .5;',
-
-		// '	float alpha =  (cos( vAlpha * (uv.y * 6.28 ) * -2. - 1.)) * 3. * ( 1. - abs(uv.x * 2. - 1.)  ); //texture2D( map, uv ).w * opacity * vAlpha;',
-
-		// '	gl_FragColor = vec4(vColor * color, alpha);',
-
-		// '	vec2 uv = gl_PointCoord.xy * 2. - 1.;',
-
-		// //	CIRCLES
-		// '	float uvLength = dot(uv, uv);',
-		// // '	float uvLength = length(uv);',
-
-		// '	float alphaThreshold = .75;',
-		
-		// '	float alpha = uvLength < alphaThreshold ? 1. : mapLinear(uvLength, alphaThreshold, 1., 1., 0.);',
-
-		// '	vec3 c = color;',
-
-		// '	gl_FragColor = vec4( c, alpha );',
 
 		'}'
 		].join('\n')
