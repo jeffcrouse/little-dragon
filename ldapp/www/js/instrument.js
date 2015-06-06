@@ -6,6 +6,8 @@ var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
 
 
+
+
 nx.onload = function() {
 
 	nx.sendsTo("js");
@@ -13,6 +15,16 @@ nx.onload = function() {
 	nx.colorize("accent", "#FF00FF");
 	nx.colorize("fill", "#00FFFF");  
 	nx.setViewport(0.5);
+
+	if(screen.lockOrientation) {
+		if(iface.includes("tilt")) {
+			screen.lockOrientation('portrait');
+		} else {
+			screen.lockOrientation('landscape');
+		}
+	}
+
+	
 
 	console.log("iface", iface);
 	switch( iface ){		
@@ -140,7 +152,29 @@ nx.onload = function() {
 			break;
 
 		case "keystilt":
-			var control = createControl("keys", "tilt", 1);
+			var dist = function (v1, v2) {
+				var dx = v1.x - v2.x;
+				var dy = v1.y - v2.y;
+				var dz = v1.z - v2.z;
+				return Math.sqrt(dx*dx+dy*dy+dz*dz);
+			}
+
+			var last_data = null;
+			var min_dist = 0.3;
+			var throttle = function(data) {	
+				if(last_data==null) {
+					last_data = data;
+					return true;
+				}
+				if(dist(data, last_data) < min_dist)
+					return false;
+
+				last_data = data;
+				return true;
+			}
+			var options = {h: "1280px", w: "720px", throttle: throttle};
+			var control = createControl("keys", "tilt", 1, options);
+			control.throttlePeriod = 50;
 			control.text = "pan";
 			break;
 
@@ -245,8 +279,32 @@ nx.onload = function() {
 
 			break;
 
+
 		case "basstilt":
-			var control = createControl("bass", "tilt", 1);
+			var dist = function (v1, v2) {
+				var dx = v1.x - v2.x;
+				var dy = v1.y - v2.y;
+				var dz = v1.z - v2.z;
+				return Math.sqrt(dx*dx+dy*dy+dz*dz);
+			}
+
+			var last_data = null;
+			var min_dist = 0.3;
+			var throttle = function(data) {	
+				if(last_data==null) {
+					last_data = data;
+					return true;
+				}
+				if(dist(data, last_data) < min_dist)
+					return false;
+
+				last_data = data;
+				return true;
+			}
+
+			var options = {h: "1280px", w: "720px", throttle: throttle};
+			var control = createControl("bass", "tilt", 1, options);
+			control.throttlePeriod = 50;
 			control.text = "pan";
 			break;
 
@@ -274,6 +332,7 @@ nx.onload = function() {
 			});
 
 		    break;
+
 
 		case "drumstilt":
 		    var control = createControl("drum", "tilt", 1);
@@ -387,7 +446,7 @@ function roundFloats(obj) {
 
 function createControl(instrument, type, number, options){
 	var id = [instrument, type, number].join("_");
-	var defaults = {"id": id, "parent":"controls", "w": "1280px", "h": "720px"};
+	var defaults = {"id": id, "parent":"controls", w: "1280px", h: "720px", throttle: null};
 	var settings = $.extend(defaults, options);
 
 	var widget = nx.add(type, settings).on('*', function(data) {
@@ -399,10 +458,12 @@ function createControl(instrument, type, number, options){
 		}
 
 		if(oscSender) {
-			var addr = "/" + id;
-			console.log(addr, JSON.stringify(data));
-			oscSender.send(addr, JSON.stringify(data), null,
-				function(err){ console.error( "oscSender.send", err ); } );
+			if(!settings.throttle || settings.throttle(data)) {
+				var addr = "/" + id;
+				console.log(addr, JSON.stringify(data));
+				oscSender.send(addr, JSON.stringify(data), null,
+					function(err){ console.error( "oscSender.send", err ); } );
+			}
 		} else {
 			console.warn("oscSender not yet constructed!")
 		}
