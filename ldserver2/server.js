@@ -19,8 +19,10 @@ var MIDI = {
 	CH1: { NOTEON: 144, NOTEOFF: 126, CONTROL: 176, PITCHBEND: 224 },	// KEYS
 	CH2: { NOTEON: 145, NOTEOFF: 129, CONTROL: 177, PITCHBEND: 225 },	// BASS
 	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 },	// DRUMS
-	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 }	// VOCALS
+	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 },	// VOCALS
+	CH15: { NOTEON: 158, NOTEOFF: 142, MODECHANGE: 190 }				// FADERFOX CONTROLLER
 }
+
 var FULL_VELOCITY = 127;
 
 Math.clamp = function(num, min, max) {
@@ -553,29 +555,35 @@ if("USB Uno MIDI Interface" in devices)
 		var note = message[1];
 		var vel = message[2] / FULL_VELOCITY;
 		vel = parseFloat(vel.toFixed(3));
+		//console.log(func, note, vel);
 
-		if(func==190 && note==0) {
-			io.sockets.emit('slider1', vel);
+		if(func == MIDI.CH15.MODECHANGE) {
+			switch(note) {
+				case 0: io.sockets.emit('slider1', vel); break;
+				case 1: io.sockets.emit('slider2', vel); break;
+				case 2: io.sockets.emit('slider3', vel); break;
+				case 3: io.sockets.emit('slider4', vel); break;
+				case 4: io.sockets.emit('slider5', vel); break;
+				case 5: io.sockets.emit('slider6', vel); break;
+				case 18: io.sockets.emit("xfade", vel); break;
+				case 20: io.sockets.emit("knob1", vel); break;
+				case 21: io.sockets.emit("knob2", vel); break;
+				case 22: io.sockets.emit("knob3", vel); break;
+				case 23: io.sockets.emit("knob4", vel); break;
+				case 36: io.sockets.emit("y_axis", vel); break;
+				case 38: io.sockets.emit("x_axis", vel); break;
+			}
 		}
-		else if(func==190 && note==1) {
-			io.sockets.emit('slider2', vel);
+		else if(func == MIDI.CH15.NOTEON) {
+			switch(note) {
+				case 8: io.sockets.emit("button1", vel); break;
+				case 9: io.sockets.emit("button2", vel); break;
+				case 10: io.sockets.emit("button3", vel); break;
+				case 11: io.sockets.emit("button4", vel); break;
+				case 12: io.sockets.emit("button5", vel); break;
+				case 13: io.sockets.emit("button6", vel); break;
+			}
 		}
-		else if(func==190 && note==2) {
-			io.sockets.emit('slider3', vel);
-		}
-		else if(func==190 && note==20) {
-			io.sockets.emit("knob1", vel)
-		}
-		else if(func==190 && note==18) {
-			io.sockets.emit("xfade", vel)
-		}
-		else if(func==190 && note==36) {
-			io.sockets.emit("y_axis", vel)
-		}
-		else if(func==190 && note==38) {
-			io.sockets.emit("x_axis", vel)
-		}
-		//console.log(func, note, vel)
 	});
 }
 

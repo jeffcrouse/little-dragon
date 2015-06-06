@@ -145,7 +145,12 @@ function APP( _debug )
 	guiContainer.append($(gui.domElement));
 
 
+
+	//
+	//	Socket messages from MIDI controller and from phone data
+	//
 	var socket = io.connect();
+
 	socket.on('/keys_range_1', function (data) {
 		console.log(data);
 	});
@@ -164,8 +169,26 @@ function APP( _debug )
 		guiControls.spread = val;
 		ldInterface.setSpread( val );
 	});
+	socket.on('slider4', function (data) {
+		console.log("slider4", data);
+	});
+	socket.on('slider5', function (data) {
+		console.log("slider5", data);
+	});
+	socket.on('slider6', function (data) {
+		console.log("slider6", data);
+	});
 	socket.on('knob1', function(data){
-		
+		console.log("knob1", data);
+	});
+	socket.on('knob2', function(data){
+		console.log("knob2", data);
+	});
+	socket.on('knob3', function(data){
+		console.log("knob3", data);
+	});
+	socket.on('knob4', function(data){
+		console.log("knob4", data);
 	});
 	socket.on('xfade', function(data){
 		var val =  Math.map(data, 0, 1, -2.0001, 2.0001);
@@ -181,6 +204,24 @@ function APP( _debug )
 		var val =  Math.map(data, 0, 1, -250.0, 250.00);
 		guiControls.offsetY = val;
 		ldInterface.setOffsetY( val );
+	});
+	socket.on('button1', function(data){
+		console.log("button1", data);
+	});
+	socket.on('button2', function(data){
+		console.log("button2", data);
+	});
+	socket.on('button3', function(data){
+		console.log("button3", data);
+	});
+	socket.on('button4', function(data){
+		console.log("button4", data);
+	});
+	socket.on('button5', function(data){
+		console.log("button5", data);
+	});
+	socket.on('button6', function(data){
+		console.log("button6", data);
 	});
 }
 
