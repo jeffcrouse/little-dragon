@@ -40,7 +40,9 @@ console.log( 'params', params );
 
 			noiseAmount: {type: 'f', value: params.noiseAmount || 1 },
 
-			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 }
+			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 },
+
+			restAngle: {type: 'f', value: params.restAngle === undefined ? .75 : params.restAngle }
 
 		},
 
@@ -54,6 +56,7 @@ console.log( 'params', params );
 		'uniform float noiseScale;',
 		'uniform float noiseAmount;',
 		'uniform float spriteRotation;',
+		'uniform float restAngle;',
 
 		'uniform sampler2D pMap;',
 
@@ -117,10 +120,10 @@ console.log( 'params', params );
 
 
 		'	vColor = texture2D( colorRamp, vec2(d) ).xyz;',
-		'	vAlpha = 1.;//pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
+		'	vAlpha = 1.;',
 
 		'	vec4 q;',
-		'	float angle = .75 +  d * (spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
+		'	float angle = ( restAngle + d ) * (spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
