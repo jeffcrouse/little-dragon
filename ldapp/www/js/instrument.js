@@ -30,7 +30,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/bass/bass1.jpg",
+			  colorRampPath: "textures/keys/key-1.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -53,7 +53,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/bass/bass1.jpg",
+			  colorRampPath: "textures/keys/key-1.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -63,41 +63,80 @@ nx.onload = function() {
 			break;
 
 		case "keys2":
-			var controls = createControl("keys", "keyboard", 1);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 1);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-2.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 		case "keys3":
-			var controls = createControl("keys", "keyboard", 2);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 2);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-3.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 		case "keys4":
 
-			var controls = createControl("keys", "keyboard", 3);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 3);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-4.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
 			break;
 
 		case "keys5":
-			var controls = createControl("keys", "keyboard", 4);
-			controls.multitouch = true;
-			controls.octaves = 1;
-			controls.keypattern = ['w','w','w','w','w','w','w'];
-			controls.lineWidth = 20;
-			controls.init();
+			var control = createControl("keys", "keyboard", 4);
+			control.multitouch = true;
+			control.octaves = 1;
+			control.keypattern = ['w','w','w','w','w','w','w'];
+			control.lineWidth = 20;
+			control.init();
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-5.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 		case "keystilt":
