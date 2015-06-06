@@ -420,12 +420,13 @@ app.get('/projector/:num', function(req, res) {
 	res.render('projector', data);
 });
 
-io.on('connection', function (socket) {
-	socket.emit('hello', { hello: 'world' });	
-	// socket.on('my other event', function (data) {
-	// 	console.log(data);
-	// });
+app.get('/composer', function(req, res) {
+	var data = {"title": 'Little Dragon Conposer'};
+	res.render('composer', data);
 });
+
+
+//io.on('connection', function (socket) {});
 
 
 
@@ -533,7 +534,7 @@ stdin.on( 'data', function( key ){
 ██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
 ╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
 *******************************************************************/
-/*
+
 var input = new midi.input();
 
 var devices = {};
@@ -553,10 +554,31 @@ if("USB Uno MIDI Interface" in devices)
 		var vel = message[2] / FULL_VELOCITY;
 		vel = parseFloat(vel.toFixed(3));
 
-		console.log(func, note, vel)
+		if(func==190 && note==0) {
+			io.sockets.emit('slider1', vel);
+		}
+		else if(func==190 && note==1) {
+			io.sockets.emit('slider2', vel);
+		}
+		else if(func==190 && note==2) {
+			io.sockets.emit('slider3', vel);
+		}
+		else if(func==190 && note==20) {
+			io.sockets.emit("knob1", vel)
+		}
+		else if(func==190 && note==18) {
+			io.sockets.emit("xfade", vel)
+		}
+		else if(func==190 && note==36) {
+			io.sockets.emit("y_axis", vel)
+		}
+		else if(func==190 && note==38) {
+			io.sockets.emit("x_axis", vel)
+		}
+		//console.log(func, note, vel)
 	});
 }
-*/
+
 
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
