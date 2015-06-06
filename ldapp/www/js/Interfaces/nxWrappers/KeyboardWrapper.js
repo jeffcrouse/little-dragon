@@ -21,9 +21,10 @@ var LDKeyMaterial = function( params ) {
 			color: {type: 'c', value: params.color || new THREE.Color() },
 			opacity: {type: 'f', value: params.opacity || 1 },
 			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
-			weight: {type: 'f', value: params.u || 0 },
-			falloff: {type: 'f', value: params.u || .5 },
-			minWeight: {type: 'f', value: params.u || .25 },
+			weight: {type: 'f', value: params.weight || 0 },
+			falloff: {type: 'f', value: params.falloff || .5 },
+			minWeight: {type: 'f', value: params.minWeight || .25 },
+			overallBrightness: {type: 'f', value: params.overallBrightness || .5 }
 		},
 
 		vertexShader: [
@@ -48,9 +49,12 @@ var LDKeyMaterial = function( params ) {
 
 		'uniform float minWeight;',
 
+		'uniform float overallBrightness;',
+
 		'uniform float falloff;',
 
 		'uniform vec3 color;',
+
 
 		// 'uniform vec3 color2;',
 
@@ -65,7 +69,7 @@ var LDKeyMaterial = function( params ) {
 
 		'	float d = distance( vUv.y, u) / falloff;',
 
-		'	float grad = weight * pow( 1. - min( 1., d ), 3.);',
+		'	float grad = mix( weight * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 
 		'	gl_FragColor = vec4( color * grad, 1.);',
 
