@@ -142,18 +142,16 @@ nx.onload = function() {
 			control.lineWidth = 20;
 	 		control.init();
 
-	 		// ldInterface = BlendParticles({
-	 		// 	controller: control,
-	 		// 	spritePath: "textures/hexagon.png", // "/textures/sphereNormal.png"
-	 		// 	numSpritesX: 40,
-	 		// 	spriteSize: 75,
-	 		// 	spriteNoiseAmount: .1,
-	 		// 	spriteOpacity: .5,
-	 		// 	spread: 0,
-	 		// 	spreadOffset: new THREE.Vector2( 0, 0 ),
-	 		// 	c0: new THREE.Color( 0x44CCDD),
-	 		// 	c1: new THREE.Color( 0xCC44DD ),
-	 		// });
+	 		
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass2.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
+
 			break;
 
 		case "bass3":
@@ -241,7 +239,7 @@ nx.onload = function() {
 			  controller: control,
 			  colorRampPath: "textures/drums/drum-1.jpg",
 			  lineWidth: 4,
-			  lineLength: 20,
+			  lineLength: 16,
 			  rotation: 3,
 			  noiseScale: .005
 			});
