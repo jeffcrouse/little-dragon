@@ -123,7 +123,7 @@ console.log( 'params', params );
 		'	vAlpha = 1.;',
 
 		'	vec4 q;',
-		'	float angle = ( restAngle + d ) * (spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
+		'	float angle = (d + .5) * (restAngle + spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',

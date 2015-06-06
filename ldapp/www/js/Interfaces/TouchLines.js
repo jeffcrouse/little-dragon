@@ -194,10 +194,8 @@ function TouchLines( options )
 
 	//load images
 	var debugImage;
-	textureLoader.load( 'textures/gradients_debug.png', function ( t ) {
-		// t.minFilter = THREE.LinearFilter;
+	textureLoader.load( 'textures/hexagon.png', function ( t ) {
 		debugImage = t;
-		// debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
 	});
 
 	var colorRamp;
