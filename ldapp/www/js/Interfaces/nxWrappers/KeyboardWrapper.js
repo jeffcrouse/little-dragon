@@ -197,13 +197,13 @@ function KeyboardWrapper( options )
 			m.material.uniforms.weight.value = 1;
 
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 1}, 200)
+				.to({value: 1}, 100)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();
 
 		}else{
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 0}, 1000)
+				.to({value: 0}, 300)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();	
 		}
