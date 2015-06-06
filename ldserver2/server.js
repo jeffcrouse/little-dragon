@@ -6,7 +6,7 @@ var osc = require('node-osc');
 var midi = require('midi');
 var teoria = require('teoria');
 var oscClient = require("./oscClient");
-
+var leds = require("./leds")
 
 // Set up MIDI
 var output = new midi.output();
@@ -233,19 +233,19 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			switch(drumNumber){
 				case '1': 
 					control = 20;
-					if(data.press==1)led_sections[0].blink();
+					if(data.press==1) leds.led_sections[0].blink();
 					break;
 				case '2': 
 					control = 21;
-					if(data.press==1)led_sections[1].blink();
+					if(data.press==1) leds.led_sections[1].blink();
 					break;
 				case '3': 
 					control = 22;
-					if(data.press==1)led_sections[2].blink();
+					if(data.press==1) leds.led_sections[2].blink();
 					break;
 				case '4': 
 					control = 23;
-					if(data.press==1)led_sections[3].blink();
+					if(data.press==1) leds.led_sections[3].blink();
 					break;
 			}
 
@@ -380,7 +380,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 var mdns = require('mdns');
 console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
+var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-jeff"});
 ad.start();
 
 
@@ -521,84 +521,6 @@ stdin.on( 'data', function( key ){
 });
 
 
-
-
-/**********************************************
-██╗     ██╗ ██████╗ ██╗  ██╗████████╗███████╗
-██║     ██║██╔════╝ ██║  ██║╚══██╔══╝██╔════╝
-██║     ██║██║  ███╗███████║   ██║   ███████╗
-██║     ██║██║   ██║██╔══██║   ██║   ╚════██║
-███████╗██║╚██████╔╝██║  ██║   ██║   ███████║
-╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
-**********************************************/
-
-var OPC = require("./opc");
-var client = new OPC('localhost', 7890);
-
-// ------------------------------------------------------
-var pixels = [];
-var fade_time = 200;
-var Pixel = function(i) {
-	var pos = i;
-	var r, g, b = 0;
-	this.update = function(deltaTime) {
-		var fade = Math.map(deltaTime, 0, fade_time, 0, 255);
-		this.r = Math.clamp(this.r - fade, 0, 255);
-		this.g = Math.clamp(this.g - fade, 0, 255);
-		this.b = Math.clamp(this.b - fade, 0, 255);
-	}
-	this.set = function(_r, _g, _b) {
-		this.r = _r; this.g = _g; this.b = _b;
-	}
-}
-for(var i=0; i<512; i++) {
-    pixels.push(new Pixel(i));
-}
-
-var LEDSection = function(start, end) {
-	var r = 255; //Math.map(Math.random(), 0, 1, 100, 255);
-	var g = 0; //Math.map(Math.random(), 0, 1, 100, 255);
-	var b = 0; //Math.map(Math.random(), 0, 1, 100, 255);
-
-	this.blink = function() {
-		for(var i=start; i<=end; i++) {
-			pixels[i].set(r, g, b);
-		}
-	}
-}
-
-var led_sections = [];
-led_sections[0] = new LEDSection(0, 30);
-led_sections[1] = new LEDSection(31, 60);
-led_sections[2] = new LEDSection(61, 90);
-led_sections[3] = new LEDSection(91, 120);
-
-
-
-/*************************************************
-      _                      _                   
-   __| |_ __ __ ___      __ | | ___   ___  _ __  
-  / _` | '__/ _` \ \ /\ / / | |/ _ \ / _ \| '_ \ 
- | (_| | | | (_| |\ V  V /  | | (_) | (_) | |_) |
-  \__,_|_|  \__,_| \_/\_/   |_|\___/ \___/| .__/ 
-                                          |_|    
-*************************************************/
-
-var draw = function() {
-
-    var now = new Date().getTime();
-    var deltaTime = now - lastFrame;
-    lastFrame = now;
-
-    for(var p in pixels) {
-        pixels[p].update(deltaTime);
-        client.setPixel(p, pixels[p].r, pixels[p].g, pixels[p].b);
-    }
-    client.writePixels();
-}
-
-var lastFrame = new Date().getTime();
-setInterval(draw, 10);
 
 
 

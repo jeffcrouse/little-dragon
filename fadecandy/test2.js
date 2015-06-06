@@ -30,7 +30,7 @@ var draw = function() {
     var g = Math.map(Math.cos(green), -1, 1, 50, 255);
     var b = Math.map(Math.cos(blue), -1, 1, 50, 255);
 
-    for (var pixel = 0; pixel < 512; pixel++)
+    for (var pixel = 0; pixel < 600; pixel++)
     {
         client.setPixel(pixel, r, g, b);
     }
