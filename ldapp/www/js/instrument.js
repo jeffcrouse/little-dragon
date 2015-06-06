@@ -16,11 +16,14 @@ nx.onload = function() {
 	nx.colorize("fill", "#00FFFF");  
 	nx.setViewport(0.5);
 
-	if(iface.includes("tilt")) {
-		screen.lockOrientation('portrait');
-	} else {
-		screen.lockOrientation('landscape');
+	if(screen.lockOrientation) {
+		if(iface.includes("tilt")) {
+			screen.lockOrientation('portrait');
+		} else {
+			screen.lockOrientation('landscape');
+		}
 	}
+
 	
 
 	console.log("iface", iface);

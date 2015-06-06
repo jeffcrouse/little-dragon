@@ -24,7 +24,7 @@ var LDKeyMaterial = function( params ) {
 			weight: {type: 'f', value: params.weight || 0 },
 			falloff: {type: 'f', value: params.falloff || .5 },
 			minWeight: {type: 'f', value: params.minWeight || .25 },
-			overallBrightness: {type: 'f', value: params.overallBrightness || .5 }
+			overallBrightness: {type: 'f', value: params.overallBrightness || .55 }
 		},
 
 		vertexShader: [
