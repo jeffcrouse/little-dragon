@@ -20,32 +20,9 @@ nx.onload = function() {
 	nx.setViewport(0.5);
 	
 	console.log("iface", iface);
-	switch( iface ){		
-		//  __   __  _______  ___   _______  _______ 
-		// |  | |  ||       ||   | |       ||       |
-		// |  |_|  ||   _   ||   | |       ||    ___|
-		// |       ||  | |  ||   | |       ||   |___ 
-		// |       ||  |_|  ||   | |      _||    ___|
-		//  |     | |       ||   | |     |_ |   |___ 
-		//   |___|  |_______||___| |_______||_______|
-		   
-		case "voicefx":
-			screen.lockOrientation('landscape-primary');
 
-			var control = createControl("vocals", "multislider", 1);
-			control.setNumberOfSliders(2);
+	switch( iface ){
 
-			ldInterface = TouchLines({
-			  controller: control,
-			  colorRampPath: "textures/keys/key-1.jpg",
-			  lineWidth: 4,
-			  lineLength: 20,
-			  rotation: 3,
-			  noiseScale: .005
-			});
-
-			break;
-			
 		//  ___   _  _______  __   __  _______ 
 		// |   | | ||       ||  | |  ||       |
 		// |   |_| ||    ___||  |_|  ||  _____|
@@ -335,23 +312,25 @@ nx.onload = function() {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
-	    case "drumscontrols":
-	    	screen.lockOrientation('landscape-primary');
 
-			var control = createControl("drum", "multislider", 4);
+	  //   case "drumscontrols":
+	  //   	screen.lockOrientation('landscape-primary');
+
+			// var control = createControl("drum", "multislider", 4);
+
 			 
-			control.setNumberOfSliders(3);
+			// // control.setNumberOfSliders(3);
 
-			ldInterface = TouchLines({
-			  controller: control,
-			  colorRampPath: "textures/bass/bass1.jpg",
-			  lineWidth: 4,
-			  lineLength: 20,
-			  rotation: 3,
-			  noiseScale: .005
-			});
+			// // ldInterface = TouchLines({
+			// //   controller: control,
+			// //   colorRampPath: "textures/bass/bass1.jpg",
+			// //   lineWidth: 4,
+			// //   lineLength: 20,
+			// //   rotation: 3,
+			// //   noiseScale: .005
+			// // });
 
-		    break;
+		 // //    break;
 
 
 
@@ -359,6 +338,7 @@ nx.onload = function() {
 	    	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl("drum", "button", 1);
+		    control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
@@ -375,6 +355,7 @@ nx.onload = function() {
 	    	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl("drum", "button", 2);
+		    control.mode = "node";
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -390,6 +371,7 @@ nx.onload = function() {
 			screen.lockOrientation('landscape-primary');
 
 		    var control = createControl("drum", "button", 3);
+		    control.mode = "node";
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -405,6 +387,7 @@ nx.onload = function() {
 			screen.lockOrientation('landscape-primary');
 
 		    var control = createControl("drum", "button", 4);
+		    control.mode = "node";
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -416,6 +399,12 @@ nx.onload = function() {
 		    });
 		    break;
 
+
+		case "drums5":
+			screen.lockOrientation('landscape-primary');
+		    var control = createControl("drum", "button", 5);
+		    control.mode = "node";
+
 		
 		case "drumstilt":
 			screen.lockOrientation('portrait');
@@ -424,6 +413,16 @@ nx.onload = function() {
 		    control.text = "something";
 		    break;
 
+
+		    ldInterface = TouchLines({
+		      controller: control,
+		      colorRampPath: "textures/drums/drum-4.jpg",
+		      lineWidth: 4,
+		      lineLength: 20,
+		      rotation: 3,
+		      noiseScale: .005
+		    });
+		    break;
 
 
 
@@ -435,7 +434,20 @@ nx.onload = function() {
 		//  |     | |       ||     |_ |   _   ||       | _____| |
 		//   |___|  |_______||_______||__| |__||_______||_______|
 
+		case "voicefx":
+			var control = createControl("vocals", "multislider", 1);
+			control.setNumberOfSliders(2);
 
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/key-1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
+			break;
 
 
 		 // __      _______ ___ ___ 
