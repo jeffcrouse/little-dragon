@@ -7,10 +7,13 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title><%= title %></title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <link href="css/index.css" rel="stylesheet">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="/favicon.ico">
 
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,54 +23,32 @@
     <![endif]-->
   </head>
   <body>
-  <div class="container">
+
+    <div class="container">
       <div class="header clearfix">
-        <nav>
-          <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="active"><a href="#">a</a></li>
-            <li role="presentation"><a href="#">b</a></li>
-            <li role="presentation"><a href="#">c</a></li>
-          </ul>
-        </nav>
-        <h3 class="text-muted"><%= title %></h3>
+        <h3 class="text-muted">Little Dragon Visuals</h3>
       </div>
 
-      
 
       <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Instrument 1: Granular Synthesizer</h4>
-          <ul>
-            <li><a href="gran/1">phone 1</a></li>
-            <li><a href="gran/2">phone 2</a></li>
-            <li><a href="gran/3">phone 3</a></li>
-            <li><a href="gran/4">phone 4</a></li>
-            <li><a href="gran/5">phone 5</a></li>
-            <li><a href="gran/6">phone 6</a></li>
-            <li><a href="gran/12">multislider wrapper - noisey</a></li>
-            <li><a href="gran/10">multislider wrapper - hex</a></li>
-            <li><a href="gran/11">multislider wrapper - circles</a></li>
-            <li><a href="gran/13">button wrapper</a></li>
-          </ul>
-
-          <h4>Instrument 2</h4>
-          <h4>Instrument 3</h4>
-          <h4>Instrument 4</h4>
-        </div>
-
-        <div class="col-lg-6">
-        </div>
+      	<ul>
+      		</li><a href="/projector/1">Projector 1</a></li>
+      		</li><a href="/projector/2">Projector 2</a></li>
+      	</ul>
       </div>
 
       <footer class="footer">
-        <p>&copy; Company 2014</p>
+        <p>&copy; Odd Division 2015</p>
       </footer>
 
     </div> <!-- /container -->
 
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/js/jquery-1.11.3.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
   </body>
 </html>
+

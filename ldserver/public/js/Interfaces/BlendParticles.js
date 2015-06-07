@@ -32,8 +32,11 @@ function BlendParticles( options )
 
 	var NUM_SLIDERS = controller.sliders;
 
-	var WIDTH = 1280; // controller.width;
-	var HEIGHT = 720; // controller.height;
+	var useSideBars = options.useSideBars !== undefined ? options.useSideBars : true;
+	var showStats = options.showStats !== undefined ? options.showStats : true;
+
+	var WIDTH = controller.width;
+	var HEIGHT = controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
 	var HALF_WIDTH = WIDTH * .5;
@@ -96,6 +99,27 @@ function BlendParticles( options )
 
 		widget = ButtonWrapper( options ); 
 	}
+	else if(controlID.indexOf( "textureReference" ) > -1)
+	{
+		widget = {
+
+			renderTarget: THREE.ImageUtils.loadTexture( controller.texturePath, null, function(t){
+				widget.renderTarget = t;
+				t.minFilter = THREE.LinearFilter;
+
+				if(particleMat)	particleMat.uniforms.pMap.value = t;
+				if(p2)	p2.material.uniforms.pMap.value = t;
+				if(p3)	p3.material.uniforms.pMap.value = t;
+			} ), 
+
+			draw: function(){
+				// console.log( "widget no set recoginzes" );
+			},
+			handleInput: function(){
+				// console.log( "little dragon:: widget not recognized" );
+			}
+		}
+	}
 	else 
 	{
 		widget = {
@@ -137,65 +161,75 @@ function BlendParticles( options )
 
 
 	//EDGE COLOR BLOCKS
-	var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
-		color: edgeTopColor,
-		depthTest: false,
-		transparent: false
-
-	} ) );
-	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
-		color: edgeBottomColor,
-		depthTest: false,
-		transparent: false
-	} ) );
-
-
-	edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
-	edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
-
-	scene.add( edgeTop );
-	scene.add( edgeBottom );
-
+	if(useSideBars){
+		var edgeTop = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, 10), new THREE.MeshBasicMaterial( {
+			color: edgeTopColor,
+			depthTest: false,
+			transparent: false
+	
+		} ) );
+		var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
+			color: edgeBottomColor,
+			depthTest: false,
+			transparent: false
+		} ) );
+	
+	
+		edgeTop.position.set( 0, HALF_HEIGHT - 5, -50 );
+		edgeBottom.position.set( 0, -HALF_HEIGHT+5, -50 );
+	
+		scene.add( edgeTop );
+		scene.add( edgeBottom );
+	}
 
 	//
 	//	PARTICLES
 	//	
-	var pointsGeometry = new THREE.Geometry(), v = pointsGeometry.vertices;
-
-	var spacing = WIDTH / numSpritesX, 
-		numX = Math.ceil( WIDTH / (spacing * .866) ),
-		numY	= Math.ceil( HEIGHT / spacing ),
-		numPoints = (numX + 2) * (numY + 2),
-		halfSpacing = spacing;
-
-	var geometry = new THREE.BufferGeometry();
-	
-	var positions = new Float32Array( numPoints*3 );
-	var uvs = new Float32Array( numPoints*2 );
-
-	for(var x=-1, i3=0, i2=0; x<=numX; x++)
+	function createPointsGeometry( numSpritesX, geometry )
 	{
-		for(var y=-1; y<=numY; y++)
+		console.log( 'numSpritesX: ' + numSpritesX );
+		var spacing = WIDTH / numSpritesX, 
+			numX = Math.ceil( WIDTH / (spacing * .866) ),
+			numY	= Math.ceil( HEIGHT / spacing ),
+			numPoints = (numX + 2) * (numY + 2),
+			halfSpacing = spacing;	
+
+		geometry = geometry || new THREE.BufferGeometry();
+		
+		var positions = new Float32Array( numPoints*3 );
+		var uvs = new Float32Array( numPoints*2 );
+
+		for(var x=-1, i3=0, i2=0; x<=numX; x++)
 		{
-			var uv = v2( x / (numX-1), y / (numY - 1));
-			// var c = new THREE.Color().setHSL( uv.x, uv.y, .5 );
-			
-			positions[i3] = x * spacing * .866 - HALF_WIDTH;
-			positions[i3+1] = (y + (x%2) * .5) * spacing - HALF_HEIGHT;
-			positions[i3+2] = 0;
+			for(var y=-1; y<=numY; y++)
+			{
+				var uv = v2( x / (numX-1), y / (numY - 1));
+				// var c = new THREE.Color().setHSL( uv.x, uv.y, .5 );
+				
+				positions[i3] = x * spacing * .866 - HALF_WIDTH;
+				positions[i3+1] = (y + (x%2) * .5 * 0) * spacing - HALF_HEIGHT;
+				positions[i3+2] = 0;
 
-			uvs[i2] = uv.x;
-			uvs[i2+1] = uv.y;
+				uvs[i2] = uv.x;
+				uvs[i2+1] = uv.y;
 
-			i2 += 2;
-			i3 += 3;
+				i2 += 2;
+				i3 += 3;
+			}
 		}
+
+
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+		geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
+		geometry.computeBoundingBox();
+
+		geometry.attributes.position.needsUpdate = true;
+		geometry.attributes.uv.needsUpdate = true;
+
+		return geometry;
 	}
 
 
-	geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-	geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
-	geometry.computeBoundingBox();
 
 	// var spriteTexture = THREE.ImageUtils.loadTexture( "/textures/hexagon.png" ); "/textures/sphereNormal.png"
 	var spriteTexture = THREE.ImageUtils.loadTexture( spritePath );
@@ -206,12 +240,12 @@ function BlendParticles( options )
 		opacity: spriteOpacity,
 		size: spriteSize,
 		blending: spriteBlending,
-		color: new THREE.Color( 0x0000FF ),
+		color: new THREE.Color( 0x00FFFF ),
 		noiseScale: spriteNoiseAmount,
 		spriteRotation: spriteRotation
 	} )
 
-	var points = new THREE.PointCloud( geometry, particleMat );
+	var points = new THREE.PointCloud( createPointsGeometry( numSpritesX ), particleMat );
 
 	points.frustumCulled = false;
 
@@ -221,7 +255,7 @@ function BlendParticles( options )
 	p2.material = particleMat.clone();
 	scene.add( p2 );
 
-	p2.material.uniforms.color.value.set( 0x00FF00 );
+	p2.material.uniforms.color.value.set( 0xFFFF00 );
 	p2.material.uniforms.map.value = spriteTexture;
 
 
@@ -229,14 +263,14 @@ function BlendParticles( options )
 	p3.material = particleMat.clone();
 	scene.add( p3 );
 
-	p3.material.uniforms.color.value.set( 0xFF0000 );
+	p3.material.uniforms.color.value.set( 0xFF00FF );
 	p3.material.uniforms.map.value = spriteTexture;
 
 	p2.material.uniforms.time = p3.material.uniforms.time = points.material.uniforms.time;
 
 	// COLOR SPREAD
-	p2.scale.x = p2.scale.y = 1.1;// 1 + spread * .5;
-	p3.scale.x = p3.scale.y = 1.2;// 1 + spread;
+	p2.scale.x = p2.scale.y = 1 + spread * .5;
+	p3.scale.x = p3.scale.y = 1 + spread;
 
 	p2.position.x += spreadOffset.x * .5;
 	p2.position.y += spreadOffset.y * .5;
@@ -315,12 +349,15 @@ function BlendParticles( options )
 	}
 
 
-	stats = new Stats();
-	$(stats.domElement).css({
-		position: "absolute",
-		left: '20px',
-		right: '20px'
-	}).appendTo( container );
+	if(showStats)
+	{
+		stats = new Stats();
+		$(stats.domElement).css({
+			position: "absolute",
+			left: '20px',
+			right: '20px'
+		}).appendTo( container );
+	}
 
 	function begin(){
 		rendererSetup();
@@ -338,11 +375,145 @@ function BlendParticles( options )
 		widgetEvent: widget.handleInput,
 
 		setEdgeColorTop: function( hex ){
-			edgeTopColor.set( hex );
+			if(useSideBars)	edgeTopColor.set( hex );
 		},
 
 		setEdgeColorBottom: function( hex ){
-			edgeBottomColor.set( hex );
+			if(useSideBars)	edgeBottomColor.set( hex );
 		},
+
+		container: container,
+
+		setImage: function( t ){
+			t.minFilter = THREE.LinearFilter;
+
+			widget.renderTarget = t;
+
+			if(particleMat)	particleMat.uniforms.pMap.value = t;
+			if(p2)	p2.material.uniforms.pMap.value = t;
+			if(p3)	p3.material.uniforms.pMap.value = t;
+		},
+
+		setParticleSize: function( pSize ){
+
+			if(particleMat)	particleMat.uniforms.size.value = pSize;
+			if(p2)	p2.material.uniforms.size.value = pSize;
+			if(p3)	p3.material.uniforms.size.value = pSize;
+		},
+		
+		getParticleSize: function(){
+			if(particleMat)	return	particleMat.uniforms.size.value;
+			return spriteSize
+		},
+
+		setParticleOpacity: function( pSize ){
+
+			if(particleMat)	particleMat.uniforms.opacity.value = pSize;
+			if(p2)	p2.material.uniforms.opacity.value = pSize;
+			if(p3)	p3.material.uniforms.opacity.value = pSize;
+		},
+		
+		getParticleOpacity: function(){
+			if(particleMat)	return	particleMat.uniforms.opacity.value;
+			return spriteOpacity
+		},
+
+		getSpread: function(){
+			return p3.scale.x - 1;
+		},
+
+		setSpread: function( spread ){
+
+			p2.scale.x = p2.scale.y = 1 + spread * .5;
+			p3.scale.x = p3.scale.y = 1 + spread;
+		},
+
+		getOffsetX: function(){
+			return p3.position.x;
+		},
+
+		setOffsetX: function( spreadX ){
+
+			p2.position.x = spreadX * .5;
+			p3.position.x = spreadX ;
+
+		},
+
+		getOffsetY: function(){
+			return p3.position.x;
+		},
+
+		setOffsetY: function( spreadY ){
+
+			p2.position.y = spreadY * .5;
+			p3.position.y = spreadY ;
+
+		},
+
+		getRotation: function(){
+			return p2.material.uniforms.spriteRotation.value;
+		},
+
+		setRotation: function( value ){
+
+			
+			if(particleMat)	particleMat.uniforms.spriteRotation.value = value;
+			if(p2)	p2.material.uniforms.spriteRotation.value = value;
+			if(p3)	p3.material.uniforms.spriteRotation.value = value;
+
+		},
+
+
+		getNoiseScale: function(){
+			if(particleMat)	return	particleMat.uniforms.noiseScale.value;
+			return spriteNoiseAmount
+		},
+
+		setNoiseScale: function( value ){
+
+			if(particleMat)	particleMat.uniforms.noiseScale.value = value;
+			if(p2)	p2.material.uniforms.noiseScale.value = value;
+			if(p3)	p3.material.uniforms.noiseScale.value = value;
+
+		},
+
+		getNumX: function(){
+			return numSpritesX;
+		},
+
+		setNumberOfParticles: function( count ) {
+
+			numSpritesX = count;
+
+			createPointsGeometry( numSpritesX,points.geometry );
+		},
+
+		getColorA: function(){
+			return particleMat.uniforms.color.value;
+		},
+
+		getColorB: function(){
+			return p2.material.uniforms.color.value;
+		},
+
+		getColorC: function(){
+			return p3.material.uniforms.color.value;
+		},
+
+
+		setColorA: function( hex ){
+			return particleMat.uniforms.color.value.setHex( hex );
+		},
+
+		setColorB: function( hex ){
+			return p2.material.uniforms.color.value.setHex( hex );;
+		},
+
+		setColorC: function( hex ){
+			return p3.material.uniforms.color.value.setHex( hex );;
+		},
+
+
+
 	}
 }

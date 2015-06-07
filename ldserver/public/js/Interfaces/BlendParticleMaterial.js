@@ -47,6 +47,8 @@ var BlendParticleMaterial = function( params ) {
 
 		'varying vec4 q;',
 
+		'varying float lineThickness;',
+
 		'# define PI ' + Math.PI,
 		'# define TWO_PI ' + (Math.PI * 2),
 
@@ -79,10 +81,11 @@ var BlendParticleMaterial = function( params ) {
 		'	vColor = particleMap.xyz;',
 		'	vAlpha = pow(max( max( vColor.x, vColor.y), vColor. z), 2.);',
 
-		'	gl_PointSize =  size * vAlpha + (pow(noise3( position + vec3(0., time, 0.) ),2.) * size) * noiseScale;',
+		'	gl_PointSize =  size ;// * vAlpha + (pow(noise3( position + vec3(0., time, 0.) ),2.) * size) * noiseScale;',
+		'	lineThickness = vAlpha * .35;',
 
 		// '	vec4 q;',
-		'	float angle = vAlpha * sin(position.x * .5 ) * cos(position.y * .5 + time * .5) * 2. * spriteRotation;',
+		'	float angle = vAlpha * spriteRotation;',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',
@@ -111,6 +114,8 @@ var BlendParticleMaterial = function( params ) {
 
 		'varying vec4 q;',
 
+		'varying float lineThickness;',
+
 		'float mapLinear( in float x, in float a1, in float a2, in float b1, in float b2 ) {',
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
@@ -130,10 +135,12 @@ var BlendParticleMaterial = function( params ) {
 		'{',
 
 		'	vec2 uv = qrot_2(q, vec3(gl_PointCoord.xy * 2. - 1., 0.)).xy * .5 + .5;',
+		'	vec2 suv = uv * 2. - 1.;',
 
-		'	float alpha = texture2D( map, uv ).w * opacity * vAlpha;',
+		'	float alpha =  mix(0., 1., ( abs(suv.y) < lineThickness && abs(suv.x) < .75 ) ? 1. : 0. ); ',
+		'	alpha = min( alpha, texture2D( map, uv ).w * opacity * vAlpha);',
 
-		'	gl_FragColor = vec4(vColor * color, alpha);',
+		'	gl_FragColor = vec4( vColor * color, alpha );',
 
 		// '	vec2 uv = gl_PointCoord.xy * 2. - 1.;',
 
