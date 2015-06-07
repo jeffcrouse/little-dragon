@@ -6,7 +6,7 @@ var osc = require('node-osc');
 var midi = require('midi');
 var teoria = require('teoria');
 var oscClient = require("./oscClient");
-
+//var leds = require("./leds")
 
 // Set up MIDI
 var output = new midi.output();
@@ -19,8 +19,10 @@ var MIDI = {
 	CH1: { NOTEON: 144, NOTEOFF: 126, CONTROL: 176, PITCHBEND: 224 },	// KEYS
 	CH2: { NOTEON: 145, NOTEOFF: 129, CONTROL: 177, PITCHBEND: 225 },	// BASS
 	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 },	// DRUMS
-	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 }	// VOCALS
+	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 },	// VOCALS
+	CH15:{ NOTEON: 158, NOTEOFF: 142, MODECHANGE: 190 }				// FADERFOX CONTROLLER INPUT
 }
+
 var FULL_VELOCITY = 127;
 
 Math.clamp = function(num, min, max) {
@@ -80,7 +82,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		
 		if(io) io.sockets.emit(addr, data);
 
-
+		/*
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
 		} 
@@ -89,7 +91,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			oscClients[data.iface].close();
 			delete oscClients[data.iface];
 		} 
-		
+		*/
 
 		//  ___   _  _______  __   __  _______ 
 		// |   | | ||       ||  | |  ||       |
@@ -100,7 +102,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |___| |_||_______|  |___|  |_______|
 
 		
-		else if(addr=="/keys_multislider_1"){
+		if(addr=="/keys_multislider_1"){
 			//FILTER 
 			var frequency = data.list["0"] * FULL_VELOCITY;
 			var resonance = data.list["1"] * FULL_VELOCITY;
@@ -112,7 +114,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var lfoPan = data.list["3"] * FULL_VELOCITY;
 			output.sendMessage([MIDI.CH1.CONTROL, 3, lfoVolume]);
 			output.sendMessage([MIDI.CH1.CONTROL, 4, lfoPan]);
-
 		}
 
 		else if(addr=="/keys_tilt_1") {
@@ -458,10 +459,10 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 // Advertise the OSC server using ZeroConf discovery 
 // so that we don't have to hardcode the IP address into the phones
 
-var mdns = require('mdns');
-console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
-ad.start();
+// var mdns = require('mdns');
+// console.log("advertising", mdns.udp('osc'), osc_port);
+// var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
+// ad.start();
 
 
 
@@ -500,12 +501,13 @@ app.get('/projector/:num', function(req, res) {
 	res.render('projector', data);
 });
 
-io.on('connection', function (socket) {
-	socket.emit('hello', { hello: 'world' });	
-	// socket.on('my other event', function (data) {
-	// 	console.log(data);
-	// });
+app.get('/composer', function(req, res) {
+	var data = {"title": 'Little Dragon Conposer'};
+	res.render('composer', data);
 });
+
+
+//io.on('connection', function (socket) {});
 
 
 
@@ -594,6 +596,7 @@ stdin.on( 'data', function( key ){
 		output.sendMessage([MIDI.CH3.NOTEON, 33, 1]);
 	}
 
+
 	//LAUNCH
 	if(key=='a') {
 		output.sendMessage([MIDI.CH3.NOTEON, 20, 1]);
@@ -607,9 +610,6 @@ stdin.on( 'data', function( key ){
 	if(key=='f') {
 		output.sendMessage([MIDI.CH3.NOTEON, 23, 1]);
 	}
-	
-
-
 
 	//PROGRAM VOCALS
 	// if(key=='a') {
@@ -640,84 +640,6 @@ stdin.on( 'data', function( key ){
 
 
 
-/**********************************************
-██╗     ██╗ ██████╗ ██╗  ██╗████████╗███████╗
-██║     ██║██╔════╝ ██║  ██║╚══██╔══╝██╔════╝
-██║     ██║██║  ███╗███████║   ██║   ███████╗
-██║     ██║██║   ██║██╔══██║   ██║   ╚════██║
-███████╗██║╚██████╔╝██║  ██║   ██║   ███████║
-╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
-**********************************************/
-
-var OPC = require("./opc");
-var client = new OPC('localhost', 7890);
-
-// ------------------------------------------------------
-var pixels = [];
-var fade_time = 200;
-var Pixel = function(i) {
-	var pos = i;
-	var r, g, b = 0;
-	this.update = function(deltaTime) {
-		var fade = Math.map(deltaTime, 0, fade_time, 0, 255);
-		this.r = Math.clamp(this.r - fade, 0, 255);
-		this.g = Math.clamp(this.g - fade, 0, 255);
-		this.b = Math.clamp(this.b - fade, 0, 255);
-	}
-	this.set = function(_r, _g, _b) {
-		this.r = _r; this.g = _g; this.b = _b;
-	}
-}
-for(var i=0; i<512; i++) {
-    pixels.push(new Pixel(i));
-}
-
-var LEDSection = function(start, end) {
-	var r = 255; //Math.map(Math.random(), 0, 1, 100, 255);
-	var g = 0; //Math.map(Math.random(), 0, 1, 100, 255);
-	var b = 0; //Math.map(Math.random(), 0, 1, 100, 255);
-
-	this.blink = function() {
-		for(var i=start; i<=end; i++) {
-			pixels[i].set(r, g, b);
-		}
-	}
-}
-
-var led_sections = [];
-led_sections[0] = new LEDSection(0, 30);
-led_sections[1] = new LEDSection(31, 60);
-led_sections[2] = new LEDSection(61, 90);
-led_sections[3] = new LEDSection(91, 120);
-
-
-
-/*************************************************
-      _                      _                   
-   __| |_ __ __ ___      __ | | ___   ___  _ __  
-  / _` | '__/ _` \ \ /\ / / | |/ _ \ / _ \| '_ \ 
- | (_| | | | (_| |\ V  V /  | | (_) | (_) | |_) |
-  \__,_|_|  \__,_| \_/\_/   |_|\___/ \___/| .__/ 
-                                          |_|    
-*************************************************/
-
-var draw = function() {
-
-    var now = new Date().getTime();
-    var deltaTime = now - lastFrame;
-    lastFrame = now;
-
-    for(var p in pixels) {
-        pixels[p].update(deltaTime);
-        client.setPixel(p, pixels[p].r, pixels[p].g, pixels[p].b);
-    }
-    client.writePixels();
-}
-
-var lastFrame = new Date().getTime();
-setInterval(draw, 10);
-
-
 
 
 /*******************************************************************
@@ -728,7 +650,7 @@ setInterval(draw, 10);
 ██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
 ╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
 *******************************************************************/
-/*
+
 var input = new midi.input();
 
 var devices = {};
@@ -742,23 +664,54 @@ if("USB Uno MIDI Interface" in devices)
 {
 	input.openPort(devices["USB Uno MIDI Interface"]);
 	input.on('message', function(deltaTime, message) {
+		if(!io) return;
 
 		var func = message[0];
 		var note = message[1];
 		var vel = message[2] / FULL_VELOCITY;
 		vel = parseFloat(vel.toFixed(3));
+		//console.log(func, note, vel);
 
-		console.log(func, note, vel)
+		if(func == MIDI.CH15.MODECHANGE) {
+			switch(note) {
+				case 0: io.sockets.emit('slider1', vel); break;
+				case 1: io.sockets.emit('slider2', vel); break;
+				case 2: io.sockets.emit('slider3', vel); break;
+				case 3: io.sockets.emit('slider4', vel); break;
+				case 4: io.sockets.emit('slider5', vel); break;
+				case 5: io.sockets.emit('slider6', vel); break;
+				case 18: io.sockets.emit("xfade", vel); break;
+				case 20: io.sockets.emit("knob1", vel); break;
+				case 21: io.sockets.emit("knob2", vel); break;
+				case 22: io.sockets.emit("knob3", vel); break;
+				case 23: io.sockets.emit("knob4", vel); break;
+				case 36: io.sockets.emit("y_axis", vel); break;
+				case 38: io.sockets.emit("x_axis", vel); break;
+			}
+		}
+		else if(func == MIDI.CH15.NOTEON) {
+			switch(note) {
+				case 8: io.sockets.emit("button1", vel); break;
+				case 9: io.sockets.emit("button2", vel); break;
+				case 10: io.sockets.emit("button3", vel); break;
+				case 11: io.sockets.emit("button4", vel); break;
+				case 12: io.sockets.emit("button5", vel); break;
+				case 13: io.sockets.emit("button6", vel); break;
+			}
+		}
 	});
 }
-*/
+
 
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
 process.on('uncaughtException', function(err) {
     // handle the error safely
-    console.error(err)
+    console.error(err);
+
+	var err = new Error();
+    console.error( err.stack );
 })
 
 

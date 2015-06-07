@@ -1,7 +1,6 @@
-// KeyboardWrapper.js
-// 
+// ButtonWrapper.js
 
-var LDKeyMaterial = function( params ) {
+var LDButtonMaterial = function( params ) {
 
 	params = params || {};
 
@@ -18,13 +17,10 @@ var LDKeyMaterial = function( params ) {
 		// TODO: if radius is staying at 1 lets remove it
 
 		uniforms: {
-			color: {type: 'c', value: params.color || new THREE.Color() },
+			color1: {type: 'c', value: params.color || new THREE.Color( 1, 1, 1 ) },
+			color2: {type: 'c', value: params.color || new THREE.Color( 0, 0, 0 ) },
 			opacity: {type: 'f', value: params.opacity || 1 },
-			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
-			weight: {type: 'f', value: params.weight || 0 },
-			falloff: {type: 'f', value: params.falloff || .5 },
-			minWeight: {type: 'f', value: params.minWeight || .25 },
-			overallBrightness: {type: 'f', value: params.overallBrightness || .6 }
+			exponent: {type: 'f', value: params.opacity || 2 },
 		},
 
 		vertexShader: [
@@ -33,7 +29,7 @@ var LDKeyMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vUv = uv;',
+		'	vUv = vec2( length(position.xy), 1. );',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
@@ -43,20 +39,11 @@ var LDKeyMaterial = function( params ) {
 
 		'uniform float opacity;',
 
-		'uniform float u;',
+		'uniform float exponent;',
 
-		'uniform float weight;',
+		'uniform vec3 color1;',
 
-		'uniform float minWeight;',
-
-		'uniform float overallBrightness;',
-
-		'uniform float falloff;',
-
-		'uniform vec3 color;',
-
-
-		// 'uniform vec3 color2;',
+		'uniform vec3 color2;',
 
 		'varying vec2 vUv;',
 
@@ -67,11 +54,11 @@ var LDKeyMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	float d = distance( vUv.y, u) / falloff;',
+		'	float u = pow(vUv.x, exponent);',
 
-		'	float grad = mix( weight * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 
-		'	gl_FragColor = vec4( color * grad, 1.);',
+
+		'	gl_FragColor = vec4( mix( color2, color1, u ), opacity);',
 
 		'}'
 		].join('\n')
@@ -81,9 +68,10 @@ var LDKeyMaterial = function( params ) {
 	THREE.ShaderMaterial.call( this, matParams );
 }
 
-LDKeyMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LDButtonMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
-function KeyboardWrapper( options )
+
+function ButtonWrapper( options )
 {
 
 	var scope = this;
@@ -104,10 +92,7 @@ function KeyboardWrapper( options )
 	var controller = options.controller;
 	//colors
 	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x000000 );
-
-	// var NUM_SLIDERS = controller.sliders;
-	var keys = controller.keys;
+	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var WIDTH = 1280; // controller.width;
 	var HEIGHT = 720; // controller.height;
@@ -115,6 +100,10 @@ function KeyboardWrapper( options )
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
+
+	var center = new THREE.Vector2( controller.center.x, controller.center.y );
+
+	var radius = center.y - 30; // should probably do somehting better to scale it
 
 	var decay = .025;
 
@@ -125,6 +114,12 @@ function KeyboardWrapper( options )
 	} );
 
 	var scene = new THREE.Scene();
+
+	var group = new THREE.Group();
+	scene.add( group );
+
+	// group.position.x -= HALF_WIDTH * .5
+	// group.position.y += HALF_HEIGHT * .5
 
 	var autoClear = false;
 	
@@ -137,78 +132,52 @@ function KeyboardWrapper( options )
 		depthWrite: true,
 	} ) );
 
-	scene.add( clearingMesh );
+
+	group.add( clearingMesh );
+
+	var buttonMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 32 ), new LDButtonMaterial( ) );
+
+	buttonMesh.scale.set( radius, radius, 10 );
+
+	group.add( buttonMesh )
 
 
-	var keyGeometry = new THREE.BoxGeometry( 1, 1, .1 );
-	// var keyMat = new THREE.MeshBasicMaterial( {
-	// 	side: 2,
-	// 	// transparent: true,
-	// 	// opacity: .3,
-	// 	color: 0xbbbbbb // 0x8899aa
-	// } );
+	var tween;
+	scope.onHandleInput = function( data ) {
+		// console.log( e );
+	
+		if(tween) {
+			tween.stop();
 
+			TWEEN.remove( tween );
+		}
+		
+		if(data.press == 1)
+		{
 
-	var keyMap = {}
-	for(var i in keys )
-	{
-		var mat = new LDKeyMaterial();
+			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )
+				.to( {r: 1, g: 1, b: 1}, 200)
+				.easing( TWEEN.Easing.Bounce.Out )
+				.start()	
+		} else {
 
-		var m = new THREE.Mesh( keyGeometry, mat );
-
-		m.position.x = keys[i].x + keys[i].w * .5 - HALF_WIDTH;
-
-		m.scale.x = keys[i].w;
-		m.scale.y = keys[i].h;
-
-		scene.add( m );
-
-		keyMap[keys[i].note] = m;
-
-		m.ld_on = 0;
+			tween = new TWEEN.Tween( buttonMesh.material.uniforms.color2.value )
+				.to( {r: 0, g: 0, b: 0}, 1000)
+				.easing( TWEEN.Easing.Bounce.Out )
+				.start()
+		}
 	}
 
 	function draw( renderer )
 	{
+		// renderer.render( scene, camera, null, true );
 		renderer.render( scene, camera, renderTarget, autoClear );
 	}
 
-	scope.onHandleInput = function() {
-		// console.log( "scope.onHandleInput" );
-	}
-
-
-	var tweenMap = {};
 	function handleInput( data )
 	{
-		console.log( 'data', data );
-
 		scope.onHandleInput( data );
-		
-		var m = keyMap[ data.note];
-
-		if(tweenMap[ data.note ]) {
-			tweenMap[ data.note ].stop();
-			TWEEN.remove( tweenMap[ data.note ] );
-		}
-
-		if(data.on) {
-			m.material.uniforms.u.value = data.on / 128;	
-			m.material.uniforms.weight.value = 1;
-
-			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 1}, 50)
-				.easing( TWEEN.Easing.Cubic.Out )
-				.start();
-
-		}else{
-			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 0}, 200)
-				.easing( TWEEN.Easing.Cubic.Out )
-				.start();	
-		}
-
-		m.ld_on = data.on;
+		// console.log( e );
 	}
 
 	return {

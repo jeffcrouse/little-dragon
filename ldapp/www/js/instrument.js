@@ -6,6 +6,8 @@ var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
 
 
+
+
 nx.onload = function() {
 
 	nx.sendsTo("js");
@@ -13,9 +15,11 @@ nx.onload = function() {
 	nx.colorize("accent", "#FF00FF");
 	nx.colorize("fill", "#00FFFF");  
 	nx.setViewport(0.5);
-
+	
 	console.log("iface", iface);
-	switch( iface ){	
+
+	switch( iface ){
+
 		//  ___   _  _______  __   __  _______ 
 		// |   | | ||       ||  | |  ||       |
 		// |   |_| ||    ___||  |_|  ||  _____|
@@ -25,6 +29,8 @@ nx.onload = function() {
 		// |___| |_||_______|  |___|  |_______|
                       
 		case "keyscontrols":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "multislider", 1);
 			control.setNumberOfSliders(4);
 
@@ -40,6 +46,8 @@ nx.onload = function() {
 			break;
 
 		case "keys2":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "keyboard", 1);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -59,6 +67,8 @@ nx.onload = function() {
 			break;
 
 		case "keys3":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "keyboard", 2);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -78,6 +88,7 @@ nx.onload = function() {
 			break;
 
 		case "keys4":
+			screen.lockOrientation('landscape-secondary');
 
 			var control = createControl("keys", "keyboard", 3);
 			control.multitouch = true;
@@ -98,6 +109,8 @@ nx.onload = function() {
 			break;
 
 		case "keys5":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "keyboard", 4);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -117,7 +130,31 @@ nx.onload = function() {
 			break;
 
 		case "keystilt":
-			var control = createControl("keys", "tilt", 1);
+			screen.lockOrientation('portrait');
+
+			var dist = function (v1, v2) {
+				var dx = v1.x - v2.x;
+				var dy = v1.y - v2.y;
+				var dz = v1.z - v2.z;
+				return Math.sqrt(dx*dx+dy*dy+dz*dz);
+			}
+
+			var last_data = null;
+			var min_dist = 0.3;
+			var throttle = function(data) {	
+				if(last_data==null) {
+					last_data = data;
+					return true;
+				}
+				if(dist(data, last_data) < min_dist)
+					return false;
+
+				last_data = data;
+				return true;
+			}
+			var options = {h: "1280px", w: "720px", throttle: throttle};
+			var control = createControl("keys", "tilt", 1, options);
+			control.throttlePeriod = 50;
 			control.text = "pan";
 			break;
 
@@ -131,6 +168,8 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "basscontrols":
+			screen.lockOrientation('landscape-primary');
+
 	 		var control = createControl("bass", "multislider", 1);
 			control.setNumberOfSliders(4);
 			
@@ -146,6 +185,8 @@ nx.onload = function() {
 	 		break;
 
 		case "bass1":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 1);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -165,6 +206,8 @@ nx.onload = function() {
 			break;
 
 		case "bass2":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 2);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -184,6 +227,8 @@ nx.onload = function() {
 			break;
 
 		case "bass3":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 3);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -204,6 +249,8 @@ nx.onload = function() {
 			  
 
 		case "bass4":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 4);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -222,8 +269,34 @@ nx.onload = function() {
 
 			break;
 
+
 		case "basstilt":
-			var control = createControl("bass", "tilt", 1);
+			screen.lockOrientation('portrait');
+
+			var dist = function (v1, v2) {
+				var dx = v1.x - v2.x;
+				var dy = v1.y - v2.y;
+				var dz = v1.z - v2.z;
+				return Math.sqrt(dx*dx+dy*dy+dz*dz);
+			}
+
+			var last_data = null;
+			var min_dist = 0.3;
+			var throttle = function(data) {	
+				if(last_data==null) {
+					last_data = data;
+					return true;
+				}
+				if(dist(data, last_data) < min_dist)
+					return false;
+
+				last_data = data;
+				return true;
+			}
+
+			var options = {h: "1280px", w: "720px", throttle: throttle};
+			var control = createControl("bass", "tilt", 1, options);
+			control.throttlePeriod = 50;
 			control.text = "pan";
 			break;
 
@@ -236,31 +309,31 @@ nx.onload = function() {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
+
 	  //   case "drumscontrols":
+	  //   	screen.lockOrientation('landscape-primary');
+
 			// var control = createControl("drum", "multislider", 4);
+
 			 
-			// control.setNumberOfSliders(3);
+			// // control.setNumberOfSliders(3);
 
-			// ldInterface = TouchLines({
-			//   controller: control,
-			//   colorRampPath: "textures/bass/bass1.jpg",
-			//   lineWidth: 4,
-			//   lineLength: 20,
-			//   rotation: 3,
-			//   noiseScale: .005
-			// });
+			// // ldInterface = TouchLines({
+			// //   controller: control,
+			// //   colorRampPath: "textures/bass/bass1.jpg",
+			// //   lineWidth: 4,
+			// //   lineLength: 20,
+			// //   rotation: 3,
+			// //   noiseScale: .005
+			// // });
 
-		 //    break;
+		 // //    break;
 
-		case "drumstilt":
-		    var control = createControl("drum", "tilt", 1);
-		    control.text = "something";
-		    break;
+
 
 	    case "drums1":
-		// case "drumsParticles":
-		   // createControl("drum", "button", 1);
-			
+	    	screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 1);
 		    control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
@@ -276,6 +349,8 @@ nx.onload = function() {
 		   break;
 
 	    case "drums2":
+	    	screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 2);
 		    control.mode = "node";
 
@@ -290,6 +365,8 @@ nx.onload = function() {
 		    break;
 
 		case "drums3":
+			screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 3);
 		    control.mode = "node";
 
@@ -304,6 +381,8 @@ nx.onload = function() {
 		    break;
 
 		case "drums4":
+			screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 4);
 		    control.mode = "node";
 
@@ -317,9 +396,20 @@ nx.onload = function() {
 		    });
 		    break;
 
+
 		case "drums5":
+			screen.lockOrientation('landscape-primary');
 		    var control = createControl("drum", "button", 5);
 		    control.mode = "node";
+
+		
+		case "drumstilt":
+			screen.lockOrientation('portrait');
+
+		    var control = createControl("drum", "tilt", 1);
+		    control.text = "something";
+		    break;
+
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -391,7 +481,7 @@ function roundFloats(obj) {
 
 function createControl(instrument, type, number, options){
 	var id = [instrument, type, number].join("_");
-	var defaults = {"id": id, "parent":"controls", "w": "1280px", "h": "720px"};
+	var defaults = {"id": id, "parent":"controls", w: "1280px", h: "720px", throttle: null};
 	var settings = $.extend(defaults, options);
 
 	var widget = nx.add(type, settings).on('*', function(data) {
@@ -403,10 +493,12 @@ function createControl(instrument, type, number, options){
 		}
 
 		if(oscSender) {
-			var addr = "/" + id;
-			console.log(addr, JSON.stringify(data));
-			oscSender.send(addr, JSON.stringify(data), null,
-				function(err){ console.error( "oscSender.send", err ); } );
+			if(!settings.throttle || settings.throttle(data)) {
+				var addr = "/" + id;
+				console.log(addr, JSON.stringify(data));
+				oscSender.send(addr, JSON.stringify(data), null,
+					function(err){ console.error( "oscSender.send", err ); } );
+			}
 		} else {
 			console.warn("oscSender not yet constructed!")
 		}
@@ -425,6 +517,11 @@ var onDeviceReady = function() {
 	console.log( "navigator.userAgent", navigator.userAgent );
 	console.log( "device.uuid", device.uuid );
 
+	// Set up an OSC sender to broadcast messages to anyone listening on port 3333
+	oscSender = new window.OSCSender("255.255.255.255", 3333);
+
+
+	/*
 	// Called when device is paused
 	var onPause = function(e) {
 		if(oscSender) {
@@ -459,24 +556,32 @@ var onDeviceReady = function() {
 			networkinterface.getIPAddress(onIPAddress);
 		}
 	}
+	// Listen for the OSC server to advertise itself
+	var zeroConfAddr = "_osc._udp.local.";
+	console.log("Listen for zeroconf service", zeroConfAddr);
+	ZeroConf.watch(zeroConfAddr, onZeroConf);
+
 
 	// Called when networkinterface gets the IP address of the device.
 	// Announce to the server that we are here, 
 	// also set up a listener to listen for messages from the server
+	/*
 	var onIPAddress = function (ip) { 
 		myIP = ip;
 		console.log("myIP", myIP);
 
 		onResume();
 
-		oscListener = new window.OSCListener(3333);
-		var onSuccess =  function(){ console.log("listening for OSC on port", 3333); };
+		oscListener = new window.OSCListener(4444);
+		var onSuccess =  function(){ console.log("listening for OSC on port", 4444); };
 		var onError = function(){ console.error("failed to open OSC port for listening"); };
 		oscListener.startListening(onSuccess, onError);
 		oscListener.on("/tick", function(data){
 			console.log("/tick", data);
 		});
 	}
+	networkinterface.getIPAddress(onIPAddress);
+	*/
 
 	// Disable as many buttons as possible.
 	var _stop = function(e){ e.preventDefault(); };
@@ -485,14 +590,8 @@ var onDeviceReady = function() {
 	document.addEventListener("searchbutton", _stop, false);
 	document.addEventListener("startcallbutton", _stop, false);
 	document.addEventListener("endcallbutton", _stop, false);
-	document.addEventListener("pause", onPause, false);
-	document.addEventListener("resume", onResume, false);
-
-
-	// Listen for the OSC server to advertise itself
-	var zeroConfAddr = "_osc._udp.local.";
-	console.log("Listen for zeroconf service", zeroConfAddr);
-	ZeroConf.watch(zeroConfAddr, onZeroConf);
+	// document.addEventListener("pause", onPause, false);
+	// document.addEventListener("resume", onResume, false);
 }
 document.addEventListener('deviceready', onDeviceReady, false);
 

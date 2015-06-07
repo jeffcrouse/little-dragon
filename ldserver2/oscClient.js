@@ -2,7 +2,7 @@ var osc = require('node-osc');
 
 var oscClient = function(options) {
 	var ip = options.ip;
-	var client = new osc.Client(ip, 3333);
+	var client = new osc.Client(ip, 4444);
 	
 	var loop_i = setInterval(function(){
 		client.send("/tick", JSON.stringify({"time": new Date()}));
