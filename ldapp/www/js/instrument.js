@@ -410,7 +410,7 @@ nx.onload = function() {
 		case "drums5":
 		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
-		    var control = createControl(instrumentName, "button", 5);
+		    var control = createControl(instrumentName, "multislider", 1);
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
