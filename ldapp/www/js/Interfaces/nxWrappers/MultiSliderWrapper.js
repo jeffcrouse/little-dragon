@@ -21,7 +21,7 @@ var LDMultisliderMaterial = function( params ) {
 			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
 			weight: {type: 'f', value: params.u || 0 },
 			falloff: {type: 'f', value: params.u || .5 },
-			minWeight: {type: 'f', value: params.u || .25 },
+			minWeight: {type: 'f', value: params.u || .7 },
 		},
 
 		vertexShader: [
