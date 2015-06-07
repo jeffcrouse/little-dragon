@@ -382,7 +382,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 var mdns = require('mdns');
 console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-jeff"});
+var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
 ad.start();
 
 
@@ -550,6 +550,7 @@ if("USB Uno MIDI Interface" in devices)
 {
 	input.openPort(devices["USB Uno MIDI Interface"]);
 	input.on('message', function(deltaTime, message) {
+		if(!io) return;
 
 		var func = message[0];
 		var note = message[1];
@@ -593,7 +594,10 @@ if("USB Uno MIDI Interface" in devices)
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
 process.on('uncaughtException', function(err) {
     // handle the error safely
-    console.error(err)
+    console.error(err);
+
+	var err = new Error();
+    console.error( err.stack );
 })
 
 

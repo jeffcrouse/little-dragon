@@ -36,14 +36,14 @@ var Pixel = function(i) {
 var LongStrip = function(start, end) {
 
 	var stripes = [];
-	var stripePeriod = 500;
+	var stripePeriod = 200;
 	var nextStripe = new Date().getTime();
 
 	
 	var Stripe = function() {
 		var width = 5;
 		var pos = start-width;
-		var speed = 50.0;
+		var speed = 100.0;
 		var r = Math.map(Math.random(), 0, 1, 100, 255);
 		var g = Math.map(Math.random(), 0, 1, 10, 100);
 		var b = Math.map(Math.random(), 0, 1, 10, 100);
