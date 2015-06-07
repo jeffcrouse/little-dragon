@@ -6,7 +6,7 @@ var osc = require('node-osc');
 var midi = require('midi');
 var teoria = require('teoria');
 var oscClient = require("./oscClient");
-var leds = require("./leds")
+//var leds = require("./leds")
 
 // Set up MIDI
 var output = new midi.output();
@@ -71,7 +71,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		
 		if(io) io.sockets.emit(addr, data);
 
-
+		/*
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
 		} 
@@ -80,7 +80,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			oscClients[data.iface].close();
 			delete oscClients[data.iface];
 		} 
-		
+		*/
 
 		//  ___   _  _______  __   __  _______ 
 		// |   | | ||       ||  | |  ||       |
@@ -92,7 +92,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	
 		
-		else if(addr=="/keys_multislider_1"){
+		if(addr=="/keys_multislider_1"){
 			//FILTER 
 			var frequency = data.list["0"] * FULL_VELOCITY;
 			var resonance = data.list["1"] * FULL_VELOCITY;
@@ -104,7 +104,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var lfoPan = data.list["3"] * FULL_VELOCITY;
 			output.sendMessage([MIDI.CH1.CONTROL, 3, lfoVolume]);
 			output.sendMessage([MIDI.CH1.CONTROL, 4, lfoPan]);
-
 		}
 
 		else if(addr=="/keys_tilt_1") {
@@ -235,19 +234,19 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			switch(drumNumber){
 				case '1': 
 					control = 20;
-					if(data.press==1) leds.led_sections[0].blink();
+					//if(data.press==1) leds.led_sections[0].blink();
 					break;
 				case '2': 
 					control = 21;
-					if(data.press==1) leds.led_sections[1].blink();
+					//if(data.press==1) leds.led_sections[1].blink();
 					break;
 				case '3': 
 					control = 22;
-					if(data.press==1) leds.led_sections[2].blink();
+					//if(data.press==1) leds.led_sections[2].blink();
 					break;
 				case '4': 
 					control = 23;
-					if(data.press==1) leds.led_sections[3].blink();
+					//if(data.press==1) leds.led_sections[3].blink();
 					break;
 			}
 
@@ -380,10 +379,10 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 // Advertise the OSC server using ZeroConf discovery 
 // so that we don't have to hardcode the IP address into the phones
 
-var mdns = require('mdns');
-console.log("advertising", mdns.udp('osc'), osc_port);
-var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
-ad.start();
+// var mdns = require('mdns');
+// console.log("advertising", mdns.udp('osc'), osc_port);
+// var ad = mdns.createAdvertisement(mdns.udp('osc'), osc_port, {name: "ld-luisa"});
+// ad.start();
 
 
 
@@ -495,7 +494,6 @@ stdin.on( 'data', function( key ){
 		var message = [MIDI.CH3.CONTROL, 32, 1];
 		output.sendMessage(message);
 	}
-
 
 	//PROGRAM VOCALS
 	if(key=='a') {

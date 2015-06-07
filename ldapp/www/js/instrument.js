@@ -505,6 +505,11 @@ var onDeviceReady = function() {
 	console.log( "navigator.userAgent", navigator.userAgent );
 	console.log( "device.uuid", device.uuid );
 
+	// Set up an OSC sender to broadcast messages to anyone listening on port 3333
+	oscSender = new window.OSCSender("255.255.255.255", 3333);
+
+
+	/*
 	// Called when device is paused
 	var onPause = function(e) {
 		if(oscSender) {
@@ -539,10 +544,16 @@ var onDeviceReady = function() {
 			networkinterface.getIPAddress(onIPAddress);
 		}
 	}
+	// Listen for the OSC server to advertise itself
+	var zeroConfAddr = "_osc._udp.local.";
+	console.log("Listen for zeroconf service", zeroConfAddr);
+	ZeroConf.watch(zeroConfAddr, onZeroConf);
+
 
 	// Called when networkinterface gets the IP address of the device.
 	// Announce to the server that we are here, 
 	// also set up a listener to listen for messages from the server
+	/*
 	var onIPAddress = function (ip) { 
 		myIP = ip;
 		console.log("myIP", myIP);
@@ -557,6 +568,8 @@ var onDeviceReady = function() {
 			console.log("/tick", data);
 		});
 	}
+	networkinterface.getIPAddress(onIPAddress);
+	*/
 
 	// Disable as many buttons as possible.
 	var _stop = function(e){ e.preventDefault(); };
@@ -565,14 +578,8 @@ var onDeviceReady = function() {
 	document.addEventListener("searchbutton", _stop, false);
 	document.addEventListener("startcallbutton", _stop, false);
 	document.addEventListener("endcallbutton", _stop, false);
-	document.addEventListener("pause", onPause, false);
-	document.addEventListener("resume", onResume, false);
-
-
-	// Listen for the OSC server to advertise itself
-	var zeroConfAddr = "_osc._udp.local.";
-	console.log("Listen for zeroconf service", zeroConfAddr);
-	ZeroConf.watch(zeroConfAddr, onZeroConf);
+	// document.addEventListener("pause", onPause, false);
+	// document.addEventListener("resume", onResume, false);
 }
 document.addEventListener('deviceready', onDeviceReady, false);
 
