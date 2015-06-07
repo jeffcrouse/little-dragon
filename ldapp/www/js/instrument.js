@@ -37,7 +37,7 @@ nx.onload = function() {
 		// |___| |_||_______|  |___|  |_______|
                       
 		case "keys1":
-			screen.lockOrientation('landscape-secondary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "multislider", 1);
 			control.setNumberOfSliders(4);
@@ -54,7 +54,7 @@ nx.onload = function() {
 			break;
 
 		case "keys2":
-			screen.lockOrientation('landscape-secondary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 1);
 			control.multitouch = true;
@@ -75,7 +75,7 @@ nx.onload = function() {
 			break;
 
 		case "keys3":
-			screen.lockOrientation('landscape-secondary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 2);
 			control.multitouch = true;
@@ -96,7 +96,7 @@ nx.onload = function() {
 			break;
 
 		case "keys4":
-			screen.lockOrientation('landscape-secondary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 3);
 			control.multitouch = true;
@@ -117,7 +117,7 @@ nx.onload = function() {
 			break;
 
 		case "keys5":
-			screen.lockOrientation('landscape-secondary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 4);
 			control.multitouch = true;
@@ -138,7 +138,7 @@ nx.onload = function() {
 			break;
 
 		case "keys6": //tilt
-			screen.lockOrientation('portrait');
+			if(screen.lockOrientation)	screen.lockOrientation('portrait');
 
 			var dist = function (v1, v2) {
 				var dx = v1.x - v2.x;
@@ -176,7 +176,7 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "bass1":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 	 		var control = createControl(instrumentName, "multislider", 1);
 			control.setNumberOfSliders(4);
@@ -193,7 +193,7 @@ nx.onload = function() {
 	 		break;
 
 		case "bass2":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 			var control = createControl(instrumentName, "keyboard", 1);
 			control.multitouch = true;
@@ -214,7 +214,7 @@ nx.onload = function() {
 			break;
 
 		case "bass3":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 			var control = createControl(instrumentName, "keyboard", 2);
 	 		control.octaves = 1;
@@ -235,7 +235,7 @@ nx.onload = function() {
 			break;
 
 		case "bass4":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 			var control = createControl(instrumentName, "keyboard", 3);
 	 		control.octaves = 1;
@@ -257,7 +257,7 @@ nx.onload = function() {
 			  
 
 		case "bass5":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 			var control = createControl(instrumentName, "keyboard", 4);
 	 		control.octaves = 1;
@@ -279,7 +279,7 @@ nx.onload = function() {
 
 
 		case "bass6": //tilt
-			screen.lockOrientation('portrait');
+			if(screen.lockOrientation)	screen.lockOrientation('portrait');
 
 			var dist = function (v1, v2) {
 				var dx = v1.x - v2.x;
@@ -318,7 +318,7 @@ nx.onload = function() {
 		// |______| |___|  |_||_______||_|   |_||_______|
 	  
 	  //   case "drumscontrols":
-	  //   	screen.lockOrientation('landscape-primary');
+	  //   	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 			// var control = createControl("drum", "multislider", 4);
 
@@ -339,7 +339,7 @@ nx.onload = function() {
 		//PRE-SAMPLED DRUMS
 	    case "drums1":
 	    case "pre-drums1":
-	    	screen.lockOrientation('landscape-primary');
+	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 1);
 		    control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
@@ -357,7 +357,7 @@ nx.onload = function() {
 
 	    case "drums2":
 	    case "pre-drums1":
-	    	screen.lockOrientation('landscape-primary');
+	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 2);
 		    control.mode = "node";
@@ -374,7 +374,7 @@ nx.onload = function() {
 
 		case "drums3":
 		case "pre-drums1":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 3);
 		    control.mode = "node";
@@ -391,7 +391,7 @@ nx.onload = function() {
 
 		case "drums4":
 		case "pre-drums1":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 4);
 		    control.mode = "node";
@@ -409,14 +409,14 @@ nx.onload = function() {
 
 		case "drums5":
 		case "pre-drums1":
-			screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 		    var control = createControl(instrumentName, "button", 5);
 		    control.mode = "node";
 
 		
 		case "drums6":
 		case "pre-drums6":
-			screen.lockOrientation('portrait');
+			if(screen.lockOrientation)	screen.lockOrientation('portrait');
 
 		    var control = createControl(instrumentName, "tilt", 1);
 		    control.text = "something";

@@ -71,6 +71,10 @@ var LDKeyMaterial = function( params ) {
 
 		'	float grad = mix( weight * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 
+		'	grad += sin( vUv.y * 3.145 ) * .1 + .1;',
+
+		// '	float grad = mix( (weight + .25) * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
+
 		'	gl_FragColor = vec4( color * grad, 1.);',
 
 		'}'
@@ -181,7 +185,7 @@ function KeyboardWrapper( options )
 	var tweenMap = {};
 	function handleInput( data )
 	{
-		console.log( 'data', data );
+		// console.log( 'data', data );
 
 		scope.onHandleInput( data );
 		
@@ -197,7 +201,7 @@ function KeyboardWrapper( options )
 			m.material.uniforms.weight.value = 1;
 
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 1}, 50)
+				.to({value: 1}, 2)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();
 
@@ -205,6 +209,7 @@ function KeyboardWrapper( options )
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
 				.to({value: 0}, 200)
 				.easing( TWEEN.Easing.Cubic.Out )
+				.delay(10)
 				.start();	
 		}
 
