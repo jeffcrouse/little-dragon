@@ -339,7 +339,7 @@ nx.onload = function() {
 	    	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 1);
-		    control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
+		    // control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
@@ -357,7 +357,7 @@ nx.onload = function() {
 	    	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 2);
-		    control.mode = "node";
+		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -374,7 +374,7 @@ nx.onload = function() {
 			screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 3);
-		    control.mode = "node";
+		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -391,7 +391,7 @@ nx.onload = function() {
 			screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "button", 4);
-		    control.mode = "node";
+		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
 		      controller: control,
@@ -408,8 +408,18 @@ nx.onload = function() {
 		case "pre-drums1":
 			screen.lockOrientation('landscape-primary');
 		    var control = createControl(instrumentName, "button", 5);
-		    control.mode = "node";
+		    // control.mode = "node";
 
+		    ldInterface = TouchLines({
+		      controller: control,
+		      colorRampPath: "textures/drums/drum-4.jpg",
+		      lineWidth: 4,
+		      lineLength: 20,
+		      rotation: 3,
+		      noiseScale: .005
+		    });
+		    
+		    break;
 		
 		case "drums6":
 		case "pre-drums6":
@@ -527,7 +537,9 @@ var onDeviceReady = function() {
 	console.log( "device.uuid", device.uuid );
 
 	// Set up an OSC sender to broadcast messages to anyone listening on port 3333
-	oscSender = new window.OSCSender("255.255.255.255", 3333);
+	// oscSender = new window.OSCSender("255.255.255.255", 3333);
+	oscSender = new window.OSCSender("192.168.2.19", 3333);
+	
 
 
 	/*
