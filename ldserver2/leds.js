@@ -103,8 +103,8 @@ for(var i=0; i<700; i++) {
     pixels.push( new Pixel(i) );
 }
 
-led_sections[0] = new InstrumentSection(0, 30, [210, 50, 10]);
-led_sections[1] = new InstrumentSection(31, 60, [255, 100, 0]);
+led_sections[0] = new InstrumentSection(200, 210, [210, 50, 10]);
+led_sections[1] = new InstrumentSection(211, 220, [255, 100, 0]);
 led_sections[2] = new InstrumentSection(61, 90, [240, 0, 60]);
 led_sections[3] = new InstrumentSection(91, 120, [200, 50, 100]);
 
@@ -127,7 +127,7 @@ var draw = function() {
     var deltaTime = now - lastFrame;
     lastFrame = now;
 
-    top_ring.update(deltaTime);
+    //top_ring.update(deltaTime);
 
     for(var i in led_sections) {
     	led_sections[i].update(deltaTime);
