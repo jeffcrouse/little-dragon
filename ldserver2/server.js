@@ -12,7 +12,6 @@ var oscClient = require("./oscClient");
 var output = new midi.output();
 output.openPort(0);
 
-
 // http://betacontroller.com/post/74610077245/phase-2-2-playing-middle-c-with-node-js
 // http://www.midi.org/techspecs/midimessages.php
 var MIDI = {
@@ -92,6 +91,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			delete oscClients[data.iface];
 		} 
 		*/
+			
 
 		//  ___   _  _______  __   __  _______ 
 		// |   | | ||       ||  | |  ||       |
@@ -100,7 +100,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |     |_ |    ___||_     _||_____  |
 		// |    _  ||   |___   |   |   _____| |
 		// |___| |_||_______|  |___|  |_______|
-
 		
 		if(addr=="/keys_multislider_1"){
 			//FILTER 
@@ -237,8 +236,12 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 
-		else if(addr.substring(0,13)=="/drum_button_"){
-			var drum = addr.substring(13, 14);
+	
+
+		//INSTRUMENT: PRE-SAMPLED DRUMS
+		else if(contains(addr, '/pre-drums')){
+			//message format: pre-drums_button_4 
+			var drum = addr.charAt(addr.length - 1);
 			
 			var note;
 			switch(drum){
@@ -272,79 +275,79 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			else if(data.press==0){
 				output.sendMessage([MIDI.CH3.NOTEOFF, note, velocity]);
 			}
+		}
 
-			//var drums =	{"1":{"clipexists":false, "recording": false, "holding":false, holdStart":0 }}; 
+		//INSTRUMENT: LIVE SAMPLED DRUMS
+		else if(contains(addr, '/drums')){
+			var drums =	{"1":{"clipexists":false, "recording": false, "holding":false, "holdStart":0 }}; 
 
-			//CODE FOR SAMPLING 4 DRUMS (hold longer than a second to rec, less than a second to launch)
-			//latest version of this is in branch 'multisamplerdrums'
+			// CODE FOR SAMPLING 4 DRUMS (hold longer than a second to rec, less than a second to launch)
+			// latest version of this is in branch 'multisamplerdrums'
 			
-			// if(data.press==1){ // button down
+			if(data.press==1){ // button down
 				
-			// 	drums[drum].holding = true;
-			// 	drums[drum].holdStart = Date.now(); 
+				drums[drum].holding = true;
+				drums[drum].holdStart = Date.now(); 
 
-			// 	setTimeout(function(){//after holding for a second, start recording
+				setTimeout(function(){//after holding for a second, start recording
 					
-			// 		var holdTime = Date.now() - drums[drum].holdStart;
-			// 		if(drums[drum].holding && holdTime >= holdTimeToRecord){
-			// 			// console.log("start rec");
+					var holdTime = Date.now() - drums[drum].holdStart;
+					if(drums[drum].holding && holdTime >= holdTimeToRecord){
+						// console.log("start rec");
 						
-			// 			//send ARM track
-			// 			output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
+						//send ARM track
+						output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
 
-			// 			// send NEW message and overwrite message to start recording new scene
-			// 			// if(drum == '1')
-			// 			output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+						// send NEW message and overwrite message to start recording new scene
+						// if(drum == '1')
+						output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
 						
 
-			// 			//send 'session record' to start recording
-			// 			output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-			// 			output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+						//send 'session record' to start recording
+						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
 
-			// 			drums[drum].recording = true;
+						drums[drum].recording = true;
 						
-			// 		}
+					}
 					
-			// 	}, holdTimeToRecord);
-			// }
-			// else if(data.press==0){ // button up
-			// 	var holdTime = Date.now() - drums[drum].holdStart;
+				}, holdTimeToRecord);
+			}
+			else if(data.press==0){ // button up
+				var holdTime = Date.now() - drums[drum].holdStart;
 
-			// 	if(drums[drum].clipexists && holdTime < holdTimeToRecord){
-			// 		console.log("launch clip");
-			// 		//launch clip	
-			// 		output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
-			// 		// output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
+				if(drums[drum].clipexists && holdTime < holdTimeToRecord){
+					console.log("launch clip");
+					//launch clip	
+					output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
+					// output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
 
-			// 	}
+				}
 
-			// 	else if(drums[drum].recording){ 
-			// 		console.log("stop rec");
-			// 		// STOP session recording
-			// 		output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-			// 		output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+				else if(drums[drum].recording){ 
+					console.log("stop rec");
+					// STOP session recording
+					output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+					output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
 					
-			// 		//set LOOP to false 
-			// 		output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
-			// 		output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
+					//set LOOP to false 
+					output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
+					output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
 
-			// 		// if(drum==4){
-			// 			// send NEW message and overwrite message to start recording new scene
-			// 			// output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-			// 		// }
+					// if(drum==4){
+						// send NEW message and overwrite message to start recording new scene
+						// output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+					// }
 
-			// 		//un-arm track
-			// 		output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
+					//un-arm track
+					output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
 					
-			// 		drums[drum].recording = false;
-			// 		drums[drum].clipexists = true;
+					drums[drum].recording = false;
+					drums[drum].clipexists = true;
 					
-			// 	}
-			// 	drums[drum].holding = false;
-			// }
-			
-			
-			
+				}
+				drums[drum].holding = false;
+			}
 			
 		}
 
@@ -433,6 +436,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				
 				
 			// }
+			
 	});
 	var sendNote = function(midiNote, velocity, channel){
 		// console.log(midiNote + " " + velocity);
@@ -442,6 +446,12 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		midiMessage = [channel.NOTEON, midiNote, velocity];
 		output.sendMessage(midiMessage);
 	}
+	
+
+	var contains = function(str, substr){
+		return str.indexOf(substr) > -1;
+	}
+
 });
 
 
