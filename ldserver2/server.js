@@ -41,7 +41,12 @@ var scaleBass = teoria.note('f#1').scale('minor');
 //keep a history of drum messages to detect button hold
 //TODO: generalize, should be for all drums
 //slot states: empty, recording, playing, stopped.
-var drums =	{"1":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 }}; 
+var drums =	{
+				"1":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 },
+				"2":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 },
+				"3":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 },
+				"4":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 }	
+			}; 
 var holdTimeToRecord = 1000; //how long button needs to be down to start record, in miliseconds
 
 
@@ -234,86 +239,108 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		else if(addr.substring(0,13)=="/drum_button_"){
 			var drum = addr.substring(13, 14);
 			
-			var control;
+			var note;
 			switch(drum){
 				case '1': 
-					control = 20;
+					note = 36;
 					if(data.press==1)led_sections[0].blink();
 					break;
 				case '2': 
-					control = 21;
+					note = 37;
 					if(data.press==1)led_sections[1].blink();
 					break;
 				case '3': 
-					control = 22;
+					note = 38;
 					if(data.press==1)led_sections[2].blink();
 					break;
 				case '4': 
-					control = 23;
+					note = 39;
+					if(data.press==1)led_sections[3].blink();
+					break;
+				case '5': 
+					note = 40;
 					if(data.press==1)led_sections[3].blink();
 					break;
 			}
-			//var drums =	{"1":{"clipexists":false, "recording": false, "holding":false, holdStart":0 }}; 
 
 			if(data.press==1){ // button down
+				//range y: 80 to 670 approx.
+				var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
+				output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+			}
+			else if(data.press==0){
+				output.sendMessage([MIDI.CH3.NOTEOFF, note, velocity]);
+			}
+
+			//var drums =	{"1":{"clipexists":false, "recording": false, "holding":false, holdStart":0 }}; 
+
+			//CODE FOR SAMPLING 4 DRUMS (hold longer than a second to rec, less than a second to launch)
+			//latest version of this is in branch 'multisamplerdrums'
+			
+			// if(data.press==1){ // button down
 				
-				drums[drum].holding = true;
-				drums[drum].holdStart = Date.now(); //start hold
+			// 	drums[drum].holding = true;
+			// 	drums[drum].holdStart = Date.now(); 
 
-				setTimeout(function(){//start recording
+			// 	setTimeout(function(){//after holding for a second, start recording
 					
-					var holdTime = Date.now() - drums[drum].holdStart;
-					if(drums[drum].holding && holdTime >= holdTimeToRecord){ 
-						//START RECORDING
-						console.log("start rec");
+			// 		var holdTime = Date.now() - drums[drum].holdStart;
+			// 		if(drums[drum].holding && holdTime >= holdTimeToRecord){
+			// 			// console.log("start rec");
 						
-						//send ARM
-						output.sendMessage([MIDI.CH3.CONTROL, 102, 1]);
-						// send NEW message and overwrite message to start recording new clip
-						output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-						//send 'session record' to start recording
-						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+			// 			//send ARM track
+			// 			output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
+
+			// 			// send NEW message and overwrite message to start recording new scene
+			// 			// if(drum == '1')
+			// 			output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
 						
 
-						drums[drum].recording = true;
+			// 			//send 'session record' to start recording
+			// 			output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+			// 			output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+
+			// 			drums[drum].recording = true;
 						
-					}
+			// 		}
 					
-				}, holdTimeToRecord);
-			}
-			else if(data.press==0){ // button up
-				var holdTime = Date.now() - drums[drum].holdStart;
+			// 	}, holdTimeToRecord);
+			// }
+			// else if(data.press==0){ // button up
+			// 	var holdTime = Date.now() - drums[drum].holdStart;
 
-				if(drums[drum].clipexists && holdTime < holdTimeToRecord){
-					console.log("launch clip");
-					//launch clip	
-					output.sendMessage([MIDI.CH3.NOTEON, 103, 1]);
-					// output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
+			// 	if(drums[drum].clipexists && holdTime < holdTimeToRecord){
+			// 		console.log("launch clip");
+			// 		//launch clip	
+			// 		output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
+			// 		// output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
 
-				}
+			// 	}
 
-				else if(drums[drum].recording){ 
-					console.log("stop rec");
-					// STOP RECORDING
-					output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-					output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
-
-					//un-arm
-					output.sendMessage([MIDI.CH3.CONTROL, 102, 1]);
+			// 	else if(drums[drum].recording){ 
+			// 		console.log("stop rec");
+			// 		// STOP session recording
+			// 		output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+			// 		output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
 					
-					//set LOOP to false 
-					output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
-					output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
+			// 		//set LOOP to false 
+			// 		output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
+			// 		output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
 
+			// 		// if(drum==4){
+			// 			// send NEW message and overwrite message to start recording new scene
+			// 			// output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+			// 		// }
+
+			// 		//un-arm track
+			// 		output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
 					
+			// 		drums[drum].recording = false;
+			// 		drums[drum].clipexists = true;
 					
-					drums[drum].recording = false;
-					drums[drum].clipexists = true;
-					
-				}
-				drums[drum].holding = false;
-			}
+			// 	}
+			// 	drums[drum].holding = false;
+			// }
 			
 			
 			
@@ -504,75 +531,99 @@ stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
 	//PROGRAM BASS
-	if(key=='1') {
-		var message = [MIDI.CH2.CONTROL, 1, 1];
-		output.sendMessage(message);
-	}
+	// if(key=='1') {
+	// 	var message = [MIDI.CH2.CONTROL, 1, 1];
+	// 	output.sendMessage(message);
+	// }
 
-	if(key=='2') {
-		var message = [MIDI.CH2.CONTROL, 2, 1];
-		output.sendMessage(message);
-	}
+	// if(key=='2') {
+	// 	var message = [MIDI.CH2.CONTROL, 2, 1];
+	// 	output.sendMessage(message);
+	// }
 
-	if(key=='3') {
-		var message = [MIDI.CH2.CONTROL, 3, 1];
-		output.sendMessage(message);
-	}
+	// if(key=='3') {
+	// 	var message = [MIDI.CH2.CONTROL, 3, 1];
+	// 	output.sendMessage(message);
+	// }
 
-	if(key=='4') {
-		var message = [MIDI.CH2.CONTROL, 4, 1];
-		output.sendMessage(message);
-	}
+	// if(key=='4') {
+	// 	var message = [MIDI.CH2.CONTROL, 4, 1];
+	// 	output.sendMessage(message);
+	// }
 
-	if(key=='5') {
-		var message = [MIDI.CH2.CONTROL, 5, 1];
-		output.sendMessage(message);
-	}
+	// if(key=='5') {
+	// 	var message = [MIDI.CH2.CONTROL, 5, 1];
+	// 	output.sendMessage(message);
+	// }
 	//PROGRAM DRUMS
 	//to turn looping off
-	if(key=='q') {
-		output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
-	}
-	//arm
-	if(key=='i'){
-		output.sendMessage([MIDI.CH3.CONTROL, 102, 1]);
-		// output.sendMessage([MIDI.CH3.NOTEON, 105, 1]);
-	}
-	//new button
-	if(key=='n') {
-		output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-	}
-	//record session
-	if(key=='m') {
-		output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+	// if(key=='q') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
+	// }
+	// //arm
+	// if(key=='i'){
+	// 	output.sendMessage([MIDI.CH3.CONTROL, 102, 1]);
+	// 	// output.sendMessage([MIDI.CH3.NOTEON, 105, 1]);
+	// }
+	// //new button
+	// if(key=='n') {
+	// 	output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+	// }
+	// //record session
+	// if(key=='m') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
 		
-	}
-	//launch track
-	if(key=='z') {
-		output.sendMessage([MIDI.CH3.NOTEON, 103, 1]);
-		output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
-	}
+	// }
+	// //launch track
+	// if(key=='z') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 103, 1]);
+	// 	output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
+	// }
 	
+	//ARM	
+	if(key=='1') {
+		output.sendMessage([MIDI.CH3.NOTEON, 30, 1]);
+	}
+	if(key=='2') {
+		output.sendMessage([MIDI.CH3.NOTEON, 31, 1]);
+	}
+	if(key=='3') {
+		output.sendMessage([MIDI.CH3.NOTEON, 32, 1]);
+	}
+	if(key=='4') {
+		output.sendMessage([MIDI.CH3.NOTEON, 33, 1]);
+	}
 
-
-	
+	//LAUNCH
+	if(key=='a') {
+		output.sendMessage([MIDI.CH3.NOTEON, 20, 1]);
+	}
+	if(key=='s') {
+		output.sendMessage([MIDI.CH3.NOTEON, 21, 1]);
+	}
+	if(key=='d') {
+		output.sendMessage([MIDI.CH3.NOTEON, 22, 1]);
+	}
+	if(key=='f') {
+		output.sendMessage([MIDI.CH3.NOTEON, 23, 1]);
+	}
 	
 
 
 
 	//PROGRAM VOCALS
-	if(key=='a') {
-		output.sendMessage([MIDI.CH4.CONTROL, 102, 1]);
-	}
-	if(key=='s') {
-		output.sendMessage([MIDI.CH4.CONTROL, 103, 1]);
-	}
-	if(key=='d') {
-		output.sendMessage([MIDI.CH4.CONTROL, 104, 1]);
-	}
-	if(key=='f') {
-		output.sendMessage([MIDI.CH4.CONTROL, 105, 1]);
-	}
+	// if(key=='a') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 102, 1]);
+	// }
+	// if(key=='s') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 103, 1]);
+	// }
+	// if(key=='d') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 104, 1]);
+	// }
+	// if(key=='f') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 105, 1]);
+	// }
 
 
 
