@@ -58,8 +58,8 @@ function TouchLines( options )
 		borderRadius: "0px" // TODO: I think this gets over-written by nexus
 	}).appendTo( document.body );
 
-	var edgeTopColor = new THREE.Color("magenta");
-	var edgeBottomColor = new THREE.Color("cyan");
+	// var edgeTopColor = new THREE.Color("magenta");
+	// var edgeBottomColor = new THREE.Color("cyan");
 
 	var renderer, scene, camera, light, clock = new THREE.Clock();
 
@@ -144,33 +144,28 @@ function TouchLines( options )
 	//
 	
 	camera = new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
-	
-	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
-	// camera.position.z = 100;
-	// camera.lookAt( origin );
+
+	// //EDGE COLOR BLOCKS
+	// var edgeTop = new THREE.Mesh( new THREE.BoxGeometry( WIDTH, 10, 100), new THREE.MeshBasicMaterial( {
+	// 	color: edgeTopColor,
+	// 	depthTest: true,
+	// 	depthWrite: true,
+	// 	transparent: false
+
+	// } ) );
+	// var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
+	// 	color: edgeBottomColor,
+	// 	depthTest: true,
+	// 	depthWrite: true,
+	// 	transparent: false
+	// } ) );
 
 
-	//EDGE COLOR BLOCKS
-	var edgeTop = new THREE.Mesh( new THREE.BoxGeometry( WIDTH, 10, 100), new THREE.MeshBasicMaterial( {
-		color: edgeTopColor,
-		depthTest: true,
-		depthWrite: true,
-		transparent: false
+	// edgeTop.position.set( 0, HALF_HEIGHT - 5, 0 );
+	// edgeBottom.position.set( 0, -HALF_HEIGHT+5, 0 );
 
-	} ) );
-	var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
-		color: edgeBottomColor,
-		depthTest: true,
-		depthWrite: true,
-		transparent: false
-	} ) );
-
-
-	edgeTop.position.set( 0, HALF_HEIGHT - 5, 0 );
-	edgeBottom.position.set( 0, -HALF_HEIGHT+5, 0 );
-
-	scene.add( edgeTop );
-	scene.add( edgeBottom );
+	// scene.add( edgeTop );
+	// scene.add( edgeBottom );
 
 
 	//LOADING
@@ -383,12 +378,12 @@ function TouchLines( options )
 
 		widgetEvent: widget.handleInput,
 
-		setEdgeColorTop: function( hex ){
-			edgeTopColor.set( hex );
-		},
+		// setEdgeColorTop: function( hex ){
+		// 	edgeTopColor.set( hex );
+		// },
 
-		setEdgeColorBottom: function( hex ){
-			edgeBottomColor.set( hex );
-		},
+		// setEdgeColorBottom: function( hex ){
+		// 	edgeBottomColor.set( hex );
+		// },
 	}
 }
