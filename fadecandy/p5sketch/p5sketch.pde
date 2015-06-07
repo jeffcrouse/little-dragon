@@ -15,7 +15,6 @@ PhoneSlot[] slots = new PhoneSlot[18];
 
 
 
-
 // -------------------------------
 void setup()
 {
@@ -75,7 +74,7 @@ void oscEvent(OscMessage theOscMessage) {
   println(addr);
   println(data);
 
-  if (addr.equals("/keys_keyboard_1")) {
+  if (addr.equals("/bass_multislider_1")) {
     slots[0].on = json.getInt("on")>1;
   } else if (addr.equals("/bass_keyboard_1")) {
     slots[1].on = json.getInt("on")>1;
@@ -89,18 +88,18 @@ void oscEvent(OscMessage theOscMessage) {
     slots[5].on = json.getInt("on")>1;
   } else if (addr.equals("/bass_tilt_1")) {
     slots[6].on = json.getInt("on")>1;
+  } else if (addr.equals("/keys_multislider_1")) {
+    slots[7].blink();
   } else if (addr.equals("/keys_keyboard_1")) {
-    slots[7].on = json.getInt("on")>1;
-  } else if (addr.equals("/keys_keyboard_2")) {
     slots[8].on = json.getInt("on")>1;
-  } else if (addr.equals("/keys_keyboard_3")) {
+  } else if (addr.equals("/keys_keyboard_2")) {
     slots[9].on = json.getInt("on")>1;
-  } else if (addr.equals("/keys_keyboard_4")) {
+  } else if (addr.equals("/keys_keyboard_3")) {
     slots[10].on = json.getInt("on")>1;
-  } else if (addr.equals("/keys_keyboard_5")) {
+  } else if (addr.equals("/keys_keyboard_4")) {
     slots[11].on = json.getInt("on")>1;
   } else if (addr.equals("/keys_tilt_1")) {
-    slots[12].on = json.getInt("on")>1;
+    slots[12].blink();
   } else if (addr.equals("/drums_button_1")) {
     slots[13].on = json.getInt("press", -1)==1;
   } else if (addr.equals("/drums_button_2")) {
@@ -114,8 +113,6 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/drums_tilt_1")) {
     slots[18].on = json.getInt("press", -1)==1;
   } 
-  
-  
 
 
   /* get and print the address pattern and the typetag of the received OscMessage */

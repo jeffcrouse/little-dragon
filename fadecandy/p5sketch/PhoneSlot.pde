@@ -1,4 +1,5 @@
 
+
 class PhoneSlot {
   PVector pos =  new PVector();
   boolean on;
@@ -12,6 +13,9 @@ class PhoneSlot {
     if (on) {
       rect(pos.x, pos.y, 20, 20);
     }
+  }
+
+  void blink() {
   }
 }
 
