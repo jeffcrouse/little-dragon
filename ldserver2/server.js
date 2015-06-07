@@ -244,23 +244,23 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			switch(drum){
 				case '1': 
 					note = 36;
-					if(data.press==1)led_sections[0].blink();
+					// if(data.press==1)led_sections[0].blink();
 					break;
 				case '2': 
 					note = 37;
-					if(data.press==1)led_sections[1].blink();
+					// if(data.press==1)led_sections[1].blink();
 					break;
 				case '3': 
 					note = 38;
-					if(data.press==1)led_sections[2].blink();
+					// if(data.press==1)led_sections[2].blink();
 					break;
 				case '4': 
 					note = 39;
-					if(data.press==1)led_sections[3].blink();
+					// if(data.press==1)led_sections[3].blink();
 					break;
 				case '5': 
 					note = 40;
-					if(data.press==1)led_sections[3].blink();
+					// if(data.press==1)led_sections[3].blink();
 					break;
 			}
 
