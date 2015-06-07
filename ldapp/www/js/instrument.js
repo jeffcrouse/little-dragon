@@ -521,7 +521,9 @@ var onDeviceReady = function() {
 	console.log( "device.uuid", device.uuid );
 
 	// Set up an OSC sender to broadcast messages to anyone listening on port 3333
-	oscSender = new window.OSCSender("255.255.255.255", 3333);
+	var host = "192.168.255.255";
+	//var host = "192.168.2.7";
+	oscSender = new window.OSCSender(host, 3333);
 
 
 	/*
