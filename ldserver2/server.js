@@ -324,26 +324,40 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				if(data.press==1){ 
 					console.log("LAUNCH");
 					var pitchShift = 0;
+					//note is just a plan B in case sampling fails: enable normal drum
+					var note;
 					switch(drum){
 						case '2':
 							pitchShift = 10;
+							note = 36;
 							break;
 						case '3':
 							pitchShift = 40;
+							note = 37;
 							break;
 						case '4':
 							pitchShift = 70;
+							note = 38;
 							break;
 						case '5':
 							pitchShift = 100;
+							note = 39;
 							break;
 					}
 
 					//send pitch message:
 					output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
+
+					//plan B: pre-sampled drums
+					output.sendMessage([MIDI.CH3.NOTEON, note, 1]);
+					var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
+					output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
 					
 					//launch clip	
 					output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
+				}
+				else if(data.press==0){
+					output.sendMessage([MIDI.CH3.NOTEOFF, note, 0]);
 				}
 					
 			}
