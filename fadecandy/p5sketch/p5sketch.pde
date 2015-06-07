@@ -18,6 +18,7 @@ PhoneSlot[] slots = new PhoneSlot[18];
 // -------------------------------
 void setup()
 {
+  registerPre(this);
   frameRate(60);
   size(1200, 300);
   opc = new OPC(this, "127.0.0.1", 7890);
@@ -27,24 +28,28 @@ void setup()
   qheight = height / 4.0;
   qwidth = width / 4.0;
 
-  slots[0] = new PhoneSlot(0.074);
-  slots[1] = new PhoneSlot(0.1);
-  slots[2] = new PhoneSlot(0.123);
-  slots[3] = new PhoneSlot(0.147);
-  slots[4] = new PhoneSlot(0.171);
-  slots[5] = new PhoneSlot(0.193);
-  slots[6] = new PhoneSlot(0.304);
-  slots[7] = new PhoneSlot(0.329);
-  slots[8] = new PhoneSlot(0.352);
-  slots[9] = new PhoneSlot(0.376);
-  slots[10] = new PhoneSlot(0.399);
-  slots[11] = new PhoneSlot(0.599);
-  slots[12] = new PhoneSlot(0.001);
-  slots[13] = new PhoneSlot(0.623);
-  slots[14] = new PhoneSlot(0.647);
-  slots[15] = new PhoneSlot(0.672);
-  slots[16] = new PhoneSlot(0.695);
-  slots[17] = new PhoneSlot(0.72);
+  color greenish = color(10, 255, 10);
+  color white = color(255, 255, 255);
+  color red = color(255, 20, 50);
+
+  slots[0] = new PhoneSlot(0.074, greenish);
+  slots[1] = new PhoneSlot(0.1, greenish);
+  slots[2] = new PhoneSlot(0.123, greenish);
+  slots[3] = new PhoneSlot(0.147, greenish);
+  slots[4] = new PhoneSlot(0.171, greenish);
+  slots[5] = new PhoneSlot(0.193, greenish);
+  slots[6] = new PhoneSlot(0.277, white);
+  slots[7] = new PhoneSlot(0.304, white);
+  slots[8] = new PhoneSlot(0.329, white);
+  slots[9] = new PhoneSlot(0.352, white);
+  slots[10] = new PhoneSlot(0.376, white);
+  slots[11] = new PhoneSlot(0.399, white);
+  slots[12] = new PhoneSlot(0.599, white);
+  slots[13] = new PhoneSlot(0.623, red);
+  slots[14] = new PhoneSlot(0.647, red);
+  slots[15] = new PhoneSlot(0.672, red);
+  slots[16] = new PhoneSlot(0.695, red);
+  slots[17] = new PhoneSlot(0.72, red);
 
 
   //  cp5.addSlider("sliderValue")
@@ -55,13 +60,15 @@ void setup()
   rectMode(CENTER);
 
   opc.ledStrip(0, 240, qwidth, qheight, width / 450, 0, false); //RIGHT TOP
-  //  opc.ledStrip(240, 300, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
-  //  opc.ledStrip(540, 300, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
-  //
-  opc.ledStrip(869, 240, qwidth*3, qheight, width / 450, 0, true);  // LEFT TOP
-  //  opc.ledStrip(1080, 300, qwidth*3, qheight*2, width / 540, 0, true); // LEFT BOTTOM 1
-  //  opc.ledStrip(1380, 300, qwidth*3, qheight*3, width / 540, 0, true); // LEFT BOTTOM 2
+  opc.ledStrip(256, 300, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
+  opc.ledStrip(576, 300, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
+
+  opc.ledStrip(1024, 240, qwidth*3, qheight, width / 450, 0, true);  // LEFT TOP
+  opc.ledStrip(1280, 300, qwidth*3, qheight*2, width / 540, 0, true); // LEFT BOTTOM 1
+  opc.ledStrip(1600, 300, qwidth*3, qheight*3, width / 540, 0, true); // LEFT BOTTOM 2
 }
+
+
 
 
 
@@ -87,9 +94,9 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/bass_keyboard_5")) {
     slots[5].on = json.getInt("on")>1;
   } else if (addr.equals("/bass_tilt_1")) {
-    slots[6].on = json.getInt("on")>1;
+    slots[6].on = true;
   } else if (addr.equals("/keys_multislider_1")) {
-    slots[7].blink();
+    slots[7].on = true;
   } else if (addr.equals("/keys_keyboard_1")) {
     slots[8].on = json.getInt("on")>1;
   } else if (addr.equals("/keys_keyboard_2")) {
@@ -99,7 +106,7 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/keys_keyboard_4")) {
     slots[11].on = json.getInt("on")>1;
   } else if (addr.equals("/keys_tilt_1")) {
-    slots[12].blink();
+    slots[12].on = true;
   } else if (addr.equals("/drums_button_1")) {
     slots[13].on = json.getInt("press", -1)==1;
   } else if (addr.equals("/drums_button_2")) {
@@ -114,12 +121,22 @@ void oscEvent(OscMessage theOscMessage) {
     slots[18].on = json.getInt("press", -1)==1;
   } 
 
-
   /* get and print the address pattern and the typetag of the received OscMessage */
   //println("### received an osc message with addrpattern "+theOscMessage.addrPattern()+" and typetag "+theOscMessage.typetag());
   //theOscMessage.print();
 }
 
+// -------------------------------
+void pre() {
+  int now = millis();
+
+  for (int i = 0; i < particles.size (); i++) {
+    particles.get(i).update();
+  }
+  for (int i=0; i<slots.length; i++) {
+    slots[i].update();
+  }
+}
 
 // -------------------------------
 void draw()
@@ -136,6 +153,12 @@ void draw()
     slots[i].draw();
   }
 
+
+  for (int i = 0; i < particles.size (); i++) {
+    particles.get(i).draw();
+  }
+
+  fill(255, 100, 100);
   rect(mouseX, height/2, 22, height);
 
   fill(255);
@@ -144,5 +167,13 @@ void draw()
   float x = mouseX/(float)width;
   text(x, mouseX, 20); 
   // Draw each frame here
+}
+
+
+// -------------------------------
+void keyPressed() {
+  if (key=='p') {
+    particles.add( new Particle() );
+  }
 }
 
