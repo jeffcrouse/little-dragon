@@ -277,55 +277,29 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			}
 		}
 
-		//INSTRUMENT: LIVE SAMPLED DRUMS
+		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
 		else if(contains(addr, '/drums')){
-			var drums =	{"1":{"clipexists":false, "recording": false, "holding":false, "holdStart":0 }}; 
-
-			// CODE FOR SAMPLING 4 DRUMS (hold longer than a second to rec, less than a second to launch)
-			// latest version of this is in branch 'multisamplerdrums'
+			var drum = addr.charAt(addr.length - 1);
 			
-			if(data.press==1){ // button down
-				
-				drums[drum].holding = true;
-				drums[drum].holdStart = Date.now(); 
+			if(drum == 1){//record button
+				if(data.press==1){ // button down
+					console.log("RECORD");
+					//send ARM track
+					output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 
-				setTimeout(function(){//after holding for a second, start recording
+					// send NEW message and overwrite message to start recording new scene
+					// if(drum == '1')
+					output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
 					
-					var holdTime = Date.now() - drums[drum].holdStart;
-					if(drums[drum].holding && holdTime >= holdTimeToRecord){
-						// console.log("start rec");
-						
-						//send ARM track
-						output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
 
-						// send NEW message and overwrite message to start recording new scene
-						// if(drum == '1')
-						output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-						
-
-						//send 'session record' to start recording
-						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
-
-						drums[drum].recording = true;
-						
-					}
+					//send 'session record' to start recording
+					output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+					output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
 					
-				}, holdTimeToRecord);
-			}
-			else if(data.press==0){ // button up
-				var holdTime = Date.now() - drums[drum].holdStart;
-
-				if(drums[drum].clipexists && holdTime < holdTimeToRecord){
-					console.log("launch clip");
-					//launch clip	
-					output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
-					// output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
-
+					
 				}
-
-				else if(drums[drum].recording){ 
-					console.log("stop rec");
+				else if(data.press==0){ // button up
+					console.log("STOP");
 					// STOP session recording
 					output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
 					output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
@@ -333,23 +307,116 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					//set LOOP to false 
 					output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
 					output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
-
-					// if(drum==4){
-						// send NEW message and overwrite message to start recording new scene
-						// output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-					// }
-
 					//un-arm track
-					output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
-					
-					drums[drum].recording = false;
-					drums[drum].clipexists = true;
+					output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 					
 				}
-				drums[drum].holding = false;
+			}
+			else{ //actual triggers
+				if(data.press==1){ 
+					console.log("LAUNCH");
+					var pitchShift = 0;
+					switch(drum){
+						case '2':
+							pitchShift = 10;
+							break;
+						case '3':
+							pitchShift = 40;
+							break;
+						case '4':
+							pitchShift = 70;
+							break;
+						case '5':
+							pitchShift = 100;
+							break;
+					}
+
+					//send pitch message:
+					output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
+					
+					//launch clip	
+					output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
+				}
+					
 			}
 			
+			
 		}
+
+		//LIVE SAMPLES: ONE SAMPLE PER PHONE (doesn't work quite well because of how ableton's NEW and LOOP functions work
+		//––not assigned to individual clip but to whole scenes and all clips respectively)
+		// else if(contains(addr, '/drums')){
+		// 	var drums =	{"1":{"clipexists":false, "recording": false, "holding":false, "holdStart":0 }}; 
+
+		// 	// CODE FOR SAMPLING 4 DRUMS (hold longer than a second to rec, less than a second to launch)
+		// 	// latest version of this is in branch 'multisamplerdrums'
+			
+		// 	if(data.press==1){ // button down
+				
+		// 		drums[drum].holding = true;
+		// 		drums[drum].holdStart = Date.now(); 
+
+		// 		setTimeout(function(){//after holding for a second, start recording
+					
+		// 			var holdTime = Date.now() - drums[drum].holdStart;
+		// 			if(drums[drum].holding && holdTime >= holdTimeToRecord){
+		// 				// console.log("start rec");
+						
+		// 				//send ARM track
+		// 				output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
+
+		// 				// send NEW message and overwrite message to start recording new scene
+		// 				// if(drum == '1')
+		// 				output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+						
+
+		// 				//send 'session record' to start recording
+		// 				output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+		// 				output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+
+		// 				drums[drum].recording = true;
+						
+		// 			}
+					
+		// 		}, holdTimeToRecord);
+		// 	}
+		// 	else if(data.press==0){ // button up
+		// 		var holdTime = Date.now() - drums[drum].holdStart;
+
+		// 		if(drums[drum].clipexists && holdTime < holdTimeToRecord){
+		// 			console.log("launch clip");
+		// 			//launch clip	
+		// 			output.sendMessage([MIDI.CH3.NOTEON, control, 1]);
+		// 			// output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
+
+		// 		}
+
+		// 		else if(drums[drum].recording){ 
+		// 			console.log("stop rec");
+		// 			// STOP session recording
+		// 			output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+		// 			output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+					
+		// 			//set LOOP to false 
+		// 			output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
+		// 			output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
+
+		// 			// if(drum==4){
+		// 				// send NEW message and overwrite message to start recording new scene
+		// 				// output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+		// 			// }
+
+		// 			//un-arm track
+		// 			output.sendMessage([MIDI.CH3.NOTEON, control + 10, 1]);
+					
+		// 			drums[drum].recording = false;
+		// 			drums[drum].clipexists = true;
+					
+		// 		}
+		// 		drums[drum].holding = false;
+		// 	}
+			
+		// }
 
 		else if(addr=="/drum_tilt_1") {
 			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
@@ -593,33 +660,38 @@ stdin.on( 'data', function( key ){
 	// }
 	
 	//ARM	
-	if(key=='1') {
-		output.sendMessage([MIDI.CH3.NOTEON, 30, 1]);
-	}
-	if(key=='2') {
-		output.sendMessage([MIDI.CH3.NOTEON, 31, 1]);
-	}
-	if(key=='3') {
-		output.sendMessage([MIDI.CH3.NOTEON, 32, 1]);
-	}
-	if(key=='4') {
-		output.sendMessage([MIDI.CH3.NOTEON, 33, 1]);
-	}
+	// if(key=='1') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 30, 1]);
+	// }
+	// if(key=='2') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 31, 1]);
+	// }
+	// if(key=='3') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 32, 1]);
+	// }
+	// if(key=='4') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 33, 1]);
+	// }
 
 
-	//LAUNCH
+	// //LAUNCH
+	// if(key=='a') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 20, 1]);
+	// }
+	// if(key=='s') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 21, 1]);
+	// }
+	// if(key=='d') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 22, 1]);
+	// }
+	// if(key=='f') {
+	// 	output.sendMessage([MIDI.CH3.NOTEON, 23, 1]);
+	// }
+
 	if(key=='a') {
-		output.sendMessage([MIDI.CH3.NOTEON, 20, 1]);
+		output.sendMessage([MIDI.CH3.CONTROL, 126, 1]);
 	}
-	if(key=='s') {
-		output.sendMessage([MIDI.CH3.NOTEON, 21, 1]);
-	}
-	if(key=='d') {
-		output.sendMessage([MIDI.CH3.NOTEON, 22, 1]);
-	}
-	if(key=='f') {
-		output.sendMessage([MIDI.CH3.NOTEON, 23, 1]);
-	}
+	
 
 	//PROGRAM VOCALS
 	// if(key=='a') {
