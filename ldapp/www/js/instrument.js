@@ -15,17 +15,7 @@ nx.onload = function() {
 	nx.colorize("accent", "#FF00FF");
 	nx.colorize("fill", "#00FFFF");  
 	nx.setViewport(0.5);
-
-	if(screen.lockOrientation) {
-		if(iface.includes("tilt")) {
-			screen.lockOrientation('portrait');
-		} else {
-			screen.lockOrientation('landscape');
-		}
-	}
-
 	
-
 	console.log("iface", iface);
 	switch( iface ){		
 		//  __   __  _______  ___   _______  _______ 
@@ -37,6 +27,8 @@ nx.onload = function() {
 		//   |___|  |_______||___| |_______||_______|
 		   
 		case "voicefx":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("vocals", "multislider", 1);
 			control.setNumberOfSliders(2);
 
@@ -60,6 +52,8 @@ nx.onload = function() {
 		// |___| |_||_______|  |___|  |_______|
                       
 		case "keyscontrols":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "multislider", 1);
 			control.setNumberOfSliders(4);
 
@@ -75,6 +69,8 @@ nx.onload = function() {
 			break;
 
 		case "keys2":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "keyboard", 1);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -94,6 +90,8 @@ nx.onload = function() {
 			break;
 
 		case "keys3":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "keyboard", 2);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -113,6 +111,7 @@ nx.onload = function() {
 			break;
 
 		case "keys4":
+			screen.lockOrientation('landscape-secondary');
 
 			var control = createControl("keys", "keyboard", 3);
 			control.multitouch = true;
@@ -133,6 +132,8 @@ nx.onload = function() {
 			break;
 
 		case "keys5":
+			screen.lockOrientation('landscape-secondary');
+
 			var control = createControl("keys", "keyboard", 4);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -152,6 +153,8 @@ nx.onload = function() {
 			break;
 
 		case "keystilt":
+			screen.lockOrientation('portrait');
+
 			var dist = function (v1, v2) {
 				var dx = v1.x - v2.x;
 				var dy = v1.y - v2.y;
@@ -188,6 +191,8 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "basscontrols":
+			screen.lockOrientation('landscape-primary');
+
 	 		var control = createControl("bass", "multislider", 1);
 			control.setNumberOfSliders(4);
 			
@@ -203,6 +208,8 @@ nx.onload = function() {
 	 		break;
 
 		case "bass1":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 1);
 			control.multitouch = true;
 			control.octaves = 1;
@@ -222,6 +229,8 @@ nx.onload = function() {
 			break;
 
 		case "bass2":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 2);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -241,6 +250,8 @@ nx.onload = function() {
 			break;
 
 		case "bass3":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 3);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -261,6 +272,8 @@ nx.onload = function() {
 			  
 
 		case "bass4":
+			screen.lockOrientation('landscape-primary');
+
 			var control = createControl("bass", "keyboard", 4);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
@@ -281,6 +294,8 @@ nx.onload = function() {
 
 
 		case "basstilt":
+			screen.lockOrientation('portrait');
+
 			var dist = function (v1, v2) {
 				var dx = v1.x - v2.x;
 				var dy = v1.y - v2.y;
@@ -318,6 +333,8 @@ nx.onload = function() {
 		// |______| |___|  |_||_______||_|   |_||_______|
 	    
 	    case "drumscontrols":
+	    	screen.lockOrientation('landscape-primary');
+
 			var control = createControl("drum", "multislider", 4);
 			 
 			control.setNumberOfSliders(3);
@@ -334,17 +351,11 @@ nx.onload = function() {
 		    break;
 
 
-		case "drumstilt":
-		    var control = createControl("drum", "tilt", 1);
-		    control.text = "something";
-		    break;
 
 	    case "drums1":
-		// case "drumsParticles":
-		   // createControl("drum", "button", 1);
-			
-		    var control = createControl("drum", "button", 1);
+	    	screen.lockOrientation('landscape-primary');
 
+		    var control = createControl("drum", "button", 1);
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
@@ -358,6 +369,8 @@ nx.onload = function() {
 		   break;
 
 	    case "drums2":
+	    	screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 2);
 
 		    ldInterface = TouchLines({
@@ -371,6 +384,8 @@ nx.onload = function() {
 		    break;
 
 		case "drums3":
+			screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 3);
 
 		    ldInterface = TouchLines({
@@ -384,6 +399,8 @@ nx.onload = function() {
 		    break;
 
 		case "drums4":
+			screen.lockOrientation('landscape-primary');
+
 		    var control = createControl("drum", "button", 4);
 
 		    ldInterface = TouchLines({
@@ -397,6 +414,12 @@ nx.onload = function() {
 		    break;
 
 		
+		case "drumstilt":
+			screen.lockOrientation('portrait');
+
+		    var control = createControl("drum", "tilt", 1);
+		    control.text = "something";
+		    break;
 
 
 
@@ -526,8 +549,8 @@ var onDeviceReady = function() {
 
 		onResume();
 
-		oscListener = new window.OSCListener(3333);
-		var onSuccess =  function(){ console.log("listening for OSC on port", 3333); };
+		oscListener = new window.OSCListener(4444);
+		var onSuccess =  function(){ console.log("listening for OSC on port", 4444); };
 		var onError = function(){ console.error("failed to open OSC port for listening"); };
 		oscListener.startListening(onSuccess, onError);
 		oscListener.on("/tick", function(data){

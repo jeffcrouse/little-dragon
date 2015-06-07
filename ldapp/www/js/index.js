@@ -31,7 +31,7 @@ var onDeviceReady = function() {
 	});   
 	*/
 
-	screen.lockOrientation('landscape');
+	screen.lockOrientation('portrait-primary');
 
 
 	// Keep the phone awake
