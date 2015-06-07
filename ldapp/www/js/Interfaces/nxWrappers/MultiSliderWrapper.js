@@ -106,7 +106,7 @@ function MultiSliderWrapper( options )
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
 
-	var decay = .1;
+	var decay = .95;
 
 	var camera = options.camera || new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
