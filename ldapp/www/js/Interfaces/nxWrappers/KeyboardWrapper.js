@@ -120,7 +120,7 @@ function KeyboardWrapper( options )
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
 
-	var decay = 1;
+	var decay = .025;
 
 	var camera = options.camera || new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
@@ -201,14 +201,15 @@ function KeyboardWrapper( options )
 			m.material.uniforms.weight.value = 1;
 
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 1}, 1)
+				.to({value: 1}, 2)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();
 
 		}else{
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 0}, 1)
+				.to({value: 0}, 200)
 				.easing( TWEEN.Easing.Cubic.Out )
+				.delay(10)
 				.start();	
 		}
 
