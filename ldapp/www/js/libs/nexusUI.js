@@ -2833,7 +2833,7 @@ keyboard.prototype.click = function(e) {
 		this.toggle(this.fingers[0].key)
 	}
   */
-  console.log("keyboard.prototype.click");
+  //console.log("keyboard.prototype.click");
 
   // START Pasted in from keyboard.prototype.move -- JRC
   var debug = document.getElementById("debug");
@@ -2865,7 +2865,7 @@ keyboard.prototype.click = function(e) {
 }
 
 keyboard.prototype.move = function(e) {
-  console.log("keyboard.prototype.move");
+  //console.log("keyboard.prototype.move");
 	var debug = document.getElementById("debug");
 	if (this.clickPos.touches.length>1 || this.multitouch) {
 		this.keysinuse = new Array();

@@ -4,7 +4,7 @@
 
     "color": {
         "gamma": 2.5,
-        "whitepoint": [0.98, 1.0, 1.0]
+        "whitepoint": [1.0, 1.0, 1.0]
     },
 
     "devices": [
@@ -21,7 +21,7 @@
             "type": "fadecandy",
             "serial": "MKAWEKHJBZSFKREH",
             "map": [
-                [ 0, 512, 0, 64 ]
+                [ 0, 512, 0, 384 ]
             ]
         },
         {
@@ -29,7 +29,7 @@
             "type": "fadecandy",
             "serial": "CUMKRFUWZZSPETUZ",
             "map": [
-                [ 0, 576, 0, 512 ]
+                [ 0, 869, 0, 512 ]
             ]
         },
         {
@@ -37,7 +37,7 @@
             "type": "fadecandy",
             "serial": "TLDLOOHXRPWHILUF",
             "map": [
-                [ 0, 1088, 0, 64 ]
+                [ 0, 1381, 0, 384 ]
             ]
         }
     ]
