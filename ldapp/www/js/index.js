@@ -31,6 +31,7 @@ var onDeviceReady = function() {
 	});   
 	*/
 
+	// https://github.com/gbenvenuti/cordova-plugin-screen-orientation
 	screen.lockOrientation('portrait-primary');
 
 

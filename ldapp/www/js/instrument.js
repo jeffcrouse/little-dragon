@@ -1,3 +1,6 @@
+// ORIENTATION!
+// https://github.com/gbenvenuti/cordova-plugin-screen-orientation
+
 
 var oscSender = null;					// The OSC sender object (send to the server)
 var oscListener = null;					// Receive OSC from the server
