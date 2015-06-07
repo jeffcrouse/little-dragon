@@ -33,6 +33,10 @@ Math.map = function (value, istart, istop, ostart, ostop, clamp) {
 	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
 }
 
+var lastRecording = Date.now();
+var minTimeBetweenRecordings = 3000;
+var recording = false;
+
 //pink dragon is in F#m + Eb
 var root = teoria.note('f#2');
 var scaleKeys = root.scale('minor');
@@ -236,7 +240,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 
-	
 
 		//INSTRUMENT: PRE-SAMPLED DRUMS
 		else if(contains(addr, '/pre-drums')){
@@ -283,33 +286,38 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			
 			if(drum == 1){//record button
 				if(data.press==1){ // button down
-					console.log("RECORD");
-					//send ARM track
-					output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
+					if(!recording){
+					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
+						// console.log("RECORD");
+						//send ARM track
+						output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 
-					// send NEW message and overwrite message to start recording new scene
-					// if(drum == '1')
-					output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-					
+						// send NEW message and overwrite message to start recording new scene
+						// if(drum == '1')
+						output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+						
 
-					//send 'session record' to start recording
-					output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-					output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
-					
-					
-				}
-				else if(data.press==0){ // button up
-					console.log("STOP");
-					// STOP session recording
-					output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-					output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
-					
-					//set LOOP to false 
-					output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
-					output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
-					//un-arm track
-					output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
-					
+						//send 'session record' to start recording
+						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+						lastRecording = Date.now();
+						recording = true;
+					// }
+					}
+					else if(recording){
+						// console.log("STOP");
+						// STOP session recording
+						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
+						
+						//set LOOP to false 
+						output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
+						output.sendMessage([MIDI.CH3.NOTEOFF, 120, 1]);
+
+						//un-arm track
+						output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
+						recording = false;
+					}
 				}
 			}
 			else{ //actual triggers
@@ -418,7 +426,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			
 		// }
 
-		else if(addr=="/drum_tilt_1") {
+		else if(addr=="/drums_tilt_1") {
 			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
 			
 			midiMessage = [MIDI.CH3.CONTROL, 5, pan];
