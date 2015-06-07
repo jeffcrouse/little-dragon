@@ -8,12 +8,20 @@ ControlP5 cp5;
 
 float qheight;
 float qwidth;
-
+float particleSpeed;
+int particleInterval = 1000;
+int particleNext = 0;
+float particleWidth = 10;
+boolean positionBar = false;
 
 ArrayList<Particle> particles = new ArrayList<Particle>();
 PhoneSlot[] slots = new PhoneSlot[18];
 
-
+float fadeSpeed = 1;
+float leftFade = 0;
+float rightFade = PI;
+float spinnerSpeed = 1.0;
+float spinnerPos = 0;
 
 // -------------------------------
 void setup()
@@ -52,12 +60,40 @@ void setup()
   slots[17] = new PhoneSlot(0.72, red);
 
 
-  //  cp5.addSlider("sliderValue")
-  //    .setPosition(100, 50)
-  //      .setRange(0, 255)
-  //        ;
+  cp5.addSlider("particleSpeed")
+    .setSize(100, 20)
+      .setPosition(20, 10)
+        .setRange(0.5, 10)
+          ;
+  cp5.addSlider("particleInterval")
+    .setSize(100, 20)
+      .setPosition(20, 40)
+        .setRange(200, 2000)
+          ;
+  cp5.addSlider("particleWidth")
+    .setSize(100, 20)
+      .setPosition(20, 70)
+        .setRange(10, 100)
+          ;
+  cp5.addToggle("positionBar")
+    .setSize(60, 20)
+      .setPosition(20, 100)
+        .setValue(true)
+          .setMode(ControlP5.SWITCH)
+            ;
+  cp5.addSlider("fadeSpeed")
+    .setSize(100, 20)
+      .setPosition(20, 140)
+        .setRange(0.5, 5)
+          ;
+  cp5.addSlider("spinnerSpeed")
+    .setSize(100, 20)
+      .setPosition(20, 170)
+        .setRange(10, 1000)
+          ;
 
-  rectMode(CENTER);
+  cp5.loadProperties("leds.properties");
+
 
   opc.ledStrip(0, 240, qwidth, qheight, width / 450, 0, false); //RIGHT TOP
   opc.ledStrip(256, 300, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
@@ -127,14 +163,32 @@ void oscEvent(OscMessage theOscMessage) {
 }
 
 // -------------------------------
+int lastFrame = millis();
 void pre() {
   int now = millis();
+  int deltaTime = now - lastFrame;
+  lastFrame = now;
+
+
+  float elapsed = (deltaTime / 1000.0);
+  leftFade += fadeSpeed * elapsed;
+  rightFade += fadeSpeed * elapsed;
+  spinnerPos += spinnerSpeed * elapsed;
+  if (spinnerPos > width) {
+    spinnerPos = 0;
+  }
+
+
+  if (now > particleNext) {
+    particles.add( new Particle() );
+    particleNext = now + particleInterval;
+  }
 
   for (int i = 0; i < particles.size (); i++) {
-    particles.get(i).update();
+    particles.get(i).update(deltaTime);
   }
   for (int i=0; i<slots.length; i++) {
-    slots[i].update();
+    slots[i].update(deltaTime);
   }
 }
 
@@ -142,38 +196,59 @@ void pre() {
 void draw()
 {
   background(0);
+  noStroke();
 
+
+  // FADES
+  rectMode(CORNER);
+  float left = map(cos(leftFade), -1, 1, 0, 255);
+  fill(left);
+  rect(0, 50, width/2, 40);
+
+  float right = map(cos(rightFade), -1, 1, 0, 255);
+  fill(right);
+  rect(width/2, 50, width/2, 40);
+
+  // SPINNER
   float t = millis() / 2000.0;
   float r = map(noise(t, 0.25), 0.0, 1.0, 150.0, 255.0);
   float g = map(noise(t, 0.75), 0.0, 1.0, 0.0, 100.0);
   float b = map(noise(t, 1.0), 0.0, 1.0, 0.0, 100.0);
   fill(r, g, b);
+  rectMode(CENTER);
+  rect(spinnerPos, qheight, 20, 20);
 
   for (int i=0; i<slots.length; i++) {
     slots[i].draw();
   }
 
-
   for (int i = 0; i < particles.size (); i++) {
     particles.get(i).draw();
   }
 
-  fill(255, 100, 100);
-  rect(mouseX, height/2, 22, height);
 
-  fill(255);
-  textSize(12);
 
-  float x = mouseX/(float)width;
-  text(x, mouseX, 20); 
-  // Draw each frame here
+  if (positionBar) {
+
+
+    fill(255, 100, 100);
+    rect(mouseX, height/2, 22, height);
+    fill(255);
+    textSize(12);
+    float x = mouseX/(float)width;
+    text(x, mouseX, 20);
+  }
 }
 
 
 // -------------------------------
 void keyPressed() {
-  if (key=='p') {
-    particles.add( new Particle() );
+  if(key=='g') {
+    if(cp5.isVisible()) cp5.hide();
+    else cp5.show();
+  }
+  if (key=='s') {
+    cp5.saveProperties(("leds.properties"));
   }
 }
 

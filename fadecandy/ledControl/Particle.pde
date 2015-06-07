@@ -11,13 +11,15 @@ class Particle {
     vel.x = 2.5;
   }
 
-  void update() {
+  void update(int deltaTime) {
+    vel.x = particleSpeed;
     pos.add( vel );
   }
 
   void draw() {
     fill(myColor);
-    rect(pos.x, pos.y, 20, 100);
+      rectMode(CENTER);
+    rect(pos.x, pos.y, particleWidth, 100);
   }
 }
 
