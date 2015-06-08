@@ -29,7 +29,7 @@ var LDButtonMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vUv = vec2( length(position.xy) );',
+		'	vUv = vec2( length(position.xz) );',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
@@ -118,26 +118,12 @@ function ButtonWrapper( options )
 	var group = new THREE.Group();
 	scene.add( group );
 
-	// group.position.x -= HALF_WIDTH * .5
-	// group.position.y += HALF_HEIGHT * .5
+	var autoClear = true;
 
-	var autoClear = false;
-	
-	var clearingMesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, HEIGHT, 10, 10 ), new THREE.MeshBasicMaterial( {
-		transparent: true,
-		opacity: decay,
-		color: "black",
-		side: 2,
-		depthTest: false,
-		depthWrite: true,
-	} ) );
+	var buttonMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 10 ), new LDButtonMaterial( ) );
+	buttonMesh.rotation.x = Math.PI * .5;
 
-
-	group.add( clearingMesh );
-
-	var buttonMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 32 ), new LDButtonMaterial( ) );
-
-	buttonMesh.scale.set( radius, radius, 10 );
+	buttonMesh.scale.set( radius, 10, radius );
 
 	group.add( buttonMesh )
 
@@ -155,14 +141,14 @@ function ButtonWrapper( options )
 		{
 
 			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: 1000, y: 1000}, 150)
+				.to( {x: 1000, z: 1000}, 150)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 
 		} else {
 
 			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: radius, y: radius}, 500)
+				.to( {x: radius, z: radius}, 500)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 

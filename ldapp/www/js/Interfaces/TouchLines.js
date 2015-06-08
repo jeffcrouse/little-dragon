@@ -155,16 +155,25 @@ function TouchLines( options )
 
 		widget = ToggleWrapper( options );
 
-		// textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
-		// 	anotherRamp = t;
-		// 	console.log( 'anotherRamp', anotherRamp );
-		// });
+		if( options.toggleRampPath ) {
+
+			textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
+				anotherRamp = t;
+				console.log( 'anotherRamp', anotherRamp );
+			});
+
+		}
 
 		var origTimeScale = timeScale;
 
 		widget.scope.onHandleInput = function( data ) {
 
-			// linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
+			if(anotherRamp) {
+				
+				linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
+
+			}
+
 
 			// if( data.value ) {
 

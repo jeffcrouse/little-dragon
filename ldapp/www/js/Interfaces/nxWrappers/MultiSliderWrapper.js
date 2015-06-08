@@ -61,9 +61,9 @@ var LDMultisliderMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	float grad = pow( vUv.y, 2.);',
+		'	float grad = pow( vUv.y, 1.);',
 
-		'	gl_FragColor = vec4(vec3( grad ),1.) ;// vec4( color * grad, 1.);',
+		'	gl_FragColor = vec4(vec3( grad ), 1.) ;// vec4( color * grad, 1.);',
 
 		'}'
 		].join('\n')
