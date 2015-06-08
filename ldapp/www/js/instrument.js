@@ -366,7 +366,7 @@ nx.onload = function() {
 	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 1);
+		    var control = createControl(instrumentName, "toggle", 1);
 		    // control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
@@ -375,6 +375,7 @@ nx.onload = function() {
 			  heightOverride: 720,
 			  controller: control,
 			  colorRampPath: "textures/drums/drum-1.jpg",
+			  toggleRampPath: "textures/drums/drum-1-toggleRamp.jpg",
 			  lineWidth: 4,
 			  lineLength: 16,
 			  rotation: 3,

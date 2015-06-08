@@ -85,6 +85,31 @@ function TouchLines( options )
 	var origin = v3(0,0,0);
 
 
+	//LOADING
+	var manager = new THREE.LoadingManager();
+	var textureLoader = new THREE.TextureLoader( manager );
+
+	//load images
+	var debugImage;
+	textureLoader.load( 'textures/hexagon.png', function ( t ) {
+		debugImage = t;
+	});
+
+	var colorRamp, anotherRamp;
+	textureLoader.load( colorRampPath, function ( t ) {
+		colorRamp = t;
+	});
+
+	manager.onProgress = function ( item, loaded, total ) {
+		// console.log( item, loaded, total );
+	};
+
+	manager.onLoad = function(){
+		// console.log( "\nmanager.onLoad\n\n" );
+
+		begin();
+	}
+
 	//WIDGET
 	var widget, controlID = controller.canvasID, numSpacers = 0;
 
@@ -123,6 +148,28 @@ function TouchLines( options )
 
 	}
 
+
+	else  if( controlID.indexOf( "toggle" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.TILT;
+
+		widget = ToggleWrapper( options );
+
+		textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
+			anotherRamp = t;
+			console.log( 'anotherRamp', anotherRamp );
+		});
+
+		widget.scope.onHandleInput = function( data ) {
+
+			console.log( 'data', data );
+
+			linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
+
+		}
+
+	}
+
 	else {
 
 		console.log( "controlID: ", controlID );
@@ -152,31 +199,6 @@ function TouchLines( options )
 	//	CAMERA
 	//
 	camera = new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
-
-	//LOADING
-	var manager = new THREE.LoadingManager();
-	var textureLoader = new THREE.TextureLoader( manager );
-
-	manager.onProgress = function ( item, loaded, total ) {
-		// console.log( item, loaded, total );
-	};
-
-	manager.onLoad = function(){
-		// console.log( "\nmanager.onLoad\n\n" );
-
-		begin();
-	}
-
-	//load images
-	var debugImage;
-	textureLoader.load( 'textures/hexagon.png', function ( t ) {
-		debugImage = t;
-	});
-
-	var colorRamp;
-	textureLoader.load( colorRampPath, function ( t ) {
-		colorRamp = t;
-	});
 
 	function getLineGeometry( g ) {
 
