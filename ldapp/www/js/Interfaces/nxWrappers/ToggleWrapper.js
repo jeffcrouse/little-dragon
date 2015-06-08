@@ -153,7 +153,7 @@ function ToggleWrapper( options )
 		{
 
 			tween = new TWEEN.Tween( ToggleMesh.scale )
-				.to( {x: 1000, z: 1000}, 150)
+				.to( {x: 750, z: 750}, 150)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 
