@@ -2,14 +2,13 @@
 
 function TouchLines( options )
 {
-	console.log( "touch lines" );
-
 	var WIDGET_TYPE = undefined;
 
 	var WIDGETS = {
 		BUTTON: 0,
 		MULTISLIDER: 1,
-		SYNTH: 2
+		SYNTH: 2,
+		TILT: 3
 	}
 
 	var lineLength = getQueryVariable("lineLength") || options.lineLength || 20;
@@ -40,8 +39,10 @@ function TouchLines( options )
 
 	var colorRampPath = options.colorRampPath || "textures/bwGradient.png";
 
-	var WIDTH = options.width || 1280; 
-	var HEIGHT = options.height || 720; 
+	var WIDTH = options.widthOverride || options.controller.width || 1280; 
+
+	var HEIGHT = options.heightOverride || options.controller.height || 720; 
+
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 	var HALF_WIDTH = WIDTH * .5, HALF_HEIGHT = HEIGHT * .5;
 
@@ -51,15 +52,12 @@ function TouchLines( options )
 		position: "absolute",
 		left: 0,
 		top: 0,
-		width: WIDTH, // 1280, // WIDTH,
-		height: HEIGHT, // 800, // HEIGHT,
+		width: WIDTH, 
+		height: HEIGHT, 
 		pointerEvents: "none",
 		backgroundColor: "rgba( 0, 0, 0, 1)",
 		borderRadius: "0px" // TODO: I think this gets over-written by nexus
 	}).appendTo( document.body );
-
-	// var edgeTopColor = new THREE.Color("magenta");
-	// var edgeBottomColor = new THREE.Color("cyan");
 
 	var renderer, scene, camera, light, clock = new THREE.Clock();
 
@@ -99,12 +97,14 @@ function TouchLines( options )
 		numSpacers = options.controller.sliders;
 
 	}	
+
 	else if(controlID.indexOf( "button" ) > -1) {
 
 		WIDGET_TYPE = WIDGETS.BUTTON;
 
 		widget = ButtonWrapper( options ); 
 	}
+
 	else  if( controlID.indexOf( "keyboard" ) > -1 ) {
 
 		WIDGET_TYPE = WIDGETS.SYNTH;
@@ -114,6 +114,15 @@ function TouchLines( options )
 		numSpacers = options.controller.keys.length;
 
 	}
+
+	else  if( controlID.indexOf( "tilt" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.TILT;
+
+		widget = TiltWrapper( options );
+
+	}
+
 	else {
 
 		console.log( "controlID: ", controlID );
@@ -142,50 +151,21 @@ function TouchLines( options )
 	//
 	//	CAMERA
 	//
-	
 	camera = new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
-	// //EDGE COLOR BLOCKS
-	// var edgeTop = new THREE.Mesh( new THREE.BoxGeometry( WIDTH, 10, 100), new THREE.MeshBasicMaterial( {
-	// 	color: edgeTopColor,
-	// 	depthTest: true,
-	// 	depthWrite: true,
-	// 	transparent: false
-
-	// } ) );
-	// var edgeBottom = new THREE.Mesh( edgeTop.geometry, new THREE.MeshBasicMaterial( {
-	// 	color: edgeBottomColor,
-	// 	depthTest: true,
-	// 	depthWrite: true,
-	// 	transparent: false
-	// } ) );
-
-
-	// edgeTop.position.set( 0, HALF_HEIGHT - 5, 0 );
-	// edgeBottom.position.set( 0, -HALF_HEIGHT+5, 0 );
-
-	// scene.add( edgeTop );
-	// scene.add( edgeBottom );
-
-
 	//LOADING
-
 	var manager = new THREE.LoadingManager();
 	var textureLoader = new THREE.TextureLoader( manager );
-	// var objLoader = new THREE.OBJLoader( manager );
 
 	manager.onProgress = function ( item, loaded, total ) {
-		console.log( item, loaded, total );
+		// console.log( item, loaded, total );
 	};
 
 	manager.onLoad = function(){
-		console.log( "\nmanager.onLoad\n\n" );
+		// console.log( "\nmanager.onLoad\n\n" );
 
 		begin();
 	}
-
-	console.log( 'manager', manager );
-
 
 	//load images
 	var debugImage;
@@ -197,13 +177,6 @@ function TouchLines( options )
 	textureLoader.load( colorRampPath, function ( t ) {
 		colorRamp = t;
 	});
-
-
-	// var touches = [];
-
-	// for(var i=0; i<5; i++) {
-	// 	touches[i] = v3(0,0,0);
-	// }
 
 	function getLineGeometry( g ) {
 
@@ -268,16 +241,6 @@ function TouchLines( options )
 	var linesGeometry, linesMat;
 	function setup()
 	{
-
-		// for(var i in touches ){
-		// 	new TWEEN.Tween( touches[i] )
-		// 		.to( {z : 1}, 50 )
-		// 		.delay( randf( 1500, 2500) )
-		// 		.repeat( 100 )
-		// 		.start();
-		// }
-
-
 		//	LINES
 		linesGeometry = getLineGeometry();
 		linesMat = new LinesMaterial({
@@ -287,7 +250,9 @@ function TouchLines( options )
 			spriteRotation: spriteRotation,
 			colorRamp: colorRamp,
 			noiseScale: noiseScale,
-			noiseAmount: noiseAmount
+			noiseAmount: noiseAmount,
+			WIDTH: WIDTH,
+			HEIGHT: HEIGHT
 		});
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
@@ -297,26 +262,17 @@ function TouchLines( options )
 
 	function update()
 	{
-		if(stats)	stats.update();
 
 		var elapsedTime = clock.getElapsedTime();
 
 		if(linesMat) {
 			linesMat.uniforms.time.value = elapsedTime * timeScale;
 		}
-
-		// // points.material.uniforms.time.value += .003;
-		// // 
-		// for(var i=0; i<touches.length; i++) {
-
-		// 	touches[i].x = (i + .5) * WIDTH / touches.length - HALF_WIDTH;
-		// 	touches[i].y = cos( i + elapsedTime ) * 300;
-		// 	touches[i].z *= .95;
-		// }
 	}
 
 	function draw()
 	{
+
 		widget.draw( renderer );
 		renderer.render( scene, camera, null, true );
 
@@ -325,6 +281,8 @@ function TouchLines( options )
 
 	function animate()
 	{
+		if(stats)	stats.update();
+
 		TWEEN.update();
 		
 		update();
@@ -343,8 +301,6 @@ function TouchLines( options )
 		} );
 		
 		renderer.setClearColor( 0x000000, 0 );
-
-		// renderer.setPixelRatio( window.devicePixelRatio );
 
 		renderer.sortObjects = true;
 		
@@ -370,20 +326,11 @@ function TouchLines( options )
 		animate();
 	}
 
-	// begin();
-
 	return {
 
 		begin: begin,
 
 		widgetEvent: widget.handleInput,
 
-		// setEdgeColorTop: function( hex ){
-		// 	edgeTopColor.set( hex );
-		// },
-
-		// setEdgeColorBottom: function( hex ){
-		// 	edgeBottomColor.set( hex );
-		// },
 	}
 }

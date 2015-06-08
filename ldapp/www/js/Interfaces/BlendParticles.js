@@ -80,48 +80,7 @@ function BlendParticles( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 	var origin = v3(0,0,0);
 
-
-	//WIDGET
-	var widget, controlID = controller.canvasID;
-
-	if(controlID.indexOf( "multislider" ) > -1)
-	{
-		WIDGET_TYPE = WIDGETS.MULTISLIDER;
-
-		widget = MultiSliderWrapper( options ); 
-	}	
-	else if(controlID.indexOf( "button" ) > -1)
-	{
-		WIDGET_TYPE = WIDGETS.BUTTON;
-
-		widget = ButtonWrapper( options ); 
-	}
-	else  if( controlID.indexOf( "keyboard" ) > -1 )
-	{
-		WIDGET_TYPE = WIDGETS.SYNTH;
-
-		widget = KeyboardWrapper( options );
-
-	}
-	else 
-	{
-		console.log( "controlID: ", controlID );
-
-		widget = {
-
-			renderTarget: THREE.WebGLRenderTarget( WIDTH * .25, HEIGHT * .25, {
-				minFilter: THREE.LinearFilter
-			} ),
-
-			draw: function(){
-				// console.log( "widget no set recoginzes" );
-			},
-
-			handleInput: function( e ){
-				console.log(e, "little dragon:: widget not recognized" );
-			}
-		}
-	}
+widget.render
 
 	//
 	//	SCENE

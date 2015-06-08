@@ -7,8 +7,6 @@ var LinesMaterial = function( params ) {
 
 	var isLineShader = params.lineShader || false;
 
-console.log( 'params', params );
-
 	var matParams = {
 		transparent: true,
 		blending: params.blending || 0,
@@ -40,6 +38,10 @@ console.log( 'params', params );
 
 			noiseAmount: {type: 'f', value: params.noiseAmount || 1 },
 
+			WIDTH: {type: 'f', value: params.WIDTH || 1 },
+
+			HEIGHT: {type: 'f', value: params.HEIGHT || 1 },
+
 			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 },
 
 			restAngle: {type: 'f', value: params.restAngle === undefined ? .75 : params.restAngle }
@@ -57,6 +59,10 @@ console.log( 'params', params );
 		'uniform float noiseAmount;',
 		'uniform float spriteRotation;',
 		'uniform float restAngle;',
+		
+		'uniform float WIDTH;',
+
+		'uniform float HEIGHT;',
 
 		'uniform sampler2D pMap;',
 
@@ -108,7 +114,7 @@ console.log( 'params', params );
 
 		'void main() {',
 
-		'	vec2 fUv = ( uv / vec2( 1280., 720.) ) + .5;',
+		'	vec2 fUv = ( uv / vec2( WIDTH, HEIGHT ) ) + .5;',
 
 		'	float d = toGrey(texture2D( pMap, fUv ).xyz);',
 

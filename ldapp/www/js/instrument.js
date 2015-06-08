@@ -44,7 +44,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-1.jpg",
+			  colorRampPath: "textures/keys/keys1.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -65,7 +65,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-2.jpg",
+			  colorRampPath: "textures/keys/keys2.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -86,7 +86,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-3.jpg",
+			  colorRampPath: "textures/keys/keys3.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -107,7 +107,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-4.jpg",
+			  colorRampPath: "textures/keys/keys4.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -128,7 +128,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-5.jpg",
+			  colorRampPath: "textures/keys/keys5.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -164,6 +164,18 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "tilt", 1, options);
 			control.throttlePeriod = 50;
 			control.text = "pan";
+
+			ldInterface = TouchLines({
+			  MIN_ANGLE: -20,
+			  MAX_ANGLE: 20,
+			  controller: control,
+			  colorRampPath: "textures/keys/keys5.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 
@@ -306,6 +318,19 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "tilt", 1, options);
 			control.throttlePeriod = 50;
 			control.text = "pan";
+
+
+			ldInterface = TouchLines({
+			  MIN_ANGLE: -20,
+			  MAX_ANGLE: 20,
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 
@@ -346,6 +371,8 @@ nx.onload = function() {
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 			  controller: control,
 			  colorRampPath: "textures/drums/drum-1.jpg",
 			  lineWidth: 4,
@@ -363,6 +390,8 @@ nx.onload = function() {
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-2.jpg",
 		      lineWidth: 4,
@@ -380,6 +409,8 @@ nx.onload = function() {
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-3.jpg",
 		      lineWidth: 4,
@@ -397,6 +428,8 @@ nx.onload = function() {
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-4.jpg",
 		      lineWidth: 4,
@@ -434,6 +467,8 @@ nx.onload = function() {
 
 
 		    ldInterface = TouchLines({
+			  MIN_ANGLE: -20,
+			  MAX_ANGLE: 20,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-4.jpg",
 		      lineWidth: 4,
@@ -459,7 +494,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-1.jpg",
+			  colorRampPath: "textures/keys/keys1.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
