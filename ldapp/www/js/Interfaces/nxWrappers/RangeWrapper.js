@@ -24,7 +24,8 @@ var LDRangeMaterial = function( params ) {
 			falloff: {type: 'f', value: params.u || .5 },
 			minWeight: {type: 'f', value: params.u || .7 },
 			start: {type: 'f', value: params.start !== undefined ? params.start : .3 },
-			stop: {type: 'f', value: params.stop !== undefined ? params.stop : .6 }
+			stop: {type: 'f', value: params.stop !== undefined ? params.stop : .6 },
+			fadeDistance: {type: 'f', value: params.fadeDistance !== undefined ? params.fadeDistance : .25 }
 		},
 
 		vertexShader: [
@@ -49,6 +50,8 @@ var LDRangeMaterial = function( params ) {
 
 		'uniform float stop;',
 
+		'uniform float fadeDistance;',
+
 		'uniform float weight;',
 
 		'uniform float minWeight;',
@@ -72,9 +75,16 @@ var LDRangeMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
+		'	float grad = 1.;',
 
-		'	grad = smootherstep( pow( grad, 1.5 ) );',
+		'	if(vUv.x < start)	grad = mapLinear( vUv.x, start-fadeDistance, start, 0., 1. );',
+
+		'	else if(vUv.x > stop)	grad = mapLinear( vUv.x, stop, stop+fadeDistance, 1., 0. );',
+
+
+		// '	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
+
+		'	grad = smootherstep( pow( max(0., grad), 1.5 ) );',
 
 		'	gl_FragColor = vec4( vec3( grad ), 1. );',
 
