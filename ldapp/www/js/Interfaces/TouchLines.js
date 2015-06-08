@@ -155,33 +155,33 @@ function TouchLines( options )
 
 		widget = ToggleWrapper( options );
 
-		textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
-			anotherRamp = t;
-			console.log( 'anotherRamp', anotherRamp );
-		});
+		// textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
+		// 	anotherRamp = t;
+		// 	console.log( 'anotherRamp', anotherRamp );
+		// });
 
 		var origTimeScale = timeScale;
 
 		widget.scope.onHandleInput = function( data ) {
 
-			linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
+			// linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
 
-			if( data.value ) {
+			// if( data.value ) {
 
-				//rotation=6&noiseAmount=10&timeScale=2
-				linesMat.uniforms.spriteRotation.value = 6;
-				linesMat.uniforms.noiseAmount.value = 10;
-				timeScale = 2;
+			// 	//rotation=6&noiseAmount=10&timeScale=2
+			// 	linesMat.uniforms.spriteRotation.value = 6;
+			// 	linesMat.uniforms.noiseAmount.value = 10;
+			// 	timeScale = 2;
 
-			}
-			else {
+			// }
+			// else {
 
-				//reset the uniforms
-				linesMat.uniforms.spriteRotation.value = spriteRotation;
-				linesMat.uniforms.noiseAmount.value = noiseAmount;
-				timeScale = origTimeScale;
+			// 	//reset the uniforms
+			// 	linesMat.uniforms.spriteRotation.value = spriteRotation;
+			// 	linesMat.uniforms.noiseAmount.value = noiseAmount;
+			// 	timeScale = origTimeScale;
 
-			}
+			// }
 		}.bind( this );
 
 
