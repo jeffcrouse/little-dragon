@@ -166,6 +166,8 @@ nx.onload = function() {
 			control.text = "pan";
 
 			ldInterface = TouchLines({
+			  MIN_ANGLE: -20,
+			  MAX_ANGLE: 20,
 			  controller: control,
 			  colorRampPath: "textures/bass/bass1.jpg",
 			  lineWidth: 4,
@@ -319,6 +321,8 @@ nx.onload = function() {
 
 
 			ldInterface = TouchLines({
+			  MIN_ANGLE: -20,
+			  MAX_ANGLE: 20,
 			  controller: control,
 			  colorRampPath: "textures/bass/bass1.jpg",
 			  lineWidth: 4,
@@ -455,6 +459,8 @@ nx.onload = function() {
 
 
 		    ldInterface = TouchLines({
+			  MIN_ANGLE: -20,
+			  MAX_ANGLE: 20,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-4.jpg",
 		      lineWidth: 4,
