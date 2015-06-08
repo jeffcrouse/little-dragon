@@ -71,7 +71,7 @@ var LDKeyMaterial = function( params ) {
 
 		'	float grad = mix( weight * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 
-		'	grad += sin( vUv.y * 3.145 ) * .1 + .1;',
+		'	grad += pow(sin( vUv.y * 3.145 ) * .5 + .5, 2.) * .1;',
 
 		// '	float grad = mix( (weight + .25) * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 

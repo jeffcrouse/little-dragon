@@ -155,10 +155,10 @@ function TouchLines( options )
 
 		widget = ToggleWrapper( options );
 
-		// textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
-		// 	anotherRamp = t;
-		// 	console.log( 'anotherRamp', anotherRamp );
-		// });
+		textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
+			anotherRamp = t;
+			console.log( 'anotherRamp', anotherRamp );
+		});
 
 		var origTimeScale = timeScale;
 

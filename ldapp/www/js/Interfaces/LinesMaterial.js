@@ -108,15 +108,15 @@ var LinesMaterial = function( params ) {
 		'        return v*(q.w*q.w - dot(q.xyz,q.xyz)) + 2.0*q.xyz*dot(q.xyz,v) + 2.0*q.w*cross(q.xyz,v);',
 		'}',
 
-		'float toGrey(vec3 rgb){',
-		'	return dot(rgb, vec3(0.299, 0.587, 0.114));',
+		'float toWeight(vec3 rgb){',
+		'	return max( rgb.x, max( rgb.y, rgb.z ) );// dot(rgb, vec3(0.299, 0.587, 0.114));',
 		'}',
 
 		'void main() {',
 
 		'	vec2 fUv = ( uv / vec2( WIDTH, HEIGHT ) ) + .5;',
 
-		'	float d = toGrey(texture2D( pMap, fUv ).xyz);',
+		'	float d = texture2D( pMap, fUv ).x;',
 
 		'	vec3 center = vec3( uv, 0.);',
 
@@ -125,7 +125,7 @@ var LinesMaterial = function( params ) {
 		'	vUv = position.xy + .5;',
 
 
-		'	vColor = texture2D( colorRamp, vec2(d) ).xyz;',
+		'	vColor = texture2D( colorRamp, vec2(d * 2.) ).xyz;', //vec3( d  );//
 		'	vAlpha = 1.;',
 
 		'	vec4 q;',
