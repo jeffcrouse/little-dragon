@@ -9,7 +9,8 @@ function TouchLines( options )
 	var WIDGETS = {
 		BUTTON: 0,
 		MULTISLIDER: 1,
-		SYNTH: 2
+		SYNTH: 2,
+		TILT: 3
 	}
 
 	var lineLength = getQueryVariable("lineLength") || options.lineLength || 20;
@@ -99,12 +100,14 @@ function TouchLines( options )
 		numSpacers = options.controller.sliders;
 
 	}	
+
 	else if(controlID.indexOf( "button" ) > -1) {
 
 		WIDGET_TYPE = WIDGETS.BUTTON;
 
 		widget = ButtonWrapper( options ); 
 	}
+
 	else  if( controlID.indexOf( "keyboard" ) > -1 ) {
 
 		WIDGET_TYPE = WIDGETS.SYNTH;
@@ -114,6 +117,15 @@ function TouchLines( options )
 		numSpacers = options.controller.keys.length;
 
 	}
+
+	else  if( controlID.indexOf( "tilt" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.TILT;
+
+		widget = TiltWrapper( options );
+
+	}
+
 	else {
 
 		console.log( "controlID: ", controlID );
@@ -297,13 +309,15 @@ function TouchLines( options )
 
 	function update()
 	{
-		if(stats)	stats.update();
 
 		var elapsedTime = clock.getElapsedTime();
 
 		if(linesMat) {
 			linesMat.uniforms.time.value = elapsedTime * timeScale;
 		}
+
+		if( widget.setTilt )	widget.setTilt( sin(elapsedTime ) * .5 + .5 );
+
 
 		// // points.material.uniforms.time.value += .003;
 		// // 
@@ -317,6 +331,7 @@ function TouchLines( options )
 
 	function draw()
 	{
+
 		widget.draw( renderer );
 		renderer.render( scene, camera, null, true );
 
@@ -325,6 +340,8 @@ function TouchLines( options )
 
 	function animate()
 	{
+		if(stats)	stats.update();
+
 		TWEEN.update();
 		
 		update();

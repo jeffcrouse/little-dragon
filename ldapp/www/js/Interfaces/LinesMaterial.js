@@ -7,8 +7,6 @@ var LinesMaterial = function( params ) {
 
 	var isLineShader = params.lineShader || false;
 
-console.log( 'params', params );
-
 	var matParams = {
 		transparent: true,
 		blending: params.blending || 0,
