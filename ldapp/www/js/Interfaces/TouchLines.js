@@ -312,12 +312,12 @@ function TouchLines( options )
 	}
 
 
-	stats = new Stats();
-	$(stats.domElement).css({
-		position: "absolute",
-		left: '20px',
-		right: '20px'
-	}).appendTo( container );
+	// stats = new Stats();
+	// $(stats.domElement).css({
+	// 	position: "absolute",
+	// 	left: '20px',
+	// 	right: '20px'
+	// }).appendTo( container );
 
 	function begin(){
 		rendererSetup();
