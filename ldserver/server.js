@@ -601,7 +601,7 @@ app.get('/projector/:num', function(req, res) {
 });
 
 app.get('/composer', function(req, res) {
-	var data = {"title": 'Little Dragon Conposer'};
+	var data = {"title": 'Little Dragon Composer'};
 	res.render('composer', data);
 });
 
