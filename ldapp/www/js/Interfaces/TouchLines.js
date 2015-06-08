@@ -21,11 +21,11 @@ function TouchLines( options )
 
 	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
 
-	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 0;
+	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
 
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
 
-	var spread = options.spread !== undefined ? options.spread : 0;
+	// var spread = options.spread !== undefined ? options.spread : 0;
 
 	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0 );
 
@@ -111,7 +111,7 @@ function TouchLines( options )
 	}
 
 	//WIDGET
-	var widget, controlID = controller.canvasID, numSpacers = 0;
+	var widget, controlID = controller.canvasID, numSpacers = 0, prevTimeScale = timeScale, prevNoiseAmount = noiseAmount;
 
 	if(controlID.indexOf( "multislider" ) > -1) {
 
@@ -160,17 +160,37 @@ function TouchLines( options )
 			console.log( 'anotherRamp', anotherRamp );
 		});
 
+		var origTimeScale = timeScale;
+
 		widget.scope.onHandleInput = function( data ) {
 
 			linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
 
-		}
+			if( data.value ) {
+
+				//rotation=6&noiseAmount=10&timeScale=2
+				linesMat.uniforms.spriteRotation.value = 6;
+				linesMat.uniforms.noiseAmount.value = 10;
+				timeScale = 2;
+
+			}
+			else {
+
+				//reset the uniforms
+				linesMat.uniforms.spriteRotation.value = spriteRotation;
+				linesMat.uniforms.noiseAmount.value = noiseAmount;
+				timeScale = origTimeScale;
+
+			}
+		}.bind( this );
+
 
 	}
 
 	else {
 
 		console.log( "controlID: ", controlID );
+
 
 		widget = {
 
