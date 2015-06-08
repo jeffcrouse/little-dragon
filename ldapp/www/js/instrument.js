@@ -515,16 +515,17 @@ nx.onload = function() {
 		 //   
 
 		case "rangeTest":
-			var control = createControl("rangeTest", "range", 1);
+			var control = createControl("rangeTest", "range" );
+			control.mode = "area"; //"edge"
 
-			// ldInterface = TouchLines({
-			//   controller: control,
-			//   colorRampPath: "textures/keys/keys1.jpg",
-			//   lineWidth: 4,
-			//   lineLength: 20,
-			//   rotation: 3,
-			//   noiseScale: .005
-			// });
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/keys1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
 
 			break;
 		                         
