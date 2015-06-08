@@ -29,7 +29,7 @@ var LDToggleMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vUv = vec2( length(position.xy) );',
+		'	vUv = vec2( 1. - length(position.xy) );',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
@@ -51,10 +51,14 @@ var LDToggleMaterial = function( params ) {
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
 
+		'float smootherstep( float x ){',
+		'    return x*x*x*(x*(x*6. - 15.) + 10.);',
+		'}',
+
 		'void main()',
 		'{',
 
-		'	float u = 1. - vUv.x;',
+		'	float u = vUv.x;',
 
 		// '	u = sin(u * 3.14) * .5 + .5;',
 
@@ -109,7 +113,7 @@ function ToggleWrapper( options )
 
 	var camera = options.camera || new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
-	var renderTarget = new THREE.WebGLRenderTarget( WIDTH * .25, HEIGHT * .25, {
+	var renderTarget = new THREE.WebGLRenderTarget( WIDTH * .5, HEIGHT * .5, {
 		minFilter: THREE.LinearFilter
 	} );
 
