@@ -375,7 +375,6 @@ nx.onload = function() {
 			  heightOverride: 720,
 			  controller: control,
 			  colorRampPath: "textures/drums/drums-1-1-lars.png",
-			  toggleRampPath: "textures/drums/drum-1-1.jpg", // "textures/drums/drum-1-toggleRamp.jpg",
 			  lineWidth: 4,
 			  lineLength: 16,
 			  rotation: 3,
