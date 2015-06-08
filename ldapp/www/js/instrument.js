@@ -44,7 +44,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-1.jpg",
+			  colorRampPath: "textures/keys/keys1.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -65,7 +65,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-2.jpg",
+			  colorRampPath: "textures/keys/keys2.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -86,7 +86,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-3.jpg",
+			  colorRampPath: "textures/keys/keys3.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -107,7 +107,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-4.jpg",
+			  colorRampPath: "textures/keys/keys4.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -128,7 +128,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-5.jpg",
+			  colorRampPath: "textures/keys/keys5.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -169,7 +169,7 @@ nx.onload = function() {
 			  MIN_ANGLE: -20,
 			  MAX_ANGLE: 20,
 			  controller: control,
-			  colorRampPath: "textures/bass/bass1.jpg",
+			  colorRampPath: "textures/keys/keys5.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
@@ -486,7 +486,7 @@ nx.onload = function() {
 
 			ldInterface = TouchLines({
 			  controller: control,
-			  colorRampPath: "textures/keys/key-1.jpg",
+			  colorRampPath: "textures/keys/keys1.jpg",
 			  lineWidth: 4,
 			  lineLength: 20,
 			  rotation: 3,
