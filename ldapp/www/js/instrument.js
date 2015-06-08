@@ -371,6 +371,8 @@ nx.onload = function() {
 				
 			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
 			ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 			  controller: control,
 			  colorRampPath: "textures/drums/drum-1.jpg",
 			  lineWidth: 4,
@@ -388,6 +390,8 @@ nx.onload = function() {
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-2.jpg",
 		      lineWidth: 4,
@@ -405,6 +409,8 @@ nx.onload = function() {
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-3.jpg",
 		      lineWidth: 4,
@@ -422,6 +428,8 @@ nx.onload = function() {
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
 		      controller: control,
 		      colorRampPath: "textures/drums/drum-4.jpg",
 		      lineWidth: 4,

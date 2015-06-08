@@ -41,14 +41,14 @@ function TouchLines( options )
 
 	var colorRampPath = options.colorRampPath || "textures/bwGradient.png";
 
-	console.log( 'options', options );
-	var WIDTH = options.controller.width || 1280; 
-	var HEIGHT = options.controller.height || 720; 
+
+	// widthOverride: 1280,
+	// heightOverride: 720,
+
+	var WIDTH = options.widthOverride || options.controller.width || 1280; 
+	var HEIGHT = options.heightOverride || options.controller.height || 720; 
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 	var HALF_WIDTH = WIDTH * .5, HALF_HEIGHT = HEIGHT * .5;
-
-	console.log( 'WIDTH: ' + WIDTH );
-	console.log( 'HEIGHT: ' + HEIGHT );
 
 	var stats = undefined;
 
