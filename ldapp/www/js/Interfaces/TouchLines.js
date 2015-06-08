@@ -162,8 +162,6 @@ function TouchLines( options )
 
 		widget.scope.onHandleInput = function( data ) {
 
-			console.log( 'data', data );
-
 			linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
 
 		}
