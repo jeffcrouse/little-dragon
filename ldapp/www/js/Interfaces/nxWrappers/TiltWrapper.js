@@ -113,6 +113,12 @@ function TiltWrapper( options )
 	var HEIGHT = controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
+	var MIN_ANGLE = options.MIN_ANGLE || -20;
+	var MAX_ANGLE = options.MAX_ANGLE || 20;
+
+	var minNormalizedAngle = MIN_ANGLE / 90;
+	var maxNormalizedAngle = MAX_ANGLE / 90;
+
 	console.log( 'WIDTH: ' + WIDTH );
 
 	console.log( 'HEIGHT: ' + HEIGHT );
@@ -156,8 +162,9 @@ function TiltWrapper( options )
 	{
 		scope.onHandleInput( data );
 
-		// console.log( data );
-		setTilt( data.y * .5 + .5 )
+		// data.y is between -1 & 1 with 1 == 90degrees
+		// 
+		setTilt( mapLinear(data.y, minNormalizedAngle, maxNormalizedAngle, 0, 1) )
 	}
 
 	return {
