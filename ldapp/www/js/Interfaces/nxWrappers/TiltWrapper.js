@@ -71,7 +71,7 @@ var LDTiltMaterial = function( params ) {
 
 		'	float grad = vUv.y < tilt ? vUv.y / tilt : (1. - vUv.y) / (1. - tilt)  ;',
 
-		'	grad = smootherstep( pow( grad, 1.25 ) );',
+		'	grad = smootherstep( pow( grad, 1.5 ) );',
 
 		'	gl_FragColor = vec4( vec3( grad ), 1. );',
 
