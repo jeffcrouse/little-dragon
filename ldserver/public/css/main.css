@@ -1,0 +1,58 @@
+/*main.css*/
+
+body {
+  font-family: Monospace;
+  background-color: #000;
+  margin: 0px;
+  overflow: hidden;
+  position: absolute;
+}
+
+.slitContainer{
+
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 100;
+  width: 76px;
+  height: 76px;
+  background-color: white;
+  color: grey;
+}
+
+.gui{
+  position: relative;
+  color: white;
+  background-color: rgba(255, 255, 255, .125);
+  margin: 4px;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 10px;
+}
+.gui:hover{
+  background-color: rgba(255, 255, 255, .25);
+}
+
+.gui-button{
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.gui-button:hover{
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.gui-lable{
+  background-color: rgba(0, 0, 0, 0);
+  margin: 10px 5px 10px 5px;
+}
+.gui-lable:hover{
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.gui-expand-button{
+  display: inline;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  margin: 0px;
+}

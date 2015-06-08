@@ -164,6 +164,16 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "tilt", 1, options);
 			control.throttlePeriod = 50;
 			control.text = "pan";
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 
@@ -410,7 +420,7 @@ nx.onload = function() {
 		case "drums5":
 		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
-		    var control = createControl(instrumentName, "button", 5);
+		    var control = createControl(instrumentName, "multislider", 1);
 		    // control.mode = "node";
 
 		    ldInterface = TouchLines({

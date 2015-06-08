@@ -9,7 +9,8 @@ function TouchLines( options )
 	var WIDGETS = {
 		BUTTON: 0,
 		MULTISLIDER: 1,
-		SYNTH: 2
+		SYNTH: 2,
+		TILT: 3
 	}
 
 	var lineLength = getQueryVariable("lineLength") || options.lineLength || 20;
@@ -40,10 +41,14 @@ function TouchLines( options )
 
 	var colorRampPath = options.colorRampPath || "textures/bwGradient.png";
 
-	var WIDTH = options.width || 1280; 
-	var HEIGHT = options.height || 720; 
+	console.log( 'options', options );
+	var WIDTH = options.controller.width || 1280; 
+	var HEIGHT = options.controller.height || 720; 
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 	var HALF_WIDTH = WIDTH * .5, HALF_HEIGHT = HEIGHT * .5;
+
+	console.log( 'WIDTH: ' + WIDTH );
+	console.log( 'HEIGHT: ' + HEIGHT );
 
 	var stats = undefined;
 
@@ -99,12 +104,14 @@ function TouchLines( options )
 		numSpacers = options.controller.sliders;
 
 	}	
+
 	else if(controlID.indexOf( "button" ) > -1) {
 
 		WIDGET_TYPE = WIDGETS.BUTTON;
 
 		widget = ButtonWrapper( options ); 
 	}
+
 	else  if( controlID.indexOf( "keyboard" ) > -1 ) {
 
 		WIDGET_TYPE = WIDGETS.SYNTH;
@@ -114,6 +121,15 @@ function TouchLines( options )
 		numSpacers = options.controller.keys.length;
 
 	}
+
+	else  if( controlID.indexOf( "tilt" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.TILT;
+
+		widget = TiltWrapper( options );
+
+	}
+
 	else {
 
 		console.log( "controlID: ", controlID );
@@ -287,7 +303,9 @@ function TouchLines( options )
 			spriteRotation: spriteRotation,
 			colorRamp: colorRamp,
 			noiseScale: noiseScale,
-			noiseAmount: noiseAmount
+			noiseAmount: noiseAmount,
+			WIDTH: WIDTH,
+			HEIGHT: HEIGHT
 		});
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
@@ -297,7 +315,6 @@ function TouchLines( options )
 
 	function update()
 	{
-		if(stats)	stats.update();
 
 		var elapsedTime = clock.getElapsedTime();
 
@@ -305,18 +322,13 @@ function TouchLines( options )
 			linesMat.uniforms.time.value = elapsedTime * timeScale;
 		}
 
-		// // points.material.uniforms.time.value += .003;
-		// // 
-		// for(var i=0; i<touches.length; i++) {
+		if( widget.setTilt )	widget.setTilt( sin(elapsedTime ) * .5 + .5 );
 
-		// 	touches[i].x = (i + .5) * WIDTH / touches.length - HALF_WIDTH;
-		// 	touches[i].y = cos( i + elapsedTime ) * 300;
-		// 	touches[i].z *= .95;
-		// }
 	}
 
 	function draw()
 	{
+
 		widget.draw( renderer );
 		renderer.render( scene, camera, null, true );
 
@@ -325,6 +337,8 @@ function TouchLines( options )
 
 	function animate()
 	{
+		if(stats)	stats.update();
+
 		TWEEN.update();
 		
 		update();
