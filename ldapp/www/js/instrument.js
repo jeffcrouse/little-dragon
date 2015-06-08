@@ -375,7 +375,7 @@ nx.onload = function() {
 			  heightOverride: 720,
 			  controller: control,
 			  colorRampPath: "textures/drums/drum-1.jpg",
-			  toggleRampPath: "textures/drums/drum-1-toggleRamp.jpg",
+			  toggleRampPath: "textures/drums/drum-1.jpg", // "textures/drums/drum-1-toggleRamp.jpg",
 			  lineWidth: 4,
 			  lineLength: 16,
 			  rotation: 3,
@@ -509,6 +509,21 @@ nx.onload = function() {
 		 // \ \    / /_   _| __|__ \
 		 //  \ \/\/ /  | | | _|  /_/
 		 //   \_/\_/   |_| |_|  (_) 
+		 //   
+
+		case "rangeTest":
+			var control = createControl("rangeTest", "range", 1);
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/keys1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
+			break;
 		                         
 	    default:
 			var container = $("<div>", {id: "warning"}).css({
