@@ -1,6 +1,6 @@
-// ButtonWrapper.js
+// ToggleWrapper.js
 
-var LDButtonMaterial = function( params ) {
+var LDToggleMaterial = function( params ) {
 
 	params = params || {};
 
@@ -68,10 +68,10 @@ var LDButtonMaterial = function( params ) {
 	THREE.ShaderMaterial.call( this, matParams );
 }
 
-LDButtonMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LDToggleMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
 
-function ButtonWrapper( options )
+function ToggleWrapper( options )
 {
 
 	var scope = this;
@@ -105,7 +105,7 @@ function ButtonWrapper( options )
 
 	var radius = 300; // should probably do somehting better to scale it
 
-	var decay = 1;
+	var decay = 1.;
 
 	var camera = options.camera || new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
@@ -135,38 +135,18 @@ function ButtonWrapper( options )
 
 	group.add( clearingMesh );
 
-	var buttonMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 32 ), new LDButtonMaterial( ) );
+	var ToggleMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 32 ), new LDToggleMaterial( ) );
 
-	buttonMesh.scale.set( radius, radius, 10 );
+	ToggleMesh.scale.set( radius, radius, 10 );
 
-	group.add( buttonMesh )
+	group.add( ToggleMesh )
 
 
 	var tween;
 	scope.onHandleInput = function( data )
 	{
-		if(tween) {
-			tween.stop();
-
-			TWEEN.remove( tween );
-		}
-		
-		if( data.press == 1)
-		{
-
-			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: 1000, y: 1000}, 150)
-				.easing( TWEEN.Easing.Cubic.Out )
-				.start()
-
-		} else {
-
-			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: radius, y: radius}, 500)
-				.easing( TWEEN.Easing.Cubic.Out )
-				.start()
-
-		}
+		console.log( "SHIT" );
+		// console.log( data );
 	}
 
 
@@ -179,8 +159,31 @@ function ButtonWrapper( options )
 
 	function handleInput( data )
 	{
+		if(tween) {
+			tween.stop();
+
+			TWEEN.remove( tween );
+		}
+		
+		if( data.value == 1)
+		{
+
+			tween = new TWEEN.Tween( ToggleMesh.scale )
+				.to( {x: 1000, y: 1000}, 150)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start()
+
+		} else {
+
+			tween = new TWEEN.Tween( ToggleMesh.scale )
+				.to( {x: radius, y: radius}, 150)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start()
+
+		}
+
+		//callback
 		scope.onHandleInput( data );
-		// console.log( data );
 	}
 
 
@@ -193,6 +196,7 @@ function ButtonWrapper( options )
 		c0: c0,
 		c1: c1,
 		handleInput: handleInput,
+		onHandleInput: onHandleInput,
 		scope: scope
 	}
 }
