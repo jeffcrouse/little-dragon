@@ -4,7 +4,7 @@ class Particle {
   PVector pos = new PVector();
   PVector vel = new PVector();
   color myColor;
-  
+
   Particle() {
     myColor = color(random(200, 255), random(100), random(100));
     pos.set(0, qheight*2.5);
@@ -18,9 +18,8 @@ class Particle {
 
   void draw() {
     fill(myColor);
-      rectMode(CENTER);
+    rectMode(CENTER);
     rect(pos.x, pos.y, particleWidth, 100);
   }
 }
-
 

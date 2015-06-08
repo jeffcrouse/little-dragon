@@ -23,6 +23,8 @@ float rightFade = PI;
 float spinnerSpeed = 1.0;
 float spinnerPos = 0;
 
+
+
 // -------------------------------
 void setup()
 {
@@ -52,7 +54,7 @@ void setup()
   slots[9] = new PhoneSlot(0.352, white);
   slots[10] = new PhoneSlot(0.376, white);
   slots[11] = new PhoneSlot(0.399, white);
-  slots[12] = new PhoneSlot(0.599, white);
+  slots[12] = new PhoneSlot(0.599, red);
   slots[13] = new PhoneSlot(0.623, red);
   slots[14] = new PhoneSlot(0.647, red);
   slots[15] = new PhoneSlot(0.672, red);
@@ -94,7 +96,7 @@ void setup()
 
   cp5.loadProperties("leds.properties");
 
-
+  // https://github.com/scanlime/fadecandy/blob/master/doc/processing_opc_client.md
   opc.ledStrip(0, 240, qwidth, qheight, width / 450, 0, false); //RIGHT TOP
   opc.ledStrip(256, 300, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
   opc.ledStrip(576, 300, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
@@ -114,8 +116,8 @@ void oscEvent(OscMessage theOscMessage) {
   String addr = theOscMessage.addrPattern();
   String data = theOscMessage.get(0).toString();
   JSONObject json = JSONObject.parse(data);
-  println(addr);
-  println(data);
+  //  println(addr);
+  //  println(data);
 
   if (addr.equals("/bass_multislider_1")) {
     slots[0].on = json.getInt("on")>1;
@@ -130,9 +132,9 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/bass_keyboard_5")) {
     slots[5].on = json.getInt("on")>1;
   } else if (addr.equals("/bass_tilt_1")) {
-    slots[6].on = true;
+    slots[6].blink();
   } else if (addr.equals("/keys_multislider_1")) {
-    slots[7].on = true;
+    slots[7].blink();
   } else if (addr.equals("/keys_keyboard_1")) {
     slots[8].on = json.getInt("on")>1;
   } else if (addr.equals("/keys_keyboard_2")) {
@@ -142,7 +144,7 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/keys_keyboard_4")) {
     slots[11].on = json.getInt("on")>1;
   } else if (addr.equals("/keys_tilt_1")) {
-    slots[12].on = true;
+    slots[12].blink();
   } else if (addr.equals("/drums_button_1")) {
     slots[13].on = json.getInt("press", -1)==1;
   } else if (addr.equals("/drums_button_2")) {
@@ -153,9 +155,7 @@ void oscEvent(OscMessage theOscMessage) {
     slots[16].on = json.getInt("press", -1)==1;
   } else if (addr.equals("/drums_button_5")) {
     slots[17].on = json.getInt("press", -1)==1;
-  } else if (addr.equals("/drums_tilt_1")) {
-    slots[18].on = json.getInt("press", -1)==1;
-  } 
+  }
 
   /* get and print the address pattern and the typetag of the received OscMessage */
   //println("### received an osc message with addrpattern "+theOscMessage.addrPattern()+" and typetag "+theOscMessage.typetag());
@@ -201,13 +201,14 @@ void draw()
 
   // FADES
   rectMode(CORNER);
-  float left = map(cos(leftFade), -1, 1, 0, 255);
+  float left = map(cos(leftFade), -1, 1, 0, 150);
   fill(left);
   rect(0, 50, width/2, 40);
 
-  float right = map(cos(rightFade), -1, 1, 0, 255);
+  float right = map(cos(rightFade), -1, 1, 0, 150);
   fill(right);
   rect(width/2, 50, width/2, 40);
+
 
   // SPINNER
   float t = millis() / 2000.0;
@@ -227,9 +228,7 @@ void draw()
   }
 
 
-
   if (positionBar) {
-
 
     fill(255, 100, 100);
     rect(mouseX, height/2, 22, height);
@@ -243,12 +242,25 @@ void draw()
 
 // -------------------------------
 void keyPressed() {
-  if(key=='g') {
-    if(cp5.isVisible()) cp5.hide();
+  if (key=='g') {
+    if (cp5.isVisible()) cp5.hide();
     else cp5.show();
   }
   if (key=='s') {
     cp5.saveProperties(("leds.properties"));
+  }
+  if (key=='1') {
+    slots[0].blink();
+  }
+  if (key=='2') {
+    slots[1].on = true;
+  }
+}
+
+// -------------------------------
+void keyReleased() {
+  if (key=='2') {
+    slots[1].on = false;
   }
 }
 
