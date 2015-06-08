@@ -157,7 +157,7 @@ function TiltWrapper( options )
 		scope.onHandleInput( data );
 
 		// console.log( data );
-		setTilt( data.x * .5 + .5 )
+		setTilt( data.y * .5 + .5 )
 	}
 
 	return {
