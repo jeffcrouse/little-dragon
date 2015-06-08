@@ -116,28 +116,12 @@ function RangeWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
-	//colors
-	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var NUM_SLIDERS = controller.sliders;
 
 	var WIDTH = controller.width;
 	var HEIGHT = controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
-
-	var MIN_ANGLE = options.MIN_ANGLE !== undefined ? options.MIN_ANGLE : -20;
-	var MAX_ANGLE = options.MAX_ANGLE !== undefined ? options.MAX_ANGLE : 20;
-
-	if( getQueryVariable("minAngle") !== undefined )	MIN_ANGLE = getQueryVariable("minAngle");
-	if( getQueryVariable("maxAngle") !== undefined )	MAX_ANGLE = getQueryVariable("maxAngle");
-
-	var minNormalizedAngle = MIN_ANGLE / 90;
-	var maxNormalizedAngle = MAX_ANGLE / 90;
-
-	console.log( 'WIDTH: ' + WIDTH );
-
-	console.log( 'HEIGHT: ' + HEIGHT );
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
@@ -174,8 +158,6 @@ function RangeWrapper( options )
 		m.material.uniforms.stop.value = data.stop;
 
 		scope.onHandleInput( data );
-
-		console.log( 'data', data );
 	}
 
 	return {
@@ -183,8 +165,6 @@ function RangeWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		c0: c0,
-		c1: c1,
 		handleInput: handleInput,
 		scope: scope
 	}

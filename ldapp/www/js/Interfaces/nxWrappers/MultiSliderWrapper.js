@@ -93,9 +93,6 @@ function MultiSliderWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
-	//colors
-	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var NUM_SLIDERS = controller.sliders;
 
@@ -174,10 +171,9 @@ function MultiSliderWrapper( options )
 		if(sliders[index])
 		{
 			sliders[index].position.y = (value - 1) * HEIGHT;
-			// var k = cos( value * PI ) * -.5 + .5;
-			var k = value;//  1. - smootherstep( 1. - value );
 
-			// sliders[index].material.color.copy( c0 ).lerp( c1, k );
+			var k = value;
+
 		}
 	}
 
@@ -202,8 +198,6 @@ function MultiSliderWrapper( options )
 		renderTarget: renderTarget,
 		draw: draw,
 		setSliderHieght: setSliderHieght,
-		c0: c0,
-		c1: c1,
 		handleInput: handleInput,
 		scope: scope
 	}

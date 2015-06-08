@@ -103,9 +103,6 @@ function TiltWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
-	//colors
-	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var NUM_SLIDERS = controller.sliders;
 
@@ -176,8 +173,6 @@ function TiltWrapper( options )
 		renderTarget: renderTarget,
 		draw: draw,
 		setTilt: setTilt,
-		c0: c0,
-		c1: c1,
 		handleInput: handleInput,
 		scope: scope
 	}
