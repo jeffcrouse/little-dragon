@@ -106,10 +106,6 @@ function KeyboardWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
-	//colors
-	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x000000 );
-
 	// var NUM_SLIDERS = controller.sliders;
 	var keys = controller.keys;
 
@@ -221,8 +217,6 @@ function KeyboardWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		c0: c0,
-		c1: c1,
 		handleInput: handleInput,
 		scope: scope
 	}

@@ -90,9 +90,6 @@ function ButtonWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
-	//colors
-	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var WIDTH = 1280; // controller.width;
 	var HEIGHT = 720; // controller.height;
@@ -176,8 +173,6 @@ function ButtonWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		c0: c0,
-		c1: c1,
 		handleInput: handleInput,
 		scope: scope
 	}
