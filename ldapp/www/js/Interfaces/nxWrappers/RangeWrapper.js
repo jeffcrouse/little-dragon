@@ -1,6 +1,6 @@
-// TiltWrapper.js
+// RangeWrapper.js
 
-var LDTiltMaterial = function( params ) {
+var LDRangeMaterial = function( params ) {
 
 	params = params || {};
 
@@ -23,7 +23,8 @@ var LDTiltMaterial = function( params ) {
 			weight: {type: 'f', value: params.u || 0 },
 			falloff: {type: 'f', value: params.u || .5 },
 			minWeight: {type: 'f', value: params.u || .7 },
-			tilt: {type: 'f', value: params.tilt !== undefined ? params.tilt : .5 }
+			start: {type: 'f', value: params.start !== undefined ? params.start : .3 },
+			stop: {type: 'f', value: params.stop !== undefined ? params.stop : .6 }
 		},
 
 		vertexShader: [
@@ -44,7 +45,9 @@ var LDTiltMaterial = function( params ) {
 
 		'uniform float u;',
 
-		'uniform float tilt;',
+		'uniform float start;',
+
+		'uniform float stop;',
 
 		'uniform float weight;',
 
@@ -69,7 +72,7 @@ var LDTiltMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	float grad = vUv.y < tilt ? vUv.y / tilt : (1. - vUv.y) / (1. - tilt)  ;',
+		'	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
 
 		'	grad = smootherstep( pow( grad, 1.5 ) );',
 
@@ -83,9 +86,9 @@ var LDTiltMaterial = function( params ) {
 	THREE.ShaderMaterial.call( this, matParams );
 }
 
-LDTiltMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LDRangeMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
-function TiltWrapper( options )
+function RangeWrapper( options )
 {
 	var scope = this;
 
@@ -141,7 +144,7 @@ function TiltWrapper( options )
 
 	var autoClear = false;
 	
-	var m = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, HEIGHT, 10, 10 ), new LDTiltMaterial() );
+	var m = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, HEIGHT, 10, 10 ), new LDRangeMaterial() );
 
 	scene.add( m );
 
@@ -155,19 +158,14 @@ function TiltWrapper( options )
 		// console.log( "scope.onHandleInput" );
 	}
 
-	function setTilt( value ) {
-
-		m.material.uniforms.tilt.value = value;
-
-	}
-
 	function handleInput( data )
 	{
+		m.material.uniforms.start.value = data.start;
+		m.material.uniforms.stop.value = data.stop;
+
 		scope.onHandleInput( data );
 
-		// data.y is between -1 & 1 with 1 == 90degrees
-		// 
-		setTilt( mapLinear(data.y, minNormalizedAngle, maxNormalizedAngle, 0, 1) )
+		console.log( 'data', data );
 	}
 
 	return {
@@ -175,7 +173,6 @@ function TiltWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		setTilt: setTilt,
 		c0: c0,
 		c1: c1,
 		handleInput: handleInput,

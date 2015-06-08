@@ -8,7 +8,8 @@ function TouchLines( options )
 		BUTTON: 0,
 		MULTISLIDER: 1,
 		SYNTH: 2,
-		TILT: 3
+		TILT: 3,
+		RANGE: 4
 	}
 
 	var lineLength = getQueryVariable("lineLength") || options.lineLength || 20;
@@ -60,6 +61,10 @@ function TouchLines( options )
 	}).appendTo( document.body );
 
 	var renderer, scene, camera, light, clock = new THREE.Clock();
+
+	console.log( controller );
+
+	controller.canvas.attributes.style.hidden = true;
 
 	//
 	//DEBUG
@@ -174,25 +179,16 @@ function TouchLines( options )
 
 			}
 
-
-			// if( data.value ) {
-
-			// 	//rotation=6&noiseAmount=10&timeScale=2
-			// 	linesMat.uniforms.spriteRotation.value = 6;
-			// 	linesMat.uniforms.noiseAmount.value = 10;
-			// 	timeScale = 2;
-
-			// }
-			// else {
-
-			// 	//reset the uniforms
-			// 	linesMat.uniforms.spriteRotation.value = spriteRotation;
-			// 	linesMat.uniforms.noiseAmount.value = noiseAmount;
-			// 	timeScale = origTimeScale;
-
-			// }
 		}.bind( this );
 
+	}
+
+	else if( controlID.indexOf( "range" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.RANGE;
+
+
+		widget = RangeWrapper( options );
 
 	}
 
@@ -216,6 +212,14 @@ function TouchLines( options )
 			}
 		}
 	}
+
+	var str = "";
+	for(var i=1;i<=20;i++) {
+		str += i + ' * '
+	}
+
+	console.log( str );
+
 
 	//
 	//	SCENE
