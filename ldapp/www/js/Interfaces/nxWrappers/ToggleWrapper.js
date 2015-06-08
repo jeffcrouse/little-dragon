@@ -29,7 +29,7 @@ var LDToggleMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vUv = vec2( 1. - length( position.xy ) );',
+		'	vUv = vec2( 1. - length( position.xz ) );',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
@@ -60,7 +60,7 @@ var LDToggleMaterial = function( params ) {
 
 		'	float u = vUv.x;',
 
-		'	gl_FragColor = vec4( mix( color2, color1, u ), opacity);',
+		'	gl_FragColor = vec4( mix( color2, color1, vUv.y ), opacity);',
 
 		'}'
 		].join('\n')
@@ -118,9 +118,10 @@ function ToggleWrapper( options )
 
 	var autoClear = true;
 
-	var ToggleMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 10, 32 ), new LDToggleMaterial( ) );
+	var ToggleMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 10 ), new LDToggleMaterial( ) );
+	ToggleMesh.rotation.x = Math.PI * .5;
 
-	ToggleMesh.scale.set( radius, radius, 10 );
+	ToggleMesh.scale.set( radius, 10, radius );
 
 	group.add( ToggleMesh )
 
@@ -152,14 +153,14 @@ function ToggleWrapper( options )
 		{
 
 			tween = new TWEEN.Tween( ToggleMesh.scale )
-				.to( {x: 1000, y: 1000}, 150)
+				.to( {x: 1000, z: 1000}, 150)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 
 		} else {
 
 			tween = new TWEEN.Tween( ToggleMesh.scale )
-				.to( {x: radius, y: radius}, 150)
+				.to( {x: radius, z: radius}, 150)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start()
 

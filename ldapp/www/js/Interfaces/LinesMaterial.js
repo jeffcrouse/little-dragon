@@ -125,7 +125,7 @@ var LinesMaterial = function( params ) {
 		'	vUv = position.xy + .5;',
 
 
-		'	vColor = texture2D( colorRamp, vec2(d * 2.) ).xyz;', //vec3( d  );//
+		'	vColor = texture2D( colorRamp, vec2(d) ).xyz;', //vec3( d  );//
 		'	vAlpha = 1.;',
 
 		'	vec4 q;',
