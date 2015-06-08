@@ -71,7 +71,7 @@ var LDTiltMaterial = function( params ) {
 
 		'	float grad = vUv.y < tilt ? vUv.y / tilt : (1. - vUv.y) / (1. - tilt)  ;',
 
-		'	grad = smootherstep(grad);// pow( grad, 1.5 );',
+		'	grad = smootherstep( pow( grad, 1.25 ) );',
 
 		'	gl_FragColor = vec4( vec3( grad ), 1. );',
 
@@ -113,8 +113,11 @@ function TiltWrapper( options )
 	var HEIGHT = controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
-	var MIN_ANGLE = options.MIN_ANGLE || -20;
-	var MAX_ANGLE = options.MAX_ANGLE || 20;
+	var MIN_ANGLE = options.MIN_ANGLE !== undefined ? options.MIN_ANGLE : -20;
+	var MAX_ANGLE = options.MAX_ANGLE !== undefined ? options.MAX_ANGLE : 20;
+
+	if( getQueryVariable("minAngle") !== undefined )	MIN_ANGLE = getQueryVariable("minAngle");
+	if( getQueryVariable("maxAngle") !== undefined )	MAX_ANGLE = getQueryVariable("maxAngle");
 
 	var minNormalizedAngle = MIN_ANGLE / 90;
 	var maxNormalizedAngle = MAX_ANGLE / 90;
