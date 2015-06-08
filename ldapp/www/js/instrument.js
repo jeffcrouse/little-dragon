@@ -369,7 +369,7 @@ nx.onload = function() {
 		    var control = createControl(instrumentName, "toggle", 1);
 		    // control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
-			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
+			// ///rotation=6&noiseAmount=10&timeScale=2
 			ldInterface = TouchLines({
 			  widthOverride: 1280,
 			  heightOverride: 720,
@@ -378,7 +378,10 @@ nx.onload = function() {
 			  lineWidth: 4,
 			  lineLength: 16,
 			  rotation: 3,
-			  noiseScale: .005
+			  noiseScale: .005,
+			  spriteRotation: 6,
+			  noiseAmount: 10,
+			  timeScale: 2
 			});
 		   break;
 
