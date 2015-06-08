@@ -38,6 +38,10 @@ var LinesMaterial = function( params ) {
 
 			noiseAmount: {type: 'f', value: params.noiseAmount || 1 },
 
+			WIDTH: {type: 'f', value: params.WIDTH || 1 },
+
+			HEIGHT: {type: 'f', value: params.HEIGHT || 1 },
+
 			spriteRotation: {type: 'f', value: params.spriteRotation || Math.PI * 2 },
 
 			restAngle: {type: 'f', value: params.restAngle === undefined ? .75 : params.restAngle }
@@ -55,6 +59,10 @@ var LinesMaterial = function( params ) {
 		'uniform float noiseAmount;',
 		'uniform float spriteRotation;',
 		'uniform float restAngle;',
+		
+		'uniform float WIDTH;',
+
+		'uniform float HEIGHT;',
 
 		'uniform sampler2D pMap;',
 
@@ -106,7 +114,7 @@ var LinesMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vec2 fUv = ( uv / vec2( 1280., 720.) ) + .5;',
+		'	vec2 fUv = ( uv / vec2( WIDTH, HEIGHT ) ) + .5;',
 
 		'	float d = toGrey(texture2D( pMap, fUv ).xyz);',
 

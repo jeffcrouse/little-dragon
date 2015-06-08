@@ -109,9 +109,13 @@ function TiltWrapper( options )
 
 	var NUM_SLIDERS = controller.sliders;
 
-	var WIDTH = 1280; // controller.width;
-	var HEIGHT = 720; // controller.height;
+	var WIDTH = controller.width;
+	var HEIGHT = controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
+
+	console.log( 'WIDTH: ' + WIDTH );
+
+	console.log( 'HEIGHT: ' + HEIGHT );
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
@@ -153,7 +157,7 @@ function TiltWrapper( options )
 		scope.onHandleInput( data );
 
 		// console.log( data );
-		setTilt( data.y * .5 + .5 )
+		setTilt( data.x * .5 + .5 )
 	}
 
 	return {

@@ -41,10 +41,14 @@ function TouchLines( options )
 
 	var colorRampPath = options.colorRampPath || "textures/bwGradient.png";
 
-	var WIDTH = options.width || 1280; 
-	var HEIGHT = options.height || 720; 
+	console.log( 'options', options );
+	var WIDTH = options.controller.width || 1280; 
+	var HEIGHT = options.controller.height || 720; 
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 	var HALF_WIDTH = WIDTH * .5, HALF_HEIGHT = HEIGHT * .5;
+
+	console.log( 'WIDTH: ' + WIDTH );
+	console.log( 'HEIGHT: ' + HEIGHT );
 
 	var stats = undefined;
 
@@ -299,7 +303,9 @@ function TouchLines( options )
 			spriteRotation: spriteRotation,
 			colorRamp: colorRamp,
 			noiseScale: noiseScale,
-			noiseAmount: noiseAmount
+			noiseAmount: noiseAmount,
+			WIDTH: WIDTH,
+			HEIGHT: HEIGHT
 		});
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
@@ -318,15 +324,6 @@ function TouchLines( options )
 
 		if( widget.setTilt )	widget.setTilt( sin(elapsedTime ) * .5 + .5 );
 
-
-		// // points.material.uniforms.time.value += .003;
-		// // 
-		// for(var i=0; i<touches.length; i++) {
-
-		// 	touches[i].x = (i + .5) * WIDTH / touches.length - HALF_WIDTH;
-		// 	touches[i].y = cos( i + elapsedTime ) * 300;
-		// 	touches[i].z *= .95;
-		// }
 	}
 
 	function draw()
