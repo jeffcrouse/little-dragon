@@ -322,7 +322,7 @@ function TouchLines( options )
 			linesMat.uniforms.time.value = elapsedTime * timeScale;
 		}
 
-		if( widget.setTilt )	widget.setTilt( sin(elapsedTime ) * .5 + .5 );
+		// if( widget.setTilt )	widget.setTilt( sin(elapsedTime ) * .5 + .5 );
 
 	}
 

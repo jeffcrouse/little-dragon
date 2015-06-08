@@ -316,6 +316,17 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "tilt", 1, options);
 			control.throttlePeriod = 50;
 			control.text = "pan";
+
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/bass/bass1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 			break;
 
 
