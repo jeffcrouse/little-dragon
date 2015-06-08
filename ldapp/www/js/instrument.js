@@ -366,19 +366,23 @@ nx.onload = function() {
 	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 1);
+		    var control = createControl(instrumentName, "toggle", 1);
 		    // control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
-			//http://odddivision.github.io/little-dragon/ldapp/www/instrument.html?iface=drums1&lineWidth=4&lineLength=20&rotation=3&noiseScale=.005&timeScale=1
+			// ///rotation=6&noiseAmount=10&timeScale=2
 			ldInterface = TouchLines({
 			  widthOverride: 1280,
 			  heightOverride: 720,
 			  controller: control,
-			  colorRampPath: "textures/drums/drum-1.jpg",
+			  colorRampPath: "textures/drums/drum-1-1.jpg",
+			  toggleRampPath: "textures/drums/drum-1.jpg",
 			  lineWidth: 4,
 			  lineLength: 16,
 			  rotation: 3,
-			  noiseScale: .005
+			  noiseScale: .005,
+			  spriteRotation: 6,
+			  noiseAmount: 10,
+			  timeScale: 2
 			});
 		   break;
 
@@ -508,6 +512,22 @@ nx.onload = function() {
 		 // \ \    / /_   _| __|__ \
 		 //  \ \/\/ /  | | | _|  /_/
 		 //   \_/\_/   |_| |_|  (_) 
+		 //   
+
+		case "rangeTest":
+			var control = createControl("rangeTest", "range" );
+			control.mode = "area"; //"edge"
+
+			ldInterface = TouchLines({
+			  controller: control,
+			  colorRampPath: "textures/keys/keys1.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
+			break;
 		                         
 	    default:
 			var container = $("<div>", {id: "warning"}).css({

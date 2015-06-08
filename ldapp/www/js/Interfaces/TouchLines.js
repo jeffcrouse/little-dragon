@@ -8,7 +8,8 @@ function TouchLines( options )
 		BUTTON: 0,
 		MULTISLIDER: 1,
 		SYNTH: 2,
-		TILT: 3
+		TILT: 3,
+		RANGE: 4
 	}
 
 	var lineLength = getQueryVariable("lineLength") || options.lineLength || 20;
@@ -21,11 +22,11 @@ function TouchLines( options )
 
 	var noiseScale = getQueryVariable("noiseScale") || options.noiseScale || .005;
 
-	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 0;
+	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 1;
 
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || 2;
 
-	var spread = options.spread !== undefined ? options.spread : 0;
+	// var spread = options.spread !== undefined ? options.spread : 0;
 
 	var spreadOffset = options.spreadOffset || new THREE.Vector2( 0, 0 );
 
@@ -61,6 +62,10 @@ function TouchLines( options )
 
 	var renderer, scene, camera, light, clock = new THREE.Clock();
 
+	console.log( controller );
+
+	controller.canvas.attributes.style.hidden = true;
+
 	//
 	//DEBUG
 	//
@@ -85,8 +90,33 @@ function TouchLines( options )
 	var origin = v3(0,0,0);
 
 
+	//LOADING
+	var manager = new THREE.LoadingManager();
+	var textureLoader = new THREE.TextureLoader( manager );
+
+	//load images
+	var debugImage;
+	textureLoader.load( 'textures/hexagon.png', function ( t ) {
+		debugImage = t;
+	});
+
+	var colorRamp, anotherRamp;
+	textureLoader.load( colorRampPath, function ( t ) {
+		colorRamp = t;
+	});
+
+	manager.onProgress = function ( item, loaded, total ) {
+		// console.log( item, loaded, total );
+	};
+
+	manager.onLoad = function(){
+		// console.log( "\nmanager.onLoad\n\n" );
+
+		begin();
+	}
+
 	//WIDGET
-	var widget, controlID = controller.canvasID, numSpacers = 0;
+	var widget, controlID = controller.canvasID, numSpacers = 0, prevTimeScale = timeScale, prevNoiseAmount = noiseAmount;
 
 	if(controlID.indexOf( "multislider" ) > -1) {
 
@@ -123,9 +153,49 @@ function TouchLines( options )
 
 	}
 
+
+	else  if( controlID.indexOf( "toggle" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.TILT;
+
+		widget = ToggleWrapper( options );
+
+		if( options.toggleRampPath ) {
+
+			textureLoader.load( options.toggleRampPath || options.colorRampPath, function ( t ) {
+				anotherRamp = t;
+				console.log( 'anotherRamp', anotherRamp );
+			});
+
+		}
+
+		var origTimeScale = timeScale;
+
+		widget.scope.onHandleInput = function( data ) {
+
+			if(anotherRamp) {
+				
+				linesMat.uniforms.colorRamp.value = data.value ? anotherRamp : colorRamp;
+
+			}
+
+		}.bind( this );
+
+	}
+
+	else if( controlID.indexOf( "range" ) > -1 ) {
+
+		WIDGET_TYPE = WIDGETS.RANGE;
+
+
+		widget = RangeWrapper( options );
+
+	}
+
 	else {
 
 		console.log( "controlID: ", controlID );
+
 
 		widget = {
 
@@ -143,6 +213,14 @@ function TouchLines( options )
 		}
 	}
 
+	var str = "";
+	for(var i=1;i<=20;i++) {
+		str += i + ' * '
+	}
+
+	console.log( str );
+
+
 	//
 	//	SCENE
 	//
@@ -152,31 +230,6 @@ function TouchLines( options )
 	//	CAMERA
 	//
 	camera = new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
-
-	//LOADING
-	var manager = new THREE.LoadingManager();
-	var textureLoader = new THREE.TextureLoader( manager );
-
-	manager.onProgress = function ( item, loaded, total ) {
-		// console.log( item, loaded, total );
-	};
-
-	manager.onLoad = function(){
-		// console.log( "\nmanager.onLoad\n\n" );
-
-		begin();
-	}
-
-	//load images
-	var debugImage;
-	textureLoader.load( 'textures/hexagon.png', function ( t ) {
-		debugImage = t;
-	});
-
-	var colorRamp;
-	textureLoader.load( colorRampPath, function ( t ) {
-		colorRamp = t;
-	});
 
 	function getLineGeometry( g ) {
 

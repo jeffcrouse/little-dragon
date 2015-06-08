@@ -1,5 +1,6 @@
-// MultiSliderWrapper.js
-var LDMultisliderMaterial = function( params ) {
+// RangeWrapper.js
+
+var LDRangeMaterial = function( params ) {
 
 	params = params || {};
 
@@ -22,6 +23,9 @@ var LDMultisliderMaterial = function( params ) {
 			weight: {type: 'f', value: params.u || 0 },
 			falloff: {type: 'f', value: params.u || .5 },
 			minWeight: {type: 'f', value: params.u || .7 },
+			start: {type: 'f', value: params.start !== undefined ? params.start : .3 },
+			stop: {type: 'f', value: params.stop !== undefined ? params.stop : .6 },
+			fadeDistance: {type: 'f', value: params.fadeDistance !== undefined ? params.fadeDistance : .25 }
 		},
 
 		vertexShader: [
@@ -42,6 +46,12 @@ var LDMultisliderMaterial = function( params ) {
 
 		'uniform float u;',
 
+		'uniform float start;',
+
+		'uniform float stop;',
+
+		'uniform float fadeDistance;',
+
 		'uniform float weight;',
 
 		'uniform float minWeight;',
@@ -58,12 +68,25 @@ var LDMultisliderMaterial = function( params ) {
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
 
+		'float smootherstep( float x ){',
+		'    return x*x*x*(x*(x*6. - 15.) + 10.);',
+		'}',
+
 		'void main()',
 		'{',
 
-		'	float grad = pow( vUv.y, 1.);',
+		'	float grad = 1.;',
 
-		'	gl_FragColor = vec4(vec3( grad ), 1.) ;// vec4( color * grad, 1.);',
+		'	if(vUv.x < start)	grad = mapLinear( vUv.x, start-fadeDistance, start, 0., 1. );',
+
+		'	else if(vUv.x > stop)	grad = mapLinear( vUv.x, stop, stop+fadeDistance, 1., 0. );',
+
+
+		// '	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
+
+		'	grad = smootherstep( pow( max(0., grad), 1.5 ) );',
+
+		'	gl_FragColor = vec4( vec3( grad ), 1. );',
 
 		'}'
 		].join('\n')
@@ -73,9 +96,9 @@ var LDMultisliderMaterial = function( params ) {
 	THREE.ShaderMaterial.call( this, matParams );
 }
 
-LDMultisliderMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LDRangeMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
-function MultiSliderWrapper( options )
+function RangeWrapper( options )
 {
 	var scope = this;
 
@@ -99,9 +122,22 @@ function MultiSliderWrapper( options )
 
 	var NUM_SLIDERS = controller.sliders;
 
-	var WIDTH = 1280; // controller.width;
-	var HEIGHT = 720; // controller.height;
+	var WIDTH = controller.width;
+	var HEIGHT = controller.height;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
+
+	var MIN_ANGLE = options.MIN_ANGLE !== undefined ? options.MIN_ANGLE : -20;
+	var MAX_ANGLE = options.MAX_ANGLE !== undefined ? options.MAX_ANGLE : 20;
+
+	if( getQueryVariable("minAngle") !== undefined )	MIN_ANGLE = getQueryVariable("minAngle");
+	if( getQueryVariable("maxAngle") !== undefined )	MAX_ANGLE = getQueryVariable("maxAngle");
+
+	var minNormalizedAngle = MIN_ANGLE / 90;
+	var maxNormalizedAngle = MAX_ANGLE / 90;
+
+	console.log( 'WIDTH: ' + WIDTH );
+
+	console.log( 'HEIGHT: ' + HEIGHT );
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
@@ -118,50 +154,9 @@ function MultiSliderWrapper( options )
 
 	var autoClear = false;
 	
-	var clearingMesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, HEIGHT, 10, 10 ), new THREE.MeshBasicMaterial( {
-		transparent: true,
-		opacity: decay,
-		color: "black",
-		side: 2,
-		depthTest: false,
-		depthWrite: true,
-	} ) );
+	var m = new THREE.Mesh( new THREE.PlaneBufferGeometry( WIDTH, HEIGHT, 10, 10 ), new LDRangeMaterial() );
 
-	scene.add( clearingMesh );
-
-
-	//sliders
-	sliders = [];
-
-	var sliderMat = new THREE.MeshBasicMaterial( { color: "white" } );
-
-	var sliderGeometry = new THREE.BoxGeometry(1,1,.1, 2, 10 );
-
-	var xStep = WIDTH / NUM_SLIDERS;
-
-	for(var i=0; i<NUM_SLIDERS; i++)
-	{	
-		//	create a child mesh that is centered in the top half of the slider 
-		var m = new THREE.Mesh( sliderGeometry, new LDMultisliderMaterial() );
-		m.position.x = xStep * (i+.5) - HALF_WIDTH;
-		m.position.y = HEIGHT;
-		m.scale.x = xStep;
-		m.scale.y = HEIGHT;
-		m.scale.z = 100
-		scene.add( m );
-
-		// var rgb = v3(randf(-1, 1), randf(-1, 1), randf(-1, 1) ).normalize().multiplyScalar( 1.2 );
-		// m.material.color.setRGB( Math.abs(rgb.x), Math.abs(rgb.y), Math.abs(rgb.z) );
-
-		sliders[i] = m;
-
-		// if( i%2 )
-		// {
-		// 	m.material.color.r *= .75;
-		// 	m.material.color.g *= .75;
-		// 	m.material.color.b *= .75;
-		// } 
-	}
+	scene.add( m );
 
 
 	function draw( renderer )
@@ -169,31 +164,18 @@ function MultiSliderWrapper( options )
 		renderer.render( scene, camera, renderTarget, autoClear );
 	}
 
-	function setSliderHieght( index, value )
-	{
-		if(sliders[index])
-		{
-			sliders[index].position.y = (value - 1) * HEIGHT;
-			// var k = cos( value * PI ) * -.5 + .5;
-			var k = value;//  1. - smootherstep( 1. - value );
-
-			// sliders[index].material.color.copy( c0 ).lerp( c1, k );
-		}
-	}
-
-
 	scope.onHandleInput = function() {
 		// console.log( "scope.onHandleInput" );
 	}
 
-
 	function handleInput( data )
 	{
+		m.material.uniforms.start.value = data.start;
+		m.material.uniforms.stop.value = data.stop;
+
 		scope.onHandleInput( data );
 
-		for( var i in data.list ) {
-			setSliderHieght( i, data.list[i] );
-		}
+		console.log( 'data', data );
 	}
 
 	return {
@@ -201,7 +183,6 @@ function MultiSliderWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		setSliderHieght: setSliderHieght,
 		c0: c0,
 		c1: c1,
 		handleInput: handleInput,

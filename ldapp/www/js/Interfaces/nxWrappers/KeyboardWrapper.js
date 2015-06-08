@@ -24,7 +24,7 @@ var LDKeyMaterial = function( params ) {
 			weight: {type: 'f', value: params.weight || 0 },
 			falloff: {type: 'f', value: params.falloff || .5 },
 			minWeight: {type: 'f', value: params.minWeight || .25 },
-			overallBrightness: {type: 'f', value: params.overallBrightness || .6 }
+			overallBrightness: {type: 'f', value: params.overallBrightness || .5 }
 		},
 
 		vertexShader: [
@@ -71,7 +71,7 @@ var LDKeyMaterial = function( params ) {
 
 		'	float grad = mix( weight * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 
-		'	grad += sin( vUv.y * 3.145 ) * .1 + .1;',
+		'	grad += pow(sin( vUv.y * 3.145 ) * .5 + .5, 2.) * .1;',
 
 		// '	float grad = mix( (weight + .25) * pow( 1. - min( 1., d ), 3.), 1., max(0., weight - overallBrightness ) );',
 
@@ -201,13 +201,13 @@ function KeyboardWrapper( options )
 			m.material.uniforms.weight.value = 1;
 
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 1}, 2)
+				.to({value: 1}, 50)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.start();
 
 		}else{
 			tweenMap[ data.note ] = new TWEEN.Tween( m.material.uniforms.weight )
-				.to({value: 0}, 200)
+				.to({value: 0}, 500)
 				.easing( TWEEN.Easing.Cubic.Out )
 				.delay(10)
 				.start();	

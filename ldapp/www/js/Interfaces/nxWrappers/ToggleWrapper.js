@@ -1,6 +1,6 @@
-// ButtonWrapper.js
+// ToggleWrapper.js
 
-var LDButtonMaterial = function( params ) {
+var LDToggleMaterial = function( params ) {
 
 	params = params || {};
 
@@ -29,7 +29,7 @@ var LDButtonMaterial = function( params ) {
 
 		'void main() {',
 
-		'	vUv = vec2( length(position.xz) );',
+		'	vUv = vec2( 1. - length( position.xz ) );',
 
 		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
 
@@ -51,14 +51,16 @@ var LDButtonMaterial = function( params ) {
 		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
 		'}',
 
+		'float smootherstep( float x ){',
+		'    return x*x*x*(x*(x*6. - 15.) + 10.);',
+		'}',
+
 		'void main()',
 		'{',
 
-		'	float u = 1. - vUv.x;',
+		'	float u = vUv.x;',
 
-		// '	u = sin(u * 3.14) * .5 + .5;',
-
-		'	gl_FragColor = vec4( mix( color2, color1, u ), opacity);',
+		'	gl_FragColor = vec4( mix( color2, color1, vUv.y ), opacity);',
 
 		'}'
 		].join('\n')
@@ -68,10 +70,10 @@ var LDButtonMaterial = function( params ) {
 	THREE.ShaderMaterial.call( this, matParams );
 }
 
-LDButtonMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LDToggleMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
 
-function ButtonWrapper( options )
+function ToggleWrapper( options )
 {
 
 	var scope = this;
@@ -90,9 +92,6 @@ function ButtonWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
-	//colors
-	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
-	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var WIDTH = 1280; // controller.width;
 	var HEIGHT = 720; // controller.height;
@@ -103,13 +102,12 @@ function ButtonWrapper( options )
 
 	var center = new THREE.Vector2( controller.center.x, controller.center.y );
 
-	var radius = 300; // should probably do somehting better to scale it
+	var radius = 300;
 
-	var decay = 1;
 
 	var camera = options.camera || new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
-	var renderTarget = new THREE.WebGLRenderTarget( WIDTH * .25, HEIGHT * .25, {
+	var renderTarget = new THREE.WebGLRenderTarget( WIDTH * .5, HEIGHT * .5, {
 		minFilter: THREE.LinearFilter
 	} );
 
@@ -120,39 +118,19 @@ function ButtonWrapper( options )
 
 	var autoClear = true;
 
-	var buttonMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 10 ), new LDButtonMaterial( ) );
-	buttonMesh.rotation.x = Math.PI * .5;
+	var ToggleMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 10 ), new LDToggleMaterial( ) );
+	ToggleMesh.rotation.x = Math.PI * .5;
 
-	buttonMesh.scale.set( radius, 10, radius );
+	ToggleMesh.scale.set( radius, 10, radius );
 
-	group.add( buttonMesh )
+	group.add( ToggleMesh )
 
 
 	var tween;
 	scope.onHandleInput = function( data )
 	{
-		if(tween) {
-			tween.stop();
-
-			TWEEN.remove( tween );
-		}
-		
-		if( data.press == 1)
-		{
-
-			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: 1000, z: 1000}, 150)
-				.easing( TWEEN.Easing.Cubic.Out )
-				.start()
-
-		} else {
-
-			tween = new TWEEN.Tween( buttonMesh.scale )
-				.to( {x: radius, z: radius}, 500)
-				.easing( TWEEN.Easing.Cubic.Out )
-				.start()
-
-		}
+		console.log( "SHIT" );
+		// console.log( data );
 	}
 
 
@@ -165,8 +143,31 @@ function ButtonWrapper( options )
 
 	function handleInput( data )
 	{
+		if(tween) {
+			tween.stop();
+
+			TWEEN.remove( tween );
+		}
+		
+		if( data.value == 1)
+		{
+
+			tween = new TWEEN.Tween( ToggleMesh.scale )
+				.to( {x: 750, z: 750}, 150)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start()
+
+		} else {
+
+			tween = new TWEEN.Tween( ToggleMesh.scale )
+				.to( {x: radius, z: radius}, 150)
+				.easing( TWEEN.Easing.Cubic.Out )
+				.start()
+
+		}
+
+		//callback
 		scope.onHandleInput( data );
-		// console.log( data );
 	}
 
 
@@ -176,9 +177,8 @@ function ButtonWrapper( options )
 		camera: camera,
 		renderTarget: renderTarget,
 		draw: draw,
-		c0: c0,
-		c1: c1,
 		handleInput: handleInput,
+		onHandleInput: onHandleInput,
 		scope: scope
 	}
 }
