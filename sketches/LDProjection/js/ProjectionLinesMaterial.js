@@ -126,7 +126,7 @@ var ProjectionLinesMaterial = function( params ) {
 
 		'	float lineScale = min( d, 1.);',
 
-		'	vec3 pos = vec3( vec2( lineLength * lineScale, lineWidth * lineScale ) * position.xy, 0.);',
+		'	vec3 pos = vec3( vec2( lineLength * lineScale * (d), lineWidth * lineScale ) * position.xy, 0.);',
 
 		'	vUv = position.xy + .5;',
 
