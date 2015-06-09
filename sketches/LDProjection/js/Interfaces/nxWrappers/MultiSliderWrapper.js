@@ -1,79 +1,4 @@
 // MultiSliderWrapper.js
-var LDMultisliderMaterial = function( params ) {
-
-	params = params || {};
-
-	var isLineShader = params.lineShader || false;
-
-	var matParams = {
-		transparent: true,
-		blending: params.blending || 1,
-		depthTest: params.depthTest || false,
-		depthWrite: params.depthWrite !== undefined ? params.depthWrite : false,
-		side: params.side || 2,// 0 = backFaceCull, 1 = frontFaceCull, 2 = doubleSided
-		linewidth: 1,
-
-		// TODO: if radius is staying at 1 lets remove it
-
-		uniforms: {
-			color: {type: 'c', value: params.color || new THREE.Color() },
-			opacity: {type: 'f', value: params.opacity || 1 },
-			u: {type: 'f', value: params.u || Math.random() * .8 + .1 },
-			weight: {type: 'f', value: params.u || 0 },
-			falloff: {type: 'f', value: params.u || .5 },
-			minWeight: {type: 'f', value: params.u || .7 },
-		},
-
-		vertexShader: [
-
-		'varying vec2 vUv;',
-
-		'void main() {',
-
-		'	vUv = uv;',
-
-		'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-
-		'}'].join('\n'),
-
-		fragmentShader: [
-
-		'uniform float opacity;',
-
-		'uniform float u;',
-
-		'uniform float weight;',
-
-		'uniform float minWeight;',
-
-		'uniform float falloff;',
-
-		'uniform vec3 color;',
-
-		// 'uniform vec3 color2;',
-
-		'varying vec2 vUv;',
-
-		'float mapLinear( in float x, in float a1, in float a2, in float b1, in float b2 ) {',
-		'	return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );',
-		'}',
-
-		'void main()',
-		'{',
-
-		'	float grad = pow( vUv.y, 1.);',
-
-		'	gl_FragColor = vec4(vec3( grad ), 1.) ;// vec4( color * grad, 1.);',
-
-		'}'
-		].join('\n')
-
-	}
-	
-	THREE.ShaderMaterial.call( this, matParams );
-}
-
-LDMultisliderMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
 function MultiSliderWrapper( options )
 {
@@ -93,6 +18,9 @@ function MultiSliderWrapper( options )
 	var v3 = function(x,y,z){	return new THREE.Vector3( x, y, z );}
 
 	var controller = options.controller;
+	//colors
+	var c0 = options.c0 || new THREE.Color( 0xFFFFFF );
+	var c1 = options.c1 || new THREE.Color( 0x33FF88 );
 
 	var NUM_SLIDERS = controller.sliders;
 
@@ -103,7 +31,7 @@ function MultiSliderWrapper( options )
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
 
-	var decay = .95;
+	var decay = .025;
 
 	var camera = options.camera || new THREE.OrthographicCamera( -HALF_WIDTH, HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
@@ -139,7 +67,7 @@ function MultiSliderWrapper( options )
 	for(var i=0; i<NUM_SLIDERS; i++)
 	{	
 		//	create a child mesh that is centered in the top half of the slider 
-		var m = new THREE.Mesh( sliderGeometry, new LDMultisliderMaterial() );
+		var m = new THREE.Mesh( sliderGeometry, sliderMat.clone() );
 		m.position.x = xStep * (i+.5) - HALF_WIDTH;
 		m.position.y = HEIGHT;
 		m.scale.x = xStep;
@@ -151,13 +79,6 @@ function MultiSliderWrapper( options )
 		// m.material.color.setRGB( Math.abs(rgb.x), Math.abs(rgb.y), Math.abs(rgb.z) );
 
 		sliders[i] = m;
-
-		// if( i%2 )
-		// {
-		// 	m.material.color.r *= .75;
-		// 	m.material.color.g *= .75;
-		// 	m.material.color.b *= .75;
-		// } 
 	}
 
 
@@ -171,6 +92,10 @@ function MultiSliderWrapper( options )
 		if(sliders[index])
 		{
 			sliders[index].position.y = (value - 1) * HEIGHT;
+			// var k = cos( value * PI ) * -.5 + .5;
+			var k = value;//  1. - smootherstep( 1. - value );
+
+			sliders[index].material.color.copy( c0 ).lerp( c1, k );
 		}
 	}
 
@@ -195,6 +120,8 @@ function MultiSliderWrapper( options )
 		renderTarget: renderTarget,
 		draw: draw,
 		setSliderHieght: setSliderHieght,
+		c0: c0,
+		c1: c1,
 		handleInput: handleInput,
 		scope: scope
 	}

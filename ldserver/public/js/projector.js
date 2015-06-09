@@ -251,43 +251,19 @@ function ProjectionVisuals( options ) {
 		animate();
 	}
 
-	var key_map = {
-		113 : "q",
-		119 : "w",
-		101 : "e",
-		114 : "r",
-		116 : "t",
-		121 : "y",
-		97 : "a",
-		115 : "s",
-		100 : "d",
-		102 : "f",
-		103 : "g",
-		104 : "h",
-		122 : "z",
-		120 : "x",
-		99 : "c",
-		118 : "v",
-		98 : "b",
-		110 : "n"
-	}
+	var key_map = { 113 : "q", 119 : "w", 101 : "e", 114 : "r", 116 : "t", 121 : "y", 97 : "a", 115 : "s", 100 : "d", 102 : "f", 103 : "g", 104 : "h", 122 : "z", 120 : "x", 99 : "c", 118 : "v", 98 : "b", 110 : "n" };
 	
 
 	function onKeypressed( e )
 	{
 		switch(key_map[e.which])
 		{
-			case 'q':
+			case undefined:
+				console.log( e.which );	
 				break;
-				console.log( key_map[e.which] );
-				break;
-			// case 116: /*t*/ 
-			// 	// showHUD = !showHUD;
-			// 	triggerCubeRotations();
-			// 	break;
 
 			default:
-				console.log( e.which );
+				console.log(key_map[e.which] + " not in key_map.");	
 				break;
 		}
 	}
