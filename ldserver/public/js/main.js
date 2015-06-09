@@ -132,32 +132,44 @@ $(window).bind("load", function() {
 	socket.on('/keys_range_1', function (data) {
 		console.log(data);
 	});
+
+
 	socket.on('slider1', function (data) {
-		var val = Math.map(data, 0, 1, 1, 100);
-		guiControls.particleSize =  val;
-		ldInterface.setParticleSize( val );
+		var value = Math.map(data, 0, 1, 1, 20);
+		guiControls.lineWidth =  value;
+		projection.setLineWidth( value );
 	});
 	socket.on('slider2', function (data) {
-		var val =  parseInt( Math.map(data, 0, 1, 10, 100) )
-		guiControls.count =  val;
-		ldInterface.setNumberOfParticles( val );
+		var value = Math.map(data, 0, 1, 1, 200);
+		guiControls.lineLength =  value;
+		projection.setLineLength( value );
 	});
 	socket.on('slider3', function (data) {
-		var val = Math.map(data, 0, 1, -1, 1);
-		guiControls.spread = val;
-		ldInterface.setSpread( val );
+		var value = Math.map(data, 0, 1, 0.00, 1.00);
+		guiControls.lineOpacity =  value;
+		projection.setLineOpacity( value );
+
 	});
 	socket.on('slider4', function (data) {
-		console.log("slider4", data);
+		var value = Math.map(data, 0, 1, 0, Math.PI * 4);
+		guiControls.rotation = value;
+		projection.setRotation( value );
 	});
 	socket.on('slider5', function (data) {
 		console.log("slider5", data);
+		var value = Math.map(data, 0, 1, .0001, .02 );
+		guiControls.noiseScale = value;
+		projection.setNoiseScale( value );
 	});
 	socket.on('slider6', function (data) {
 		console.log("slider6", data);
+		var value = Math.map(data, 0, 1, 0, 4 );
+		guiControls.noiseAmount = value;
+		projection.setNoiseAmount( value );
 	});
 	socket.on('knob1', function(data){
 		console.log("knob1", data);
+
 	});
 	socket.on('knob2', function(data){
 		console.log("knob2", data);
@@ -169,19 +181,19 @@ $(window).bind("load", function() {
 		console.log("knob4", data);
 	});
 	socket.on('xfade', function(data){
-		var val =  Math.map(data, 0, 1, -2.0001, 2.0001);
-		guiControls.rotation = val;
-		ldInterface.setRotation( val );
+		var value = Math.map(data, 0, 1, -5, 5 );
+		guiControls.timeScale = value;
+		projection.setTimeScale( value );
 	});
 	socket.on('x_axis', function(data){
-		var val =  Math.map(data, 0, 1, -250.0, 250.00);
-		guiControls.offsetX = val;
-		ldInterface.setOffsetX( val );
+		var value = Math.map(data, 0, 1, 0, Math.PI*3 );
+		guiControls.groupRotationX = value;
+		projection.setGroupRotationX( value );
 	});
 	socket.on('y_axis', function(data){
-		var val =  Math.map(data, 0, 1, -250.0, 250.00);
-		guiControls.offsetY = val;
-		ldInterface.setOffsetY( val );
+		// var val =  Math.map(data, 0, 1, -250.0, 250.00);
+		// guiControls.offsetY = val;
+		// ldInterface.setOffsetY( val );
 	});
 	socket.on('button1', function(data){
 		console.log("button1", data);
@@ -204,4 +216,12 @@ $(window).bind("load", function() {
 
 });
 
+Math.clamp = function(num, min, max) {
+	if(min>max) console.warn("Math.clamp: min > max");
+	return Math.min(Math.max(num, min), max);
+};
+Math.map = function (value, istart, istop, ostart, ostop, clamp) {
+	var val = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
+}
 
