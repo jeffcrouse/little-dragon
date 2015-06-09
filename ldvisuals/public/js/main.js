@@ -38,6 +38,8 @@ $(window).bind("load", function() {
 		groupRotationX: parseFloat( projection.getGroupRotationX() ),
 		groupRotationY: parseFloat( projection.getGroupRotationY() ),
 		groupRotationZ: parseFloat( projection.getGroupRotationZ() ),
+		cameraPositionX: parseFloat( projection.getCameraPositionX() ),
+		cameraPositionY: parseFloat( projection.getCameraPositionY() ),
 		cameraZoom: parseFloat( projection.getCameraZoom() ),
 		distortionMaps: projection.getDistortionMaps()
 	}
@@ -95,6 +97,14 @@ $(window).bind("load", function() {
 		projection.setCameraZoom( value );
 	})
 
+	gui.add( guiControls, "cameraPositionX", -512, 512 ).listen().onChange( function( value ){
+		projection.setCameraPositionX( value );
+	})
+
+	
+	gui.add( guiControls, "cameraPositionY", -256, 256 ).listen().onChange( function( value ){
+		projection.setCameraPositionY( value );
+	})
 	gui.add( guiControls, "blending", { "0":0,"1":1, "2":2 } ).listen().onChange( function( value ){
 		projection.setBlending( parseInt(value) );
 	})

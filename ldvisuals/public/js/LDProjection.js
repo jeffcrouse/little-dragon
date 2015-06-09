@@ -112,8 +112,8 @@ function ProjectionVisuals( options ) {
 
 	var PROJECTOR_NUM = options.num || 1;
 
-	var WIDTH = 1280;// options.width || window.innerWidth;
-	var HEIGHT = 720;//options.height || window.innerHeight;
+	var WIDTH =  options.width || window.innerWidth; // 1280;//
+	var HEIGHT = options.height || window.innerHeight; // 720;//
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
 	var HALF_WIDTH = WIDTH * .5;
@@ -162,15 +162,30 @@ function ProjectionVisuals( options ) {
 
 	var cameraZoom = 1, minZoom = .1, maxZoom = 1;
 
+
+	function setCameraPositionX( value ){
+		camera.position.x = value * (1. - cameraZoom);//lerp( value, 0, cameraZoom );
+
+		camera.updateProjectionMatrix();
+	}
+
+	function setCameraPositionY( value ){
+		// camera.position.y = value;
+		camera.position.y = value * (1. - cameraZoom);//lerp( value, 0, cameraZoom );
+
+		camera.updateProjectionMatrix();
+	}
+
 	function setCameraZoom( zoom ) {
 		cameraZoom = clamp( zoom, minZoom, maxZoom );
-
-		console.log( 'cameraZoom', cameraZoom, camera );
 
 		camera.left = -HALF_WIDTH * cameraZoom;
 		camera.right = HALF_WIDTH * cameraZoom;
 		camera.top = HALF_HEIGHT * cameraZoom;
 		camera.bottom = -HALF_HEIGHT * cameraZoom;
+
+		setCameraPositionX( camera.position.x );
+		setCameraPositionY( camera.position.y );
 
 
 		// if( PROJECTOR_NUM === 1) {
@@ -181,6 +196,8 @@ function ProjectionVisuals( options ) {
 		camera.updateProjectionMatrix();
 		
 	}
+
+
 	
 	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
 	// camera.position.z = -100;
@@ -818,6 +835,8 @@ function ProjectionVisuals( options ) {
 		linesGeometry = getLineGeometry();
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
+		linesMesh.frustumCulled = false;
+		
 		// var linesMesh1 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
 		// var linesMesh2 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
 
@@ -1124,7 +1143,19 @@ function ProjectionVisuals( options ) {
 				}
 				count ++;
 			}
-		}
+		},
+
+		getCameraPositionX: function(){
+			return camera.position.x;
+		},
+
+		getCameraPositionY: function(){
+			return camera.position.y;
+		},
+
+		setCameraPositionX: setCameraPositionX,
+
+		setCameraPositionY: setCameraPositionY
 
 	}
 }
