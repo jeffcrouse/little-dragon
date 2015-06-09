@@ -39,8 +39,8 @@ nx.onload = function() {
 		case "keys1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
-			var control = createControl(instrumentName, "multislider", 1);
-			control.setNumberOfSliders(4);
+			var control = createControl(instrumentName, "range", 1);
+			control.hslider = true;	
 
 			ldInterface = TouchLines({
 			  controller: control,
@@ -56,12 +56,8 @@ nx.onload = function() {
 		case "keys2":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
-			var control = createControl(instrumentName, "keyboard", 1);
-			control.multitouch = true;
-			control.octaves = 1;
-			control.keypattern = ['w','w','w','w','w','w','w'];
-			control.lineWidth = 20;
-			control.init();
+			var control = createControl(instrumentName, "multislider", 5);
+			control.setNumberOfSliders(5);
 
 			ldInterface = TouchLines({
 			  controller: control,
@@ -117,23 +113,22 @@ nx.onload = function() {
 			break;
 
 		case "keys5":
-			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-			var control = createControl(instrumentName, "keyboard", 4);
-			control.multitouch = true;
-			control.octaves = 1;
-			control.keypattern = ['w','w','w','w','w','w','w'];
-			control.lineWidth = 20;
-			control.init();
+		    var control = createControl(instrumentName, "button", 1);
+		    // control.mode = "node";
 
-			ldInterface = TouchLines({
-			  controller: control,
-			  colorRampPath: "textures/keys/keys5.jpg",
-			  lineWidth: 4,
-			  lineLength: 20,
-			  rotation: 3,
-			  noiseScale: .005
-			});
+		   ldInterface = TouchLines({
+			  widthOverride: 1280,
+			  heightOverride: 720,
+		      controller: control,
+		      colorRampPath: "textures/drums/drum-4.jpg",
+		      lineWidth: 4,
+		      lineLength: 20,
+		      rotation: 3,
+		      noiseScale: .005
+		    });
+
 
 			break;
 
@@ -191,7 +186,7 @@ nx.onload = function() {
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 	 		var control = createControl(instrumentName, "multislider", 1);
-			control.setNumberOfSliders(4);
+			control.setNumberOfSliders(2);
 			
 			ldInterface = TouchLines({
 			  controller: control,
@@ -210,7 +205,7 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "keyboard", 1);
 			control.multitouch = true;
 			control.octaves = 1;
-			control.keypattern = ['w','w','w','w'];
+			control.keypattern = ['w','w','w'];
 			control.lineWidth = 20;
 			control.init();
 
@@ -231,7 +226,7 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "keyboard", 2);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		control.keypattern = ['w','w','w'];
+	 		control.keypattern = ['w','w','w','w'];
 			control.lineWidth = 20;
 	 		control.init();
 	 		
@@ -252,7 +247,7 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "keyboard", 3);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		control.keypattern = ['w','w','w','w'];
+	 		control.keypattern = ['w','w','w'];
 			control.lineWidth = 20;
 	 		control.init();
 
@@ -274,7 +269,7 @@ nx.onload = function() {
 			var control = createControl(instrumentName, "keyboard", 4);
 	 		control.octaves = 1;
 	 		control.multitouch = true;
-	 		control.keypattern = ['w','w','w'];
+	 		control.keypattern = ['w','w','w','w'];
 			control.lineWidth = 20;
 	 		control.init();
 
