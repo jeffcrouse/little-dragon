@@ -8,6 +8,37 @@ var teoria = require('teoria');
 var oscClient = require("./oscClient");
 //var leds = require("./leds")
 
+var song = "1";
+//for the bass, start in C. 
+
+var scalePinkCloudKeys = [
+	teoria.note("c3"),
+	teoria.note("d3"),
+	teoria.note("e3"),
+	teoria.note("f#3"),
+	teoria.note("g3"),
+	teoria.note("a3"),
+	teoria.note("b3"),
+
+	teoria.note("c#4"),
+	teoria.note("d4"),
+	teoria.note("e4"),
+	teoria.note("f#4"),
+	teoria.note("g4"),
+	teoria.note("a4"),
+	teoria.note("b4"),
+]
+
+var songs = {
+	"1": {"name":"pink cloud", "root":"e", "keysOctave":"2", "bassOctave":"2", "scale":"minor"}, 
+	"2": {"name":"summertearz", "root":"db", "keysOctave":"2", "bassOctave":"2", "scale":"major"},
+	"3": {"name":"test", "root":"f#", "keysOctave":"2", "bassOctave":"1", "scale":"minor"},
+	"4": {"name":"pretty girls", "root":"g", "keysOctave":"2", "bassOctave":"1", "scale":"minor"},
+	"5": {"name":"twice", "root":"bb", "keysOctave":"2", "bassOctave":"1", "scale":"major"}
+}
+
+// var notes = {"c3", "d3", "e3", "f#3", "g3", "a3", "b3", "c#3" };
+
 // Set up MIDI
 var output = new midi.output();
 output.openPort(0);
@@ -33,26 +64,20 @@ Math.map = function (value, istart, istop, ostart, ostop, clamp) {
 	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
 }
 
-var lastRecording = Date.now();
-var minTimeBetweenRecordings = 3000;
+var lastRecStart = 0;
+var lastRecEnd = 0;
+var lastRecDuration = 0;
 var recording = false;
 
 //pink dragon is in F#m + Eb
-var root = teoria.note('f#2');
-var scaleKeys = root.scale('minor');
-var scaleBass = teoria.note('f#1').scale('minor');
+var rootKeys = songs[song].root + songs[song].keysOctave;
+var rootBass = songs[song].root + songs[song].bassOctave;
+var scale = songs[song].scale;
 
-//drums
-//keep a history of drum messages to detect button hold
-//TODO: generalize, should be for all drums
-//slot states: empty, recording, playing, stopped.
-var drums =	{
-				"1":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 },
-				"2":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 },
-				"3":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 },
-				"4":{"clipexists":false, "recording": false, "holding": false, "holdStart":0 }	
-			}; 
-var holdTimeToRecord = 1000; //how long button needs to be down to start record, in miliseconds
+var scaleKeys = teoria.note(rootKeys).scale(scale);
+var scaleBass = teoria.note(rootBass).scale(scale);
+
+
 
 
 /************************
@@ -105,24 +130,38 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |    _  ||   |___   |   |   _____| |
 		// |___| |_||_______|  |___|  |_______|
 		
-		if(addr=="/keys_multislider_1"){
-			//FILTER 
-			var frequency = data.list["0"] * FULL_VELOCITY;
-			var resonance = data.list["1"] * FULL_VELOCITY;
-			output.sendMessage([MIDI.CH1.CONTROL, 1, frequency]);
-			output.sendMessage([MIDI.CH1.CONTROL, 2, resonance]);
-
-			//LFO
-			var lfoVolume = data.list["2"] * FULL_VELOCITY;
-			var lfoPan = data.list["3"] * FULL_VELOCITY;
-			output.sendMessage([MIDI.CH1.CONTROL, 3, lfoVolume]);
-			output.sendMessage([MIDI.CH1.CONTROL, 4, lfoPan]);
+		if(addr=="/keys_range_1"){
+			var width = data.stop - data.start;
+			var xpos = data.start;
+			
+			var grainSize = width * FULL_VELOCITY;
+			var grainPos = xpos * FULL_VELOCITY;
+			output.sendMessage([MIDI.CH1.CONTROL, 10, grainSize]);
+			output.sendMessage([MIDI.CH1.CONTROL, 11, grainPos]);
+			
 		}
 
-		else if(addr=="/keys_tilt_1") {
-			var pan = (data.x +1) * FULL_VELOCITY/2;
-			midiMessage = [MIDI.CH1.CONTROL, 5, pan];
-			output.sendMessage(midiMessage);
+		if(addr=="/keys_button_1"){
+			if(data.press == 1){
+				output.sendMessage([MIDI.CH1.NOTEON, 119, 10]);
+				output.sendMessage([MIDI.CH1.NOTEOFF, 119, 0]);
+			}
+		}
+
+		if(addr=="/keys_multislider_1"){
+			//FILTER 
+			var spray = data.list["0"] * FULL_VELOCITY;
+			var decay = data.list["1"] * FULL_VELOCITY;
+			var pitchCoarse = data.list["2"] * FULL_VELOCITY;
+			var pitchFine = data.list["3"] * FULL_VELOCITY;
+			var crossfade = data.list["4"] * FULL_VELOCITY;
+
+			output.sendMessage([MIDI.CH1.CONTROL, 1, spray]);
+			output.sendMessage([MIDI.CH1.CONTROL, 2, decay]);
+			output.sendMessage([MIDI.CH1.CONTROL, 3, pitchCoarse]);
+			output.sendMessage([MIDI.CH1.CONTROL, 4, pitchFine]);
+			output.sendMessage([MIDI.CH1.CONTROL, 15, crossfade]);
+			
 		}
 
 		else if(addr.substring(0,15)=="/keys_keyboard_"){
@@ -155,6 +194,14 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			
 		}
 
+
+		else if(addr=="/keys_tilt_1") {
+			var pan = (data.x +1) * FULL_VELOCITY/2;
+			midiMessage = [MIDI.CH1.CONTROL, 5, pan];
+			output.sendMessage(midiMessage);
+		}
+
+		
 
 
 		//  _______  _______  _______  _______ 
@@ -631,103 +678,146 @@ stdin.setRawMode( true );
 stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
-	//PROGRAM BASS
-	// if(key=='1') {
-	// 	var message = [MIDI.CH2.CONTROL, 1, 1];
-	// 	output.sendMessage(message);
-	// }
-
-	// if(key=='2') {
-	// 	var message = [MIDI.CH2.CONTROL, 2, 1];
-	// 	output.sendMessage(message);
-	// }
-
-	// if(key=='3') {
-	// 	var message = [MIDI.CH2.CONTROL, 3, 1];
-	// 	output.sendMessage(message);
-	// }
-
-	// if(key=='4') {
-	// 	var message = [MIDI.CH2.CONTROL, 4, 1];
-	// 	output.sendMessage(message);
-	// }
-
-	// if(key=='5') {
-	// 	var message = [MIDI.CH2.CONTROL, 5, 1];
-	// 	output.sendMessage(message);
-	// }
-	//PROGRAM DRUMS
-	//to turn looping off
-	// if(key=='q') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
-	// }
-	// //arm
-	// if(key=='i'){
-	// 	output.sendMessage([MIDI.CH3.CONTROL, 102, 1]);
-	// 	// output.sendMessage([MIDI.CH3.NOTEON, 105, 1]);
-	// }
-	// //new button
-	// if(key=='n') {
-	// 	output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-	// }
-	// //record session
-	// if(key=='m') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
-		
-	// }
-	// //launch track
-	// if(key=='z') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 103, 1]);
-	// 	output.sendMessage([MIDI.CH3.NOTEOFF, 103, 1]);
-	// }
 	
-	//ARM	
-	// if(key=='1') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 30, 1]);
-	// }
-	// if(key=='2') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 31, 1]);
-	// }
-	// if(key=='3') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 32, 1]);
-	// }
-	// if(key=='4') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 33, 1]);
-	// }
+	//multipurpose
+	if(key=='='){
+
+	}
+
+	//PROGRAM KEYS
+	//grab button
+	if(key=='6') {
+		// output.sendMessage([MIDI.CH1.CONTROL, 119, 1]);
+		output.sendMessage([MIDI.CH1.NOTEON, 119, 1]);
+		output.sendMessage([MIDI.CH1.NOTEOFF, 119, 0]);
+	}
 
 
-	// //LAUNCH
-	// if(key=='a') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 20, 1]);
-	// }
-	// if(key=='s') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 21, 1]);
-	// }
-	// if(key=='d') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 22, 1]);
-	// }
-	// if(key=='f') {
-	// 	output.sendMessage([MIDI.CH3.NOTEON, 23, 1]);
-	// }
 
-	if(key=='a') {
-		output.sendMessage([MIDI.CH3.CONTROL, 126, 1]);
+	//multislider 
+	if(key=='1') {
+		output.sendMessage([MIDI.CH1.CONTROL, 1, 1]);
+	}
+	if(key=='2') {
+		output.sendMessage([MIDI.CH1.CONTROL, 2, 1]);
+	}
+	if(key=='3') {
+		output.sendMessage([MIDI.CH1.CONTROL, 3, 1]);
+	}
+	if(key=='4') {
+		output.sendMessage([MIDI.CH1.CONTROL, 4, 1]);
+	}
+
+	//tilt
+	if(key=='5') {
+		output.sendMessage([MIDI.CH1.CONTROL, 5, 1]);
+	}
+
+	//PROGRAM BASS
+	
+	//multislider 
+	if(key=='q') {
+		output.sendMessage([MIDI.CH2.CONTROL, 1, 1]);
+	}
+	if(key=='w') {
+		output.sendMessage([MIDI.CH2.CONTROL, 2, 1]);
+	}
+	if(key=='e') {
+		output.sendMessage([MIDI.CH2.CONTROL, 3, 1]);
+	}
+	if(key=='r') {
+		output.sendMessage([MIDI.CH2.CONTROL, 4, 1]);
+	}
+	
+	//tilt
+	if(key=='t') {
+		output.sendMessage([MIDI.CH2.CONTROL, 5, 1]);
+	}
+
+	//PROGRAM VOICE
+	
+	//multislider 
+	if(key=='z') {
+		output.sendMessage([MIDI.CH4.CONTROL, 1, 1]);
+	}
+	if(key=='x') {
+		output.sendMessage([MIDI.CH4.CONTROL, 2, 1]);
 	}
 	
 
-	//PROGRAM VOCALS
-	// if(key=='a') {
-	// 	output.sendMessage([MIDI.CH4.CONTROL, 102, 1]);
-	// }
-	// if(key=='s') {
-	// 	output.sendMessage([MIDI.CH4.CONTROL, 103, 1]);
-	// }
-	// if(key=='d') {
-	// 	output.sendMessage([MIDI.CH4.CONTROL, 104, 1]);
-	// }
-	// if(key=='f') {
-	// 	output.sendMessage([MIDI.CH4.CONTROL, 105, 1]);
-	// }
+	//PROGRAM DRUMS
+	
+	//multislider 
+	if(key=='a') {
+		output.sendMessage([MIDI.CH3.CONTROL, 1, 1]);
+	}
+	if(key=='s') {
+		output.sendMessage([MIDI.CH3.CONTROL, 2, 1]);
+	}
+	if(key=='d') {
+		output.sendMessage([MIDI.CH3.CONTROL, 3, 1]);
+	}
+	if(key=='f') {
+		output.sendMessage([MIDI.CH3.CONTROL, 4, 1]);
+	}
+	
+	//tilt
+	if(key=='g') {
+		output.sendMessage([MIDI.CH2.CONTROL, 5, 1]);
+	}
+
+	//REC BUTTON
+	//FIRST TAP 
+	//to turn looping off
+	//arm
+	if(key=='7'){
+		output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
+	}
+	//new button
+	if(key=='8') {
+		output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
+	}
+
+	//record session
+	if(key=='9') {
+		output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
+		
+	}
+
+	//SECOND TAP repeats 7, 9
+	//adds Loop control
+	if(key=='0') {
+		output.sendMessage([MIDI.CH3.NOTEON, 120, 1]);
+	}
+	
+	//TRIGGERS
+	//transpose
+	if(key=='m') {
+		output.sendMessage([MIDI.CH3.NOTEON, 126, 1]);
+	}
+	//launch track
+	if(key==',') {
+		output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
+		output.sendMessage([MIDI.CH3.NOTEOFF, 127, 1]);
+	}
+
+	//PRE-SAMPLED DRUM MACHINE
+	//trigger 1
+	if(key=='k') {
+		output.sendMessage([MIDI.CH3.NOTEON, 36, 1]);
+	}
+	//trigger 2
+	if(key=='l') {
+		output.sendMessage([MIDI.CH3.NOTEON, 37, 1]);
+	}
+	//trigger 3
+	if(key==';') {
+		output.sendMessage([MIDI.CH3.NOTEON, 38, 1]);
+	}
+	//trigger 4
+	if(key=='\'') {
+		output.sendMessage([MIDI.CH3.NOTEON, 39, 1]);
+	}
 
 
 
@@ -740,7 +830,6 @@ stdin.on( 'data', function( key ){
 	// write the key to stdout all normal like
 	//process.stdout.write( key );
 });
-
 
 
 
