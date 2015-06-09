@@ -1,11 +1,11 @@
 
 
-var socket = io.connect();
-socket.emit('hello', { my: 'data' });
+// var socket = io.connect();
+// socket.emit('hello', { my: 'data' });
 
-socket.on('/keys_range_1', function (data) {
-	console.log(data);
-});
+// socket.on('/keys_range_1', function (data) {
+// 	console.log(data);
+// });
 
 $(window).bind("load", function() {
 	
@@ -18,6 +18,8 @@ $(window).bind("load", function() {
 function ProjectionVisuals( options ) {
 
 	options = options || {};
+
+	options.num = options.num || 1;
 
 	var WIDTH = options.width || window.innerWidth;
 	var HEIGHT = options.height || window.innerHeight;
@@ -83,13 +85,50 @@ function ProjectionVisuals( options ) {
 
 	//load images
 	var debugImage;
-	textureLoader.load( "/textures/cyanMagentaGradient.png", function ( t ) {
+	textureLoader.load( "textures/cyanMagentaGradient.png", function ( t ) {
 		// t.minFilter = THREE.LinearFilter;
 		debugImage = t;
 		debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
 	});
 
 	// OBJECTS
+	// 
+	// Keys
+	// keys1: Controls - multislider( 4 sliders )
+	// keys2: Interface_1 - keys( 7 keys )
+	// keys3: Interface_2 - keys( 7 keys )
+	// keys4: Interface_3 - keys( 7 keys )
+	// keys5: Interface_4 - keys( 7 keys )
+	// keys6: Tilt - tilt
+	
+	var 
+
+	// Bass
+	// bass1: Controls - multislider( 4 sliders )
+	// bass2: Interface_1 - keys( 4 keys )
+	// bass3: Interface_2 - keys( 3 keys )
+	// bass4: Interface_3 - keys( 4 keys )
+	// bass5: Interface_4 - keys( 3 keys )
+	// bass6: Tilt - tilt
+
+	// Drums
+	// drums1: Interface_1
+	// drums2: Interface_2
+	// drums3: Interface_3
+	// drums4: Interface_4
+	// drums5: Controls
+	// drums6: Tilt
+
+	// Vocals
+	// voicefx: FX
+
+	// Pre_Sampled Drums
+	// pre_drums1: Trigger_1
+	// pre_drums2: Trigger_2
+	// pre_drums3: Trigger_3
+	// pre_drums4: Trigger_4
+	// pre_drums5: Trigger_5
+	// pre_drums6: Tilt
 
 	function setup() {
 
@@ -102,8 +141,6 @@ function ProjectionVisuals( options ) {
 
 		//testing
 		var m = addInsrtrument( "test", "test", { radius: 10 });
-
-		console.log( 'm', m );
 
 		scene.add( m );
 
