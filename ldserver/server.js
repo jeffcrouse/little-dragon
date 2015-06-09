@@ -331,7 +331,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
 		else if(contains(addr, '/drums')){
 			var drum = addr.charAt(addr.length - 1);
-			console.log(drum);
+			
 			if(drum == 0){//record button
 				if(data.press==1){ // button down
 					if(!recording){
@@ -369,44 +369,68 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				}
 			}
 			else{ //actual triggers
-				if(data.press==1){ 
-					console.log("LAUNCH");
+				var keyPos = data.note - 48; //0 or 1
+				
+				if(data.on > 0){ 
 					var pitchShift = 0;
-					//note is just a plan B in case sampling fails: enable normal drum
-					var note;
-					switch(drum){
-						case '1':
+					// console.log("LAUNCH drum " + drum);
+					if(drum == '1'){//live sample triggers
+						// console.log("drum " + drum);
+					   if(keyPos == 0) 
 							pitchShift = 10;
-							note = 36;
-							break;
-						case '2':
-							pitchShift = 10;
-							note = 36;
-							break;
-						case '3':
+						if(keyPos == 1) 
 							pitchShift = 40;
-							note = 37;
-							break;
-						case '4':
+						if(keyPos == 2) 
 							pitchShift = 70;
-							note = 38;
-							break;
-						case '5':
+						if(keyPos == 3) 
 							pitchShift = 100;
-							note = 39;
-							break;
+						if(keyPos == 4) 
+							pitchShift = 110;
+
+						//send pitch message:
+						output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
+						//launch clip	
+						output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
 					}
+					else{//pre sampled triggers
+						var note;
+						switch(drum){
+							case '2':
+								if(keyPos == 0) 
+									note = 36;
+								else 
+									note = 37;
+								break;
+							case '3':
+								if(keyPos == 0) 
+									note = 38;
+								else 
+									note = 39;
+								break;
+							case '4':
+								if(keyPos == 0) 
+									note = 40;
+								else 
+									note = 41;
+								
+								break;
+							case '5':
+								if(keyPos == 0) 
+									note = 42;
+								else 
+									note = 43;
+								break;
+						}
 
-					//send pitch message:
-					output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
-
-					//plan B: pre-sampled drums
-					output.sendMessage([MIDI.CH3.NOTEON, note, 1]);
-					var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
-					output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+						output.sendMessage([MIDI.CH3.NOTEON, note, 1]);
+						var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
+						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+					}
 					
-					//launch clip	
-					output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
+					
+					
+					
+					
 				}
 				else if(data.press==0){
 					output.sendMessage([MIDI.CH3.NOTEOFF, note, 0]);
