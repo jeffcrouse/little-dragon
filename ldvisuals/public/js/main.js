@@ -124,18 +124,78 @@ $(window).bind("load", function() {
 	// });
 
 
+	/*
+	setInterval( function(){
+		projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
+	}, 500);
+
+	setInterval( function(){
+		projection.handleOSC( "/keys_keyboard_2", {"on":0,"note":50,"midi":"50 0"} );
+	}, 750);
+
+
+	setInterval( function(){
+		projection.handleOSC( "/bass_keyboard_1", {"on":64,"note":49,"midi":"50 1"} );
+	}, 250);
+
+	setInterval( function(){
+		projection.handleOSC( "/bass_keyboard_1", {"on":0,"note":49,"midi":"50 0"} );
+	}, 850);
+
+	
+	setInterval( function(){
+		projection.handleOSC( "/drums_button_2", {"press":1} );
+	}, 500);
+
+	setInterval( function(){
+		projection.handleOSC( "/drums_button_2", {"press":0} );
+	}, 750);
+
+	setTimeout( function(){
+
+		setInterval( function(){
+			projection.handleOSC( "/drums_button_3", {"press":1} );
+		}, 500);
+
+		setInterval( function(){
+			projection.handleOSC( "/drums_button_3", {"press":0} );
+		}, 750);	
+	}, 250)
+	*/
+
 	//
 	//	Socket messages from MIDI controller and from phone data
 	//
 	var socket = io.connect();
-
-	socket.on('/keys_range_1', function (data) {
-		console.log(data);
+	socket.on('/keys_keyboard_1', function (data) {
+		projection.handleOSC( "/keys_keyboard_1", data );
+	});
+	socket.on('/keys_keyboard_2', function (data) {
+		projection.handleOSC( "/keys_keyboard_2", data );
+	});
+	socket.on('/keys_keyboard_3', function (data) {
+		projection.handleOSC( "/keys_keyboard_3", data );
+	});
+	socket.on('/bass_keyboard_1', function (data) {
+		projection.handleOSC( "/bass_keyboard_1", data );
+	});
+	socket.on('/bass_keyboard_2', function (data) {
+		projection.handleOSC( "/bass_keyboard_2", data );
+	});
+	socket.on('/bass_keyboard_3', function (data) {
+		projection.handleOSC( "/bass_keyboard_3", data );
+	});
+	socket.on('/bass_keyboard_4', function (data) {
+		projection.handleOSC( "/bass_keyboard_4", data );
+	});
+	socket.on('/drums_keyboard_1', function (data) {
+		projection.handleOSC( "/drums_keyboard_1", data );
 	});
 
 
+
 	socket.on('slider1', function (data) {
-		var value = Math.map(data, 0, 1, 1, 20);
+		var value = Math.map(data, 0, 1, 2, 20);
 		guiControls.lineWidth =  value;
 		projection.setLineWidth( value );
 	});
@@ -145,7 +205,7 @@ $(window).bind("load", function() {
 		projection.setLineLength( value );
 	});
 	socket.on('slider3', function (data) {
-		var value = Math.map(data, 0, 1, 0.00, 1.00);
+		var value = Math.map(data, 0, 1, 0.5, 1.00);
 		guiControls.lineOpacity =  value;
 		projection.setLineOpacity( value );
 
@@ -156,20 +216,19 @@ $(window).bind("load", function() {
 		projection.setRotation( value );
 	});
 	socket.on('slider5', function (data) {
-		console.log("slider5", data);
+		//console.log("slider5", data);
 		var value = Math.map(data, 0, 1, .0001, .02 );
 		guiControls.noiseScale = value;
 		projection.setNoiseScale( value );
 	});
 	socket.on('slider6', function (data) {
-		console.log("slider6", data);
+		//console.log("slider6", data);
 		var value = Math.map(data, 0, 1, 0, 4 );
 		guiControls.noiseAmount = value;
 		projection.setNoiseAmount( value );
 	});
 	socket.on('knob1', function(data){
 		console.log("knob1", data);
-
 	});
 	socket.on('knob2', function(data){
 		console.log("knob2", data);
@@ -181,7 +240,7 @@ $(window).bind("load", function() {
 		console.log("knob4", data);
 	});
 	socket.on('xfade', function(data){
-		var value = Math.map(data, 0, 1, -5, 5 );
+		var value = Math.map(data, 0, 1, -10, 10 );
 		guiControls.timeScale = value;
 		projection.setTimeScale( value );
 	});
