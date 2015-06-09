@@ -123,6 +123,7 @@ $(window).bind("load", function() {
 	//   showStats: false
 	// });
 
+/*
 setInterval( function(){
 	projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
 }, 500);
@@ -153,6 +154,7 @@ setTimeout( function(){
 		projection.handleOSC( "/drums_keyboard_2", {"on":0,"note":48,"midi":"50 1"} );
 	}, 500);
 }, 300 )
+*/
 
 	//
 	//	Socket messages from MIDI controller and from phone data
@@ -182,7 +184,15 @@ setTimeout( function(){
 	socket.on('/drums_keyboard_1', function (data) {
 		projection.handleOSC( "/drums_keyboard_1", data );
 	});
-
+	socket.on('/drums_keyboard_2', function (data) {
+		projection.handleOSC( "/drums_keyboard_1", data );
+	});
+		socket.on('/drums_keyboard_3', function (data) {
+		projection.handleOSC( "/drums_keyboard_1", data );
+	});
+			socket.on('/drums_keyboard_4', function (data) {
+		projection.handleOSC( "/drums_keyboard_1", data );
+	});
 
 
 	socket.on('slider1', function (data) {
