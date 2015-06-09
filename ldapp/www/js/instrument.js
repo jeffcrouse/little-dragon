@@ -7,7 +7,7 @@ var oscListener = null;					// Receive OSC from the server
 var myIP = null;
 var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
-var tilt_throttle_dist = 0.3;
+var tilt_throttle_dist = 0.2;
 
 
 
@@ -485,7 +485,6 @@ nx.onload = function() {
 			control.throttlePeriod = 50;
 			control.text = "reverb";
 
-
 			ldInterface = TouchLines({
 			  MIN_ANGLE: -20,
 			  MAX_ANGLE: 20,
@@ -496,7 +495,6 @@ nx.onload = function() {
 			  rotation: 3,
 			  noiseScale: .005
 			});
-
 
 		    break;
 
