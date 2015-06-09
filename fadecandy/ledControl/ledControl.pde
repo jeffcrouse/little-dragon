@@ -22,6 +22,7 @@ float leftFade = 0;
 float rightFade = PI;
 float spinnerSpeed = 1.0;
 float spinnerPos = 0;
+float spinnerWidth = 20;
 
 
 
@@ -91,9 +92,14 @@ void setup()
   cp5.addSlider("spinnerSpeed")
     .setSize(100, 20)
       .setPosition(20, 170)
-        .setRange(10, 1000)
+        .setRange(10, 2000)
           ;
-
+          
+  cp5.addSlider("spinnerWidth")
+    .setSize(100, 20)
+      .setPosition(20, 200)
+        .setRange(10, 100)
+          ;
   cp5.loadProperties("leds.properties");
 
   // https://github.com/scanlime/fadecandy/blob/master/doc/processing_opc_client.md
@@ -116,8 +122,8 @@ void oscEvent(OscMessage theOscMessage) {
   String addr = theOscMessage.addrPattern();
   String data = theOscMessage.get(0).toString();
   JSONObject json = JSONObject.parse(data);
-  println(addr);
-  println(data);
+  //println(addr);
+  //println(data);
 
 
   if (addr.equals("/bass_multislider_1")) {
@@ -220,7 +226,7 @@ void draw()
   float b = map(noise(t, 1.0), 0.0, 1.0, 0.0, 100.0);
   fill(r, g, b);
   rectMode(CENTER);
-  rect(spinnerPos, qheight, 20, 20);
+  rect(spinnerPos, qheight, spinnerWidth, 20);
 
   for (int i=0; i<slots.length; i++) {
     slots[i].draw();
@@ -259,6 +265,7 @@ void keyPressed() {
     slots[1].on = true;
   }
   if (key=='r') {
+    println("reset");
     for (int i=0; i<slots.length; i++) {
       slots[i].on = false;
     }
