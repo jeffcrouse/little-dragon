@@ -521,8 +521,6 @@ function ProjectionVisuals( options ) {
 
 	rtScene.add( group );
 
-	console.log( 'oscMap', oscMap );
-
 	/**
 	 * handle incoming osc messages
 	 * @param  {string} phoneName [description]
@@ -531,15 +529,6 @@ function ProjectionVisuals( options ) {
 	function handleOSC( phoneName, data ) {
 
 		data = data || {};
-
-
-		// if(p === undefined) {
-
-		// 	console.log( "couldn't find instrument named " + phoneName );
-
-		// 	return;
-
-		// }
 
 		switch ( phoneName ) {
 
@@ -550,8 +539,32 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//set it's value
-				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
-				else console.log(  "couldn't find instrument named " + phoneName  );
+				if(p)	{
+
+					//kill existing tween
+					if(p.tween) {
+						p.tween.stop();
+						TWEEN.remove( p.tween );
+					}
+
+					if( data.on > 0 ) {
+
+						// p.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 1}, 50)
+							.start()
+
+					} else {
+
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 0}, 150)
+							.start()
+					}
+					
+				}
+				else {
+					console.log(  "couldn't find instrument named " + phoneName  );
+				}
 
 				break;
 			
@@ -564,32 +577,76 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//	set it's value
-				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
-				else console.log(  "couldn't find instrument named " + phoneName  );
+				if(p)	{
+
+					//kill existing tween
+					if(p.tween) {
+						p.tween.stop();
+						TWEEN.remove( p.tween );
+					}
+
+					if( data.on > 0 ) {
+
+						// p.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 1}, 50)
+							.start()
+
+					} else {
+
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 0}, 150)
+							.start()
+					}
+
+					
+				}
+				else {
+					console.log(  "couldn't find instrument named " + phoneName  );
+				}
 
 				break;
 
 			// case '/drums_toggle_1':
-			case '/drums_keyboard_1':
-			case '/drums_keyboard_2':
-			case '/drums_keyboard_3':
-			case '/drums_keyboard_4':
-
-				// get the object
-				var p = oscMap[phoneName].keys[ data.note ]
-
-				//	set it's value
-				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
-				else console.log(  "couldn't find instrument named " + phoneName  );
-				break;
-
-			case '/keys_button_1':
+			case '/drums_button_2':
+			case '/drums_button_3':
+			case '/drums_button_4':
 
 				//get the object
 				var p = oscMap[phoneName];
 
 				//set it's value
-				p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+				// p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+
+				//	set it's value
+				if(p)	{
+
+					//kill existing tween
+					if(p.tween) {
+						p.tween.stop();
+						TWEEN.remove( p.tween );
+					}
+
+					if( data.press == 1 ) {
+
+						// p.m.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+							.to({value: 1}, 50)
+							.start()
+
+					} else {
+						
+						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+							.to({value: 0}, 150)
+							.start()
+					}
+
+					
+				}
+				else {
+					
+					console.log(  "couldn't find instrument named " + phoneName  );
+				}
 
 				break;
 
@@ -597,6 +654,76 @@ function ProjectionVisuals( options ) {
 				break;
 		}
 	}
+
+	// function handleOSC( phoneName, data ) {
+
+	// 	data = data || {};
+
+
+	// 	// if(p === undefined) {
+
+	// 	// 	console.log( "couldn't find instrument named " + phoneName );
+
+	// 	// 	return;
+
+	// 	// }
+
+	// 	switch ( phoneName ) {
+
+	// 		case '/keys_keyboard_2':
+	// 		case '/keys_keyboard_3':
+
+	// 			//get the object
+	// 			var p = oscMap[phoneName].keys[ data.note ]
+
+	// 			//set it's value
+	// 			if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+	// 			else console.log(  "couldn't find instrument named " + phoneName  );
+
+	// 			break;
+			
+	// 		case '/bass_keyboard_1':
+	// 		case '/bass_keyboard_2':
+	// 		case '/bass_keyboard_3':
+	// 		case '/bass_keyboard_4':
+
+	// 			// get the object
+	// 			var p = oscMap[phoneName].keys[ data.note ]
+
+	// 			//	set it's value
+	// 			if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+	// 			else console.log(  "couldn't find instrument named " + phoneName  );
+
+	// 			break;
+
+	// 		// case '/drums_toggle_1':
+	// 		case '/drums_keyboard_1':
+	// 		case '/drums_keyboard_2':
+	// 		case '/drums_keyboard_3':
+	// 		case '/drums_keyboard_4':
+
+	// 			// get the object
+	// 			var p = oscMap[phoneName].keys[ data.note ]
+
+	// 			//	set it's value
+	// 			if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+	// 			else console.log(  "couldn't find instrument named " + phoneName  );
+	// 			break;
+
+	// 		case '/keys_button_1':
+
+	// 			//get the object
+	// 			var p = oscMap[phoneName];
+
+	// 			//set it's value
+	// 			p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+
+	// 			break;
+
+	// 		default:
+	// 			break;
+	// 	}
+	// }
 
 	/**
 	 * [getLineGeometry description]
