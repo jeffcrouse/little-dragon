@@ -326,52 +326,13 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// | |_|   ||    __  ||       ||       ||_____  |
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
-
-
-		//INSTRUMENT: PRE-SAMPLED DRUMS
-		else if(contains(addr, '/pre-drums')){
-			//message format: pre-drums_button_4 
-			var drum = addr.charAt(addr.length - 1);
-			
-			var note;
-			switch(drum){
-				case '1': 
-					note = 36;
-					// if(data.press==1)led_sections[0].blink();
-					break;
-				case '2': 
-					note = 37;
-					// if(data.press==1)led_sections[1].blink();
-					break;
-				case '3': 
-					note = 38;
-					// if(data.press==1)led_sections[2].blink();
-					break;
-				case '4': 
-					note = 39;
-					// if(data.press==1)led_sections[3].blink();
-					break;
-				case '5': 
-					note = 40;
-					// if(data.press==1)led_sections[3].blink();
-					break;
-			}
-
-			if(data.press==1){ // button down
-				//range y: 80 to 670 approx.
-				var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
-				output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
-			}
-			else if(data.press==0){
-				output.sendMessage([MIDI.CH3.NOTEOFF, note, velocity]);
-			}
-		}
+		
 
 		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
 		else if(contains(addr, '/drums')){
 			var drum = addr.charAt(addr.length - 1);
-			
-			if(drum == 1){//record button
+			console.log(drum);
+			if(drum == 0){//record button
 				if(data.press==1){ // button down
 					if(!recording){
 					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
@@ -414,6 +375,10 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					//note is just a plan B in case sampling fails: enable normal drum
 					var note;
 					switch(drum){
+						case '1':
+							pitchShift = 10;
+							note = 36;
+							break;
 						case '2':
 							pitchShift = 10;
 							note = 36;

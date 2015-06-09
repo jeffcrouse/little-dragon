@@ -356,10 +356,9 @@ nx.onload = function() {
 
 		//PRE-SAMPLED DRUMS
 	    case "drums1":
-	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "toggle", 1);
+		    var control = createControl(instrumentName, "toggle", 0);
 		    // control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
 			// ///rotation=6&noiseAmount=10&timeScale=2
@@ -380,7 +379,6 @@ nx.onload = function() {
 		   break;
 
 	    case "drums2":
-	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "keyboard", 1);
@@ -401,7 +399,6 @@ nx.onload = function() {
 		    break;
 
 		case "drums3":
-		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 			var control = createControl(instrumentName, "keyboard", 2);
@@ -423,7 +420,6 @@ nx.onload = function() {
 		    break;
 
 		case "drums4":
-		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
 		    var control = createControl(instrumentName, "keyboard", 3);
@@ -445,7 +441,6 @@ nx.onload = function() {
 
 
 		case "drums5":
-		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 		    var control = createControl(instrumentName, "keyboard", 4);
 	 		control.octaves = 1;
@@ -466,7 +461,6 @@ nx.onload = function() {
 		    break;
 		
 		case "drums6":
-		case "pre-drums6":
 
 			if(screen.lockOrientation)	screen.lockOrientation('portrait');
 
