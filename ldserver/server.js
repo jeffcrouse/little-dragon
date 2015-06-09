@@ -667,20 +667,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 server.listen(http_port);
 
 app.get('/', function (req, res) {
-	var data = {"title": 'Little Dragon Server'};
+	var data = {"title": 'Little Dragon Projection'};
 	res.render('index', data);
 });
-
-app.get('/projector/:num', function(req, res) {
-	var data = {"title": 'Little Dragon Projection', 'num': req.params.num};
-	res.render('projector', data);
-});
-
-app.get('/composer', function(req, res) {
-	var data = {"title": 'Little Dragon Composer'};
-	res.render('composer', data);
-});
-
 
 //io.on('connection', function (socket) {});
 
