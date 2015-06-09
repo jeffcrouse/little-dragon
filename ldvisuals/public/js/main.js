@@ -123,45 +123,36 @@ $(window).bind("load", function() {
 	//   showStats: false
 	// });
 
+// setInterval( function(){
+// 	projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
+// }, 500);
 
-	/*
-	setInterval( function(){
-		projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
-	}, 500);
+// setTimeout( function(){
+// 	setInterval( function(){
+// 		projection.handleOSC( "/keys_keyboard_2", {"on":0,"note":50,"midi":"50 1"} );
+// 	}, 500);
+// }, 300 )
 
-	setInterval( function(){
-		projection.handleOSC( "/keys_keyboard_2", {"on":0,"note":50,"midi":"50 0"} );
-	}, 750);
+// setInterval( function(){
+// 	projection.handleOSC( "/bass_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
+// }, 500);
+
+// setTimeout( function(){
+// 	setInterval( function(){
+// 		projection.handleOSC( "/bass_keyboard_2", {"on":0,"note":50,"midi":"50 1"} );
+// 	}, 500);
+// }, 300 )
 
 
-	setInterval( function(){
-		projection.handleOSC( "/bass_keyboard_1", {"on":64,"note":49,"midi":"50 1"} );
-	}, 250);
+// setInterval( function(){
+// 	projection.handleOSC( "/drums_keyboard_2", {"on":64,"note":48,"midi":"50 1"} );
+// }, 500);
 
-	setInterval( function(){
-		projection.handleOSC( "/bass_keyboard_1", {"on":0,"note":49,"midi":"50 0"} );
-	}, 850);
-
-	
-	setInterval( function(){
-		projection.handleOSC( "/drums_button_2", {"press":1} );
-	}, 500);
-
-	setInterval( function(){
-		projection.handleOSC( "/drums_button_2", {"press":0} );
-	}, 750);
-
-	setTimeout( function(){
-
-		setInterval( function(){
-			projection.handleOSC( "/drums_button_3", {"press":1} );
-		}, 500);
-
-		setInterval( function(){
-			projection.handleOSC( "/drums_button_3", {"press":0} );
-		}, 750);	
-	}, 250)
-	*/
+// setTimeout( function(){
+// 	setInterval( function(){
+// 		projection.handleOSC( "/drums_keyboard_2", {"on":0,"note":48,"midi":"50 1"} );
+// 	}, 500);
+// }, 300 )
 
 	//
 	//	Socket messages from MIDI controller and from phone data
