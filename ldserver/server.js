@@ -46,7 +46,7 @@ output.openPort(0);
 // http://betacontroller.com/post/74610077245/phase-2-2-playing-middle-c-with-node-js
 // http://www.midi.org/techspecs/midimessages.php
 var MIDI = {
-	CH1: { NOTEON: 144, NOTEOFF: 126, CONTROL: 176, PITCHBEND: 224 },	// KEYS
+	CH1: { NOTEON: 144, NOTEOFF: 128, CONTROL: 176, PITCHBEND: 224 },	// KEYS
 	CH2: { NOTEON: 145, NOTEOFF: 129, CONTROL: 177, PITCHBEND: 225 },	// BASS
 	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 },	// DRUMS
 	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 },	// VOCALS
