@@ -8,7 +8,7 @@ var teoria = require('teoria');
 var oscClient = require("./oscClient");
 //var leds = require("./leds")
 
-var song = "1";
+var song = "3";
 var songs = {
 	"1": {	
 		"name":"pink cloud", 
@@ -43,13 +43,13 @@ var songs = {
 		// 				teoria.note("g"),
 		// 				teoria.note("a")
 		// 			],
-		"scaleKeys": teoria.note("db1").scale("major").notes()
+		"scaleKeys": teoria.note("f").scale("major").notes()
 	
 	},
 	"3": {
 		"name":"test", 
 		"scaleBass": teoria.note("f#2").scale("minor").notes(),
-		"scaleKeys": teoria.note("f#1").scale("minor").notes()
+		"scaleKeys": teoria.note("bb").scale("minor").notes()
 	},
 	"4": {
 		"name":"pretty girls", 
@@ -225,7 +225,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					// console.log("note: " + note);
 					break;
 				case '3'://this is actually the second keyboard
-					midiNote += 36;
+					midiNote += 24;
 					// console.log("note: " + note);
 					break;
 				case '4':
