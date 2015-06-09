@@ -1,12 +1,8 @@
 var path = require('path');
 var util = require('util');
-var express = require('express');
-var bodyParser = require('body-parser');
-var osc = require('node-osc');
-var midi = require('midi');
 var teoria = require('teoria');
-var oscClient = require("./oscClient");
-//var leds = require("./leds")
+var midi = require('midi');
+var osc = require('node-osc');
 
 var song = "1";
 var songs = {
@@ -58,7 +54,6 @@ var scaleKeys = songs[song].scaleKeys;
 var scaleBass = songs[song].scaleBass;
 
 
-
 // Set up MIDI
 var output = new midi.output();
 output.openPort(0);
@@ -102,18 +97,14 @@ var recording = false;
 ╚██████╔╝███████║╚██████╗
  ╚═════╝ ╚══════╝ ╚═════╝
 *************************/
-var http_port = 3000;
-var http_addr = null;
+
 var osc_port = 3333;
 require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
-	http_addr = util.format("http://%s:%s", addr, http_port);
-	console.log('http_addr', http_addr);
 	console.log("listening for osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
-	var oscClients = {};
-
+	//var oscClients = {};
 
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
@@ -122,8 +113,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		var data = JSON.parse(msg.shift());
 		var midiMessage;
 		
-		if(io) io.sockets.emit(addr, data);
-
 		/*
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
@@ -646,46 +635,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 
-/********************************************************
-███████╗██╗  ██╗██████╗ ██████╗ ███████╗███████╗███████╗
-██╔════╝╚██╗██╔╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝
-█████╗   ╚███╔╝ ██████╔╝██████╔╝█████╗  ███████╗███████╗
-██╔══╝   ██╔██╗ ██╔═══╝ ██╔══██╗██╔══╝  ╚════██║╚════██║
-███████╗██╔╝ ██╗██║     ██║  ██║███████╗███████║███████║
-╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
-********************************************************/
-// This is where the projector visuals will be served!
-
-
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-server.listen(http_port);
-
-app.get('/', function (req, res) {
-	var data = {"title": 'Little Dragon Server'};
-	res.render('index', data);
-});
-
-app.get('/projector/:num', function(req, res) {
-	var data = {"title": 'Little Dragon Projection', 'num': req.params.num};
-	res.render('projector', data);
-});
-
-app.get('/composer', function(req, res) {
-	var data = {"title": 'Little Dragon Composer'};
-	res.render('composer', data);
-});
-
-
-//io.on('connection', function (socket) {});
 
 
 
@@ -854,7 +803,6 @@ stdin.on( 'data', function( key ){
 	}
 
 
-
 	// ctrl-c ( end of text )
 	if ( key === '\u0003' ) {
 		output.closePort();
@@ -864,70 +812,6 @@ stdin.on( 'data', function( key ){
 	// write the key to stdout all normal like
 	//process.stdout.write( key );
 });
-
-
-
-
-
-/*******************************************************************
-███╗   ███╗██╗██████╗ ██╗    ██╗███╗   ██╗██████╗ ██╗   ██╗████████╗
-████╗ ████║██║██╔══██╗██║    ██║████╗  ██║██╔══██╗██║   ██║╚══██╔══╝
-██╔████╔██║██║██║  ██║██║    ██║██╔██╗ ██║██████╔╝██║   ██║   ██║   
-██║╚██╔╝██║██║██║  ██║██║    ██║██║╚██╗██║██╔═══╝ ██║   ██║   ██║   
-██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
-╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
-*******************************************************************/
-
-var input = new midi.input();
-
-var devices = {};
-for(var i=0; i<input.getPortCount(); i++) {
-	var name = input.getPortName(i);
-	devices[name] = i;
-	console.log(i, name);
-}
-
-if("USB Uno MIDI Interface" in devices)
-{
-	input.openPort(devices["USB Uno MIDI Interface"]);
-	input.on('message', function(deltaTime, message) {
-		if(!io) return;
-
-		var func = message[0];
-		var note = message[1];
-		var vel = message[2] / FULL_VELOCITY;
-		vel = parseFloat(vel.toFixed(3));
-		//console.log(func, note, vel);
-
-		if(func == MIDI.CH15.MODECHANGE) {
-			switch(note) {
-				case 0: io.sockets.emit('slider1', vel); break;
-				case 1: io.sockets.emit('slider2', vel); break;
-				case 2: io.sockets.emit('slider3', vel); break;
-				case 3: io.sockets.emit('slider4', vel); break;
-				case 4: io.sockets.emit('slider5', vel); break;
-				case 5: io.sockets.emit('slider6', vel); break;
-				case 18: io.sockets.emit("xfade", vel); break;
-				case 20: io.sockets.emit("knob1", vel); break;
-				case 21: io.sockets.emit("knob2", vel); break;
-				case 22: io.sockets.emit("knob3", vel); break;
-				case 23: io.sockets.emit("knob4", vel); break;
-				case 36: io.sockets.emit("y_axis", vel); break;
-				case 38: io.sockets.emit("x_axis", vel); break;
-			}
-		}
-		else if(func == MIDI.CH15.NOTEON) {
-			switch(note) {
-				case 8: io.sockets.emit("button1", vel); break;
-				case 9: io.sockets.emit("button2", vel); break;
-				case 10: io.sockets.emit("button3", vel); break;
-				case 11: io.sockets.emit("button4", vel); break;
-				case 12: io.sockets.emit("button5", vel); break;
-				case 13: io.sockets.emit("button6", vel); break;
-			}
-		}
-	});
-}
 
 
 

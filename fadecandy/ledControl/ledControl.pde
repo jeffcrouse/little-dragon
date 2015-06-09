@@ -119,6 +119,7 @@ void oscEvent(OscMessage theOscMessage) {
   println(addr);
   //  println(data);
 
+
   if (addr.equals("/bass_multislider_1")) {
     slots[0].blink();
   } else if (addr.equals("/bass_keyboard_1")) {
