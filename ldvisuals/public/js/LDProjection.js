@@ -1,4 +1,16 @@
 
+/**
+ * NICE PRESETS:
+
+ &lineLength=128.25215918712954&lineWidth=8.510922946655377&lineOpacity=0.270956816257409&spacing=10&rotation=8.171865056585812&noiseScale=0.0075&noiseAmount=3.0347163420829806&timeScale=-3.48264182895851
+
+ &lineLength=7.470448772226926&lineWidth=3.1459779847586793&lineOpacity=1&spacing=10&rotation=8.171865056585812&noiseScale=0.0075&noiseAmount=3.0347163420829806&timeScale=-1.6401354784081286
+
+ &lineLength=39.822692633361555&lineWidth=34.262658763759525&lineOpacity=0.15173581710414902&spacing=10&rotation=0.6809887547154844&noiseScale=0.005707722269263337&noiseAmount=3.5549534292972056&timeScale=-0.881456392887384
+
+ */
+
+
 
 var LDProjectionKeyMaterial = function( params ) {
 
@@ -286,16 +298,19 @@ function ProjectionVisuals( options ) {
 			key_index++;
 
 
+			//debugging
 			if(bRandomTriggers) {
+
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 30, 150 ) )
-					.repeat( 100 )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 1000 )
 					.delay( randf( 250, 1000) )
 					.yoyo( true )
 					.onUpdate( function( value ) {
 						this.scale.z = 1. + this.material.uniforms.fade.value;
 					}.bind( m ))
 					.start();
+					
 			}
 
 		}
@@ -381,20 +396,6 @@ function ProjectionVisuals( options ) {
 
 			m.material.uniforms.fade.value = 0;
 
-			if(bRandomTriggers) {
-
-				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 100 )
-					.delay( randf( 250, 1000) )
-					.yoyo( true )
-					.onUpdate( function( value ) {
-						this.scale.z = 1. + this.material.uniforms.fade.value;
-					}.bind( m ))
-					.start();
-					
-			}
-
 			m.scale.x = keyWidthScale;
 
 			m.position.x = bass_index + .5;
@@ -404,6 +405,22 @@ function ProjectionVisuals( options ) {
 			bass[i].group.add( m );
 
 			bass_index++;
+
+
+			//debugging
+			if(bRandomTriggers) {
+
+				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 1000 )
+					.delay( randf( 250, 1000) )
+					.yoyo( true )
+					.onUpdate( function( value ) {
+						this.scale.z = 1. + this.material.uniforms.fade.value;
+					}.bind( m ))
+					.start();
+					
+			}
 		}
 
 	}
@@ -418,40 +435,51 @@ function ProjectionVisuals( options ) {
 	for(var i in bass)	oscMap[i] = bass[i];
 
 	// Drums
-	// drums1: Interface_1 - toggle
-	// drums2: Interface_2 - button
-	// drums3: Interface_3 - button
-	// drums4: Interface_4 - button
+	// drums1: Interface_1 - keyboard
+	// drums2: Interface_2 - keyboard
+	// drums3: Interface_3 - keyboard
+	// drums4: Interface_4 - keyboard
 	// drums5: Controls - mulitslider ( 15 sliders )
 	// drums6: Tilt - tilt
 
 
 	var drums = {
 
-		// "/drums_toggle_1": {
-		// 	color: 0xF71B24,
-		// 	m: undefined,
-		// 	group: new THREE.Group()
-		// },
-
-		"/drums_button_2": {
+		"/drums_keyboard_1": {
 			color: 0xF71B24,
-			m: undefined,
-			group: new THREE.Group()
+			count: 5,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		"/drums_button_3": {
+		"/drums_keyboard_2": {
 			color: 0xF72C32,
-			m: undefined,
-			group: new THREE.Group()
+			count: 2,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		"/drums_button_4": {
+		"/drums_keyboard_3": {
 			color: 0xF73E42,
-			m: "undefined",
-			group: new THREE.Group()
+			count: 2,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
+		},
+
+		"/drums_keyboard_4": {
+			color: 0xF73E42,
+			count: 2,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 	}
+
+
+
 
 	var drumGroup = new THREE.Group();
 	group.add( drumGroup );
@@ -461,37 +489,39 @@ function ProjectionVisuals( options ) {
 
 		drumGroup.add( drums[i].group );
 
-		// for(var j=0; j<drums[i].count; j++ ) {
+		for(var j=drums[i].firstNote; j<drums[i].firstNote + drums[i].count; j++ ) {
 
 			var m = new THREE.Mesh( boxGeometry, new LDProjectionKeyMaterial( {
 				color: drums[i].color 
 			} ) );
 
+			m.material.uniforms.fade.value = 0;
+
 			m.scale.x = keyWidthScale;
 
 			m.position.x = drum_index + .5;
 
-			m.material.uniforms.fade.value = 0;
-
-
-			if(bRandomTriggers) {
-			m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-				.to( {value: 1}, (drum_index + 1) * 50 )
-				.repeat( 100 )
-				.delay( (drum_index + 1) * 200 )
-				.yoyo( true )
-				.onUpdate( function( value ) {
-					this.scale.z = 1. + this.material.uniforms.fade.value;
-				}.bind( m ))
-				.start();
-			}
-
-			drums[i].m = m;
+			drums[i].keys[j] = m;
 
 			drums[i].group.add( m );
 
 			drum_index++;
-		// }
+
+			//debugging
+			if(bRandomTriggers) {
+
+				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 1000 )
+					.delay( randf( 250, 1000) )
+					.yoyo( true )
+					.onUpdate( function( value ) {
+						this.scale.z = 1. + this.material.uniforms.fade.value;
+					}.bind( m ))
+					.start();
+					
+			}
+		}
 
 	}
 
@@ -539,6 +569,11 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//set it's value
+				// if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				// else console.log(  "couldn't find instrument named " + phoneName  );
+				// break;
+				
+				//set it's value
 				if(p)	{
 
 					//kill existing tween
@@ -577,6 +612,11 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//	set it's value
+				// if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				// else console.log(  "couldn't find instrument named " + phoneName  );
+				// break;
+				
+				//set it's value
 				if(p)	{
 
 					//kill existing tween
@@ -607,17 +647,20 @@ function ProjectionVisuals( options ) {
 				break;
 
 			// case '/drums_toggle_1':
-			case '/drums_button_2':
-			case '/drums_button_3':
-			case '/drums_button_4':
+			case '/drums_keyboard_1':
+			case '/drums_keyboard_2':
+			case '/drums_keyboard_3':
+			case '/drums_keyboard_4':
 
-				//get the object
-				var p = oscMap[phoneName];
-
-				//set it's value
-				// p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+				// get the object
+				var p = oscMap[phoneName].keys[ data.note ];
 
 				//	set it's value
+				// if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				// else console.log(  "couldn't find instrument named " + phoneName  );
+				// break;
+				
+				//set it's value
 				if(p)	{
 
 					//kill existing tween
@@ -626,15 +669,15 @@ function ProjectionVisuals( options ) {
 						TWEEN.remove( p.tween );
 					}
 
-					if( data.press == 1 ) {
+					if( data.on > 0 ) {
 
-						// p.m.material.uniforms.fade.value = 1.;
-						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+						// p.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
 							.to({value: 1}, 50)
 							.start()
 
 					} else {
-						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
 							.to({value: 0}, 150)
 							.start()
 					}
@@ -644,6 +687,16 @@ function ProjectionVisuals( options ) {
 				else {
 					console.log(  "couldn't find instrument named " + phoneName  );
 				}
+
+				break;
+
+			case '/keys_button_1':
+
+				//get the object
+				var p = oscMap[phoneName];
+
+				//set it's value
+				p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
 
 				break;
 

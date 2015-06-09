@@ -11,6 +11,7 @@ class PhoneSlot {
     pos.x = width * x;
     pos.y = qheight;
     myColor = c;
+    on = false;
   }
 
   void update(int deltaTime) {
