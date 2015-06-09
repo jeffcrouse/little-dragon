@@ -8,7 +8,7 @@ var teoria = require('teoria');
 var oscClient = require("./oscClient");
 //var leds = require("./leds")
 
-var song = "1";
+var song = "2";
 var songs = {
 	"1": {	
 		"name":"pink cloud", 
@@ -277,7 +277,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		}
 
 		else if(addr=="/bass_tilt_1") {
-			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
+			var pan = Math.map(data.x, 0, 0.2, 127, 0, true); 
 
 			midiMessage = [MIDI.CH2.CONTROL, 5, pan];
 			output.sendMessage(midiMessage);
@@ -331,12 +331,14 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
 		else if(contains(addr, '/drums')){
 			var drum = addr.charAt(addr.length - 1);
-			
+			console.log("drum: " + drum);
+
 			if(drum == 0){//record button
-				if(data.press==1){ // button down
+				if(data.value==1){ // button down
+					console.log("record");
 					if(!recording){
 					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
-						// console.log("RECORD");
+						console.log("RECORD");
 						//send ARM track
 						output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 
@@ -352,8 +354,9 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 						recording = true;
 					// }
 					}
-					else if(recording){
-						// console.log("STOP");
+				}
+				else if(recording){
+						console.log("STOP");
 						// STOP session recording
 						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
 						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
@@ -365,7 +368,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 						//un-arm track
 						output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 						recording = false;
-					}
 				}
 			}
 			else{ //actual triggers
@@ -377,7 +379,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					if(drum == '1'){//live sample triggers
 						// console.log("drum " + drum);
 					   if(keyPos == 0) 
-							pitchShift = 10;
+							pitchShift = 20;
 						if(keyPos == 1) 
 							pitchShift = 40;
 						if(keyPos == 2) 
@@ -431,7 +433,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 						}
 						
 						var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
-						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+						output.sendMessage([MIDI.CH3.NOTEON, note, 127]);
 					}
 					
 				}
