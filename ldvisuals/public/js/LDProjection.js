@@ -72,22 +72,7 @@ var LDProjectionKeyMaterial = function( params ) {
 
 		'	vec3 c = mix( fade_color, color, (1. - smootherstep( abs( vUv.y ) ) * .9) * fade);',
 
-		// '	vec3 c = mix( fade_color, color * min( pow(sin( vUv.y * 3.14), 2.) + .25, 1.), fade);',
-
 		'	gl_FragColor = vec4( c, opacity );',
-
-		// '	float grad = 1.;',
-
-		// '	if(vUv.x < start)	grad = mapLinear( vUv.x, start-fadeDistance, start, 0., 1. );',
-
-		// '	else if(vUv.x > stop)	grad = mapLinear( vUv.x, stop, stop+fadeDistance, 1., 0. );',
-
-
-		// // '	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
-
-		// '	grad = smootherstep( pow( max(0., grad), 1.5 ) );',
-
-		// '	gl_FragColor = vec4( vec3( grad ), 1. );',
 
 		'}'
 		].join('\n')
@@ -174,6 +159,28 @@ function ProjectionVisuals( options ) {
 		camera = new THREE.OrthographicCamera( HALF_WIDTH, -HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
 	}
+
+	var cameraZoom = 1, minZoom = .1, maxZoom = 1;
+
+	function setCameraZoom( zoom ) {
+		cameraZoom = clamp( zoom, minZoom, maxZoom );
+
+		console.log( 'cameraZoom', cameraZoom, camera );
+
+		camera.left = -HALF_WIDTH * cameraZoom;
+		camera.right = HALF_WIDTH * cameraZoom;
+		camera.top = HALF_HEIGHT * cameraZoom;
+		camera.bottom = -HALF_HEIGHT * cameraZoom;
+
+
+		// if( PROJECTOR_NUM === 1) {
+		// 	camera.left = HALF_WIDTH * cameraZoom;
+		// 	camera.right = -HALF_WIDTH * cameraZoom;
+		// } 
+
+		camera.updateProjectionMatrix();
+		
+	}
 	
 	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
 	// camera.position.z = -100;
@@ -215,6 +222,24 @@ function ProjectionVisuals( options ) {
 		debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
 	});
 
+	var distortionMaps = {}, distortionMapPaths = [ 'blur.jpg', 'circles.png', 'face.png', 'noiseDark.png', 'lines.gif', 'noise.jpg' ];
+
+	for(var i=0; i<distortionMapPaths.length; i++) {
+		textureLoader.load( "textures/distortionMaps/" + distortionMapPaths[i], function ( t, data ) {
+
+			// t.minFilter = THREE.LinearFilter;
+			// debugImage = t;
+			// t.wrapS = THREE.MirroredRepeatWrapping;  
+			t.wrapT = THREE.MirroredRepeatWrapping;  
+
+			var name = t.image.currentSrc.split('/');
+			name = name[name.length - 1];
+
+			distortionMaps[name] = t;
+		});
+	}
+
+
 	// OBJECTS
 	var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var baseColor = 0x111455;
@@ -223,7 +248,7 @@ function ProjectionVisuals( options ) {
 
 	var oscMap = {};
 
-	var bRandomTriggers = false;
+	var bRandomTriggers = getQueryVariable( "randomPattern" );
 
 	// Keys
 	// keys1: Controls - multislider( 4 sliders )
@@ -787,6 +812,8 @@ function ProjectionVisuals( options ) {
 
 	function setup() {
 
+		linesMat.uniforms.distortionMap.value = distortionMaps["blur.jpg"];
+
 		//	LINES
 		linesGeometry = getLineGeometry();
 
@@ -1073,6 +1100,30 @@ function ProjectionVisuals( options ) {
 
 		getGroupRotationZ: function() {
 			return group.rotation.z;
+		},
+
+		getCameraZoom: function(){
+			return cameraZoom;
+		},
+
+		setCameraZoom: setCameraZoom,
+
+		setDistortionMap: function( mapName ) {
+
+		},
+
+		getDistortionMaps: function(){
+			return distortionMaps
+		},
+
+		setDistortionMap: function( index ){
+			var count = 0;
+			for(var i in distortionMaps) {
+				if(count == index){
+					linesMat.uniforms.distortionMap.value = distortionMaps[i];
+				}
+				count ++;
+			}
 		}
 
 	}
