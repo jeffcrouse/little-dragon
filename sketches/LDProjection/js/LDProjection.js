@@ -539,8 +539,32 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//set it's value
-				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
-				else console.log(  "couldn't find instrument named " + phoneName  );
+				if(p)	{
+
+					//kill existing tween
+					if(p.tween) {
+						p.tween.stop();
+						TWEEN.remove( p.tween );
+					}
+
+					if( data.on > 0 ) {
+
+						// p.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 1}, 50)
+							.start()
+
+					} else {
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 0}, 150)
+							.start()
+					}
+
+					
+				}
+				else {
+					console.log(  "couldn't find instrument named " + phoneName  );
+				}
 
 				break;
 			
@@ -553,8 +577,32 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//	set it's value
-				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
-				else console.log(  "couldn't find instrument named " + phoneName  );
+				if(p)	{
+
+					//kill existing tween
+					if(p.tween) {
+						p.tween.stop();
+						TWEEN.remove( p.tween );
+					}
+
+					if( data.on > 0 ) {
+
+						// p.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 1}, 50)
+							.start()
+
+					} else {
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
+							.to({value: 0}, 150)
+							.start()
+					}
+
+					
+				}
+				else {
+					console.log(  "couldn't find instrument named " + phoneName  );
+				}
 
 				break;
 
@@ -567,7 +615,35 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName];
 
 				//set it's value
-				p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+				// p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+
+				//	set it's value
+				if(p)	{
+
+					//kill existing tween
+					if(p.tween) {
+						p.tween.stop();
+						TWEEN.remove( p.tween );
+					}
+
+					if( data.press == 1 ) {
+
+						// p.m.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+							.to({value: 1}, 50)
+							.start()
+
+					} else {
+						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+							.to({value: 0}, 150)
+							.start()
+					}
+
+					
+				}
+				else {
+					console.log(  "couldn't find instrument named " + phoneName  );
+				}
 
 				break;
 
