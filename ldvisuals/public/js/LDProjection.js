@@ -211,7 +211,7 @@ function ProjectionVisuals( options ) {
 
 	var oscMap = {};
 
-	var bRandomTriggers = false;
+	var bRandomTriggers = true;
 
 	// Keys
 	// keys1: Controls - multislider( 4 sliders )
