@@ -286,9 +286,11 @@ function ProjectionVisuals( options ) {
 			key_index++;
 
 
+			//debugging
 			if(bRandomTriggers) {
+
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 30, 150 ) )
+					.to( {value: 1}, randf( 100, 250 ) )
 					.repeat( 100 )
 					.delay( randf( 250, 1000) )
 					.yoyo( true )
@@ -296,6 +298,7 @@ function ProjectionVisuals( options ) {
 						this.scale.z = 1. + this.material.uniforms.fade.value;
 					}.bind( m ))
 					.start();
+					
 			}
 
 		}
@@ -381,6 +384,18 @@ function ProjectionVisuals( options ) {
 
 			m.material.uniforms.fade.value = 0;
 
+			m.scale.x = keyWidthScale;
+
+			m.position.x = bass_index + .5;
+
+			bass[i].keys[j] = m;
+
+			bass[i].group.add( m );
+
+			bass_index++;
+
+
+			//debugging
 			if(bRandomTriggers) {
 
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
@@ -394,16 +409,6 @@ function ProjectionVisuals( options ) {
 					.start();
 					
 			}
-
-			m.scale.x = keyWidthScale;
-
-			m.position.x = bass_index + .5;
-
-			bass[i].keys[j] = m;
-
-			bass[i].group.add( m );
-
-			bass_index++;
 		}
 
 	}
@@ -480,6 +485,17 @@ function ProjectionVisuals( options ) {
 
 			m.material.uniforms.fade.value = 0;
 
+			m.scale.x = keyWidthScale;
+
+			m.position.x = drum_index + .5;
+
+			drums[i].keys[j] = m;
+
+			drums[i].group.add( m );
+
+			drum_index++;
+
+			//debugging
 			if(bRandomTriggers) {
 
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
@@ -493,16 +509,6 @@ function ProjectionVisuals( options ) {
 					.start();
 					
 			}
-
-			m.scale.x = keyWidthScale;
-
-			m.position.x = drum_index + .5;
-
-			drums[i].keys[j] = m;
-
-			drums[i].group.add( m );
-
-			drum_index++;
 		}
 
 	}
