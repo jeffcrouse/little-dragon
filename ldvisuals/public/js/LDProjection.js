@@ -1,4 +1,16 @@
 
+/**
+ * NICE PRESETS:
+
+ &lineLength=128.25215918712954&lineWidth=8.510922946655377&lineOpacity=0.270956816257409&spacing=10&rotation=8.171865056585812&noiseScale=0.0075&noiseAmount=3.0347163420829806&timeScale=-3.48264182895851
+
+ &lineLength=7.470448772226926&lineWidth=3.1459779847586793&lineOpacity=1&spacing=10&rotation=8.171865056585812&noiseScale=0.0075&noiseAmount=3.0347163420829806&timeScale=-1.6401354784081286
+
+ &lineLength=39.822692633361555&lineWidth=34.262658763759525&lineOpacity=0.15173581710414902&spacing=10&rotation=0.6809887547154844&noiseScale=0.005707722269263337&noiseAmount=3.5549534292972056&timeScale=-0.881456392887384
+
+ */
+
+
 
 var LDProjectionKeyMaterial = function( params ) {
 
@@ -211,7 +223,7 @@ function ProjectionVisuals( options ) {
 
 	var oscMap = {};
 
-	var bRandomTriggers = true;
+	var bRandomTriggers = false;
 
 	// Keys
 	// keys1: Controls - multislider( 4 sliders )
@@ -291,7 +303,7 @@ function ProjectionVisuals( options ) {
 
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
 					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 100 )
+					.repeat( 1000 )
 					.delay( randf( 250, 1000) )
 					.yoyo( true )
 					.onUpdate( function( value ) {
@@ -400,7 +412,7 @@ function ProjectionVisuals( options ) {
 
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
 					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 100 )
+					.repeat( 1000 )
 					.delay( randf( 250, 1000) )
 					.yoyo( true )
 					.onUpdate( function( value ) {
@@ -500,7 +512,7 @@ function ProjectionVisuals( options ) {
 
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
 					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 100 )
+					.repeat( 1000 )
 					.delay( randf( 250, 1000) )
 					.yoyo( true )
 					.onUpdate( function( value ) {
