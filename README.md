@@ -4,6 +4,7 @@ Software for the Little Dragon performance at the New Museum
 
 
 # OSC messages
+
 ## Keys
 
 1. /keys_range_1 
@@ -13,14 +14,17 @@ Software for the Little Dragon performance at the New Museum
 1. /keys_keyboard_2 
 	- {"on":0,"note":50,"midi":"50 0"}
 	- {"on":64,"note":50,"midi":"50 1"}
+	- 7 keys, note range 48->54
 1. /keys_keyboard_3 
 	- {"on":74,"note":52,"midi":"52 1"}
 	- {"on":0,"note":52,"midi":"52 0"}
+	- 7 keys, note range 48->54
 1. /keys_button_1
 	- {"press":1}
 	- {"press":0}
 1. /keys_tilt_1
 	- {"x":-0.007,"y":0.107,"z":217.27}
+	- y range only - 0.5 (resting) to 0 (fully tilted)
 
 ## Bass
 1. /bass_multislider_1
@@ -28,18 +32,23 @@ Software for the Little Dragon performance at the New Museum
 1. /bass_keyboard_1
 	- {"on":74,"note":50,"midi":"50 1"}
 	- {"on":0,"note":50,"midi":"50 0"}
+	- 3 notes 48->50
 1. /bass_keyboard_2
 	- {"on":42,"note":48,"midi":"48 1"}
 	- {"on":0,"note":48,"midi":"48 0"}
+	- 4 notes 48->51
 1. /bass_keyboard_3
 	- {"on":58,"note":48,"midi":"48 1"}
 	- {"on":0,"note":49,"midi":"49 0"}
+	- 3 notes 48->50
 1. /bass_keyboard_4
 	- {"on":85,"note":49,"midi":"49 1"}
 	- {"on":0,"note":49,"midi":"49 0"}
+	- 4 keys 48->51
 1. /bass_tilt_1
 	- {"x":0.008,"y":-0.017,"z":219.049}
-	
+	- y range only - 0.5 (resting) to 0 (fully tilted)
+		
 ## Drums
 1. /drums_toggle_1
 	- {"value":1}
@@ -57,4 +66,5 @@ Software for the Little Dragon performance at the New Museum
 	- {"7":0.501,"list":{"0":0.7,"1":0.532,"2":0.521,"3":0.499,"4":0.485,"5":0.471,"6":0.448,"7":0.501,"8":0.518,"9":0.555,"10":0.58,"11":0.634,"12":0.688,"13":0.751,"14":0.7}}
 1. /drums_tilt_1
 	- {"x":0.082,"y":0.187,"z":207.468}
+	- y range only - 0.5 (resting) to 0 (fully tilted)
 

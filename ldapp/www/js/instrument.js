@@ -7,7 +7,7 @@ var oscListener = null;					// Receive OSC from the server
 var myIP = null;
 var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
-
+var tilt_throttle_dist = 0.3;
 
 
 
@@ -143,13 +143,12 @@ nx.onload = function() {
 			}
 
 			var last_data = null;
-			var min_dist = 0.3;
 			var throttle = function(data) {	
 				if(last_data==null) {
 					last_data = data;
 					return true;
 				}
-				if(dist(data, last_data) < min_dist)
+				if(dist(data, last_data) < tilt_throttle_dist)
 					return false;
 
 				last_data = data;
@@ -314,7 +313,6 @@ nx.onload = function() {
 			control.throttlePeriod = 50;
 			control.text = "pan";
 
-
 			ldInterface = TouchLines({
 			  MIN_ANGLE: -20,
 			  MAX_ANGLE: 20,
@@ -458,23 +456,48 @@ nx.onload = function() {
 		
 		case "drums6":
 		case "pre-drums6":
+
 			if(screen.lockOrientation)	screen.lockOrientation('portrait');
 
-		    var control = createControl(instrumentName, "tilt", 1);
-		    control.text = "something";
-		    break;
+			var dist = function (v1, v2) {
+				var dx = v1.x - v2.x;
+				var dy = v1.y - v2.y;
+				var dz = v1.z - v2.z;
+				return Math.sqrt(dx*dx+dy*dy+dz*dz);
+			}
+
+			var last_data = null;
+			
+			var throttle = function(data) {	
+				if(last_data==null) {
+					last_data = data;
+					return true;
+				}
+				if(dist(data, last_data) < tilt_throttle_dist)
+					return false;
+
+				last_data = data;
+				return true;
+			}
+
+			var options = {h: "1280px", w: "720px", throttle: throttle};
+			var control = createControl(instrumentName, "tilt", 1, options);
+			control.throttlePeriod = 50;
+			control.text = "reverb";
 
 
-		    ldInterface = TouchLines({
+			ldInterface = TouchLines({
 			  MIN_ANGLE: -20,
 			  MAX_ANGLE: 20,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+			  controller: control,
+			  colorRampPath: "textures/drums/drum-6.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
+
 		    break;
 
 
