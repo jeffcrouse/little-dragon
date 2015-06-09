@@ -8,7 +8,7 @@ var teoria = require('teoria');
 var oscClient = require("./oscClient");
 //var leds = require("./leds")
 
-var song = "3";
+var song = "5";
 var songs = {
 	"1": {	
 		"name":"pink cloud", 
@@ -33,7 +33,7 @@ var songs = {
 	}, 
 	"2": {
 		"name":"summertearz", 
-		"scaleBass": teoria.note("d").scale("major").notes(),
+		"scaleBass": teoria.note("f").scale("major").notes(),
 		// "scaleBass": [
 		// 				teoria.note("g"),
 		// 				teoria.note("a"),
@@ -199,6 +199,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var pitchFine = data.list["3"] * FULL_VELOCITY;
 			var crossfade = data.list["4"] * FULL_VELOCITY;
 
+			// console.log(data.list["3"]);
+
 			output.sendMessage([MIDI.CH1.CONTROL, 1, spray]);
 			output.sendMessage([MIDI.CH1.CONTROL, 2, decay]);
 			output.sendMessage([MIDI.CH1.CONTROL, 3, pitchCoarse]);
@@ -316,6 +318,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		else if(addr.substring(0,15)=="/bass_keyboard_"){
 			var velocity = data.on;
 
+
 			var keyboardNumber = addr.substring(15, 16); //phone 1, phone 2, phone 3, phone 4?
 			var scalePos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
 			var midiNote;
@@ -342,7 +345,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					// note.octave = 2;
 					break;
 			}
-			
+			// console.log(midiNote);
 			sendNote(midiNote, velocity, MIDI.CH2);
 		}
 
@@ -745,9 +748,9 @@ stdin.on( 'data', function( key ){
 	
 	//multipurpose
 	if(key=='='){
-		// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
-		output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
-		// output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//OFF
+		
+		// output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
+		output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//OFF
 	}
 
 	//PROGRAM KEYS
