@@ -116,11 +116,11 @@ void oscEvent(OscMessage theOscMessage) {
   String addr = theOscMessage.addrPattern();
   String data = theOscMessage.get(0).toString();
   JSONObject json = JSONObject.parse(data);
-  //  println(addr);
+  println(addr);
   //  println(data);
 
   if (addr.equals("/bass_multislider_1")) {
-    slots[0].on = json.getInt("on")>1;
+    slots[0].blink();
   } else if (addr.equals("/bass_keyboard_1")) {
     slots[1].on = json.getInt("on")>1;
   } else if (addr.equals("/bass_keyboard_2")) {
@@ -146,15 +146,15 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/keys_tilt_1")) {
     slots[12].blink();
   } else if (addr.equals("/drums_button_1")) {
-    slots[13].on = json.getInt("press", -1)==1;
+    slots[12].on = json.getInt("press", -1)==1;
   } else if (addr.equals("/drums_button_2")) {
+    slots[13].on = json.getInt("press", -1)==1;
+  } else if(addr.equals("/drums_button_3")) {
     slots[14].on = json.getInt("press", -1)==1;
-  } else if (addr.equals("/drums_button_3")) {
-    slots[15].on = json.getInt("press", -1)==1;
   } else if (addr.equals("/drums_button_4")) {
-    slots[16].on = json.getInt("press", -1)==1;
-  } else if (addr.equals("/drums_button_5")) {
-    slots[17].on = json.getInt("press", -1)==1;
+    slots[15].on = json.getInt("press", -1)==1;
+  } else if (addr.equals("/drums_multislider_1")) {
+    slots[16].blink();
   }
 
   /* get and print the address pattern and the typetag of the received OscMessage */
