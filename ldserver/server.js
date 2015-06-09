@@ -143,8 +143,11 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 		if(addr=="/keys_button_1"){
 			if(data.press == 1){
-				output.sendMessage([MIDI.CH1.NOTEON, 119, 10]);
-				output.sendMessage([MIDI.CH1.NOTEOFF, 119, 0]);
+				output.sendMessage([MIDI.CH1.CONTROL, 119, 127]);
+			}
+			else if(data.press ==0){
+				output.sendMessage([MIDI.CH1.CONTROL, 119, 0]);
+				// output.sendMessage([MIDI.CH1.NOTEOFF, 119, 0]);
 			}
 		}
 

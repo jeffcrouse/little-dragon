@@ -56,7 +56,7 @@ nx.onload = function() {
 		case "keys2":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
-			var control = createControl(instrumentName, "multislider", 5);
+			var control = createControl(instrumentName, "multislider", 1);
 			control.setNumberOfSliders(5);
 
 			ldInterface = TouchLines({
@@ -385,74 +385,85 @@ nx.onload = function() {
 	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 2);
-		    // control.mode = "node";
+		    var control = createControl(instrumentName, "keyboard", 1);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w','w','w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-			  widthOverride: 1280,
-			  heightOverride: 720,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-2.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 		    break;
 
 		case "drums3":
 		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 3);
-		    // control.mode = "node";
+			var control = createControl(instrumentName, "keyboard", 2);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-			  widthOverride: 1280,
-			  heightOverride: 720,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-3.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
+
 		    break;
 
 		case "drums4":
 		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 4);
-		    // control.mode = "node";
+		    var control = createControl(instrumentName, "keyboard", 3);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-			  widthOverride: 1280,
-			  heightOverride: 720,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 		    break;
 
 
 		case "drums5":
 		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
-		    var control = createControl(instrumentName, "multislider", 1);
-		    // control.mode = "node";
+		    var control = createControl(instrumentName, "keyboard", 4);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 		    
 		    break;
 		
