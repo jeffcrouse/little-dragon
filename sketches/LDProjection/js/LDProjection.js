@@ -206,6 +206,13 @@ function ProjectionVisuals( options ) {
 	// OBJECTS
 	var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var baseColor = 0x111455;
+
+	var keyWidthScale = 1.;
+
+	var oscMap = {};
+
+	var bRandomTriggers = false;
+
 	// Keys
 	// keys1: Controls - multislider( 4 sliders )
 	// keys2: Interface_1 - keys( 7 keys )
@@ -216,37 +223,40 @@ function ProjectionVisuals( options ) {
 	
 	var keyboards = {
 
-		Interface_1: {
+		'/keys_keyboard_2': {
 			color: 0xD5F7FA,
 			count: 7,
-			keys: [],
-			group: new THREE.Group()
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		Interface_2: {
+		'/keys_keyboard_3': {
 			color: 0xC1F4F9,
 			count: 7,
-			keys: [],
-			group: new THREE.Group()
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		Interface_3: {
-			color: 0xB0F2FA,
-			count: 7,
-			keys: [],
-			group: new THREE.Group()
-		},
+		// Interface_3: {
+		// 	color: 0xB0F2FA,
+		// 	count: 7,
+		// 	keys: [],
+		// 	group: new THREE.Group()
+		// },
 
-		Interface_4: {
-			color: 0x9CF1FA,
-			count: 7,
-			keys: [],
-			group: new THREE.Group()
-		},
+		// Interface_4: {
+		// 	color: 0x9CF1FA,
+		// 	count: 7,
+		// 	keys: [],
+		// 	group: new THREE.Group()
+		// },
 
 	}
 
-	console.log( 'keyboards', keyboards );
+
+
 	
 	var keysGroup = new THREE.Group();
 
@@ -257,31 +267,37 @@ function ProjectionVisuals( options ) {
 
 		keysGroup.add( keyboards[i].group );
 
-		for(var j=0; j<keyboards[i].count; j++ ) {
+		for(var j=keyboards[i].firstNote; j<keyboards[i].firstNote + keyboards[i].count; j++ ) {
 
 			var m = new THREE.Mesh( boxGeometry, new LDProjectionKeyMaterial( {
 				color: keyboards[i].color 
 			} ) );
 
-			m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-				.to( {value: 1}, randf( 30, 150 ) )
-				.repeat( 100 )
-				.delay( randf( 250, 1000) )
-				.yoyo( true )
-				.onUpdate( function( value ) {
-					this.scale.z = 1. + this.material.uniforms.fade.value;
-				}.bind( m ))
-				.start();
+			m.material.uniforms.fade.value = 0;
 
-			m.scale.x = .9;
+			m.scale.x = keyWidthScale;
 
 			m.position.x = key_index + .5;
 
-			keyboards[i].keys.push( m );
+			keyboards[i].keys[j] = m;
 
 			keyboards[i].group.add( m );
 
 			key_index++;
+
+
+			if(bRandomTriggers) {
+				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+					.to( {value: 1}, randf( 30, 150 ) )
+					.repeat( 100 )
+					.delay( randf( 250, 1000) )
+					.yoyo( true )
+					.onUpdate( function( value ) {
+						this.scale.z = 1. + this.material.uniforms.fade.value;
+					}.bind( m ))
+					.start();
+			}
+
 		}
 
 	}
@@ -294,6 +310,9 @@ function ProjectionVisuals( options ) {
 	keysGroup.scale.y = HEIGHT * 2 / 3;
 	keysGroup.scale.z = HEIGHT * .5;
 
+	//keep them in the larger osc map
+	for(var i in keyboards)	oscMap[i] = keyboards[i];
+
 	// Bass
 	// bass1: Controls - multislider( 4 sliders )
 	// bass2: Interface_1 - keys( 4 keys )
@@ -302,34 +321,47 @@ function ProjectionVisuals( options ) {
 	// bass5: Interface_4 - keys( 3 keys )
 	// bass6: Tilt - tilt
 	
+	
+	
+	
+	
+	
+	
+	
+
+
 	var bass = {
 
-		Interface_1: {
+		"/bass_keyboard_1": {
 			color: 0x2BFCB7,
-			count: 4,
-			keys: [],
-			group: new THREE.Group()
+			count: 3,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		Interface_2: {
+		"/bass_keyboard_2": {
 			color: 0x2BFECA,
-			count: 3,
-			keys: [],
-			group: new THREE.Group()
-		},
-
-		Interface_3: {
-			color: 0x2CFEDD,
 			count: 4,
-			keys: [],
-			group: new THREE.Group()
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		Interface_4: {
-			color: 0x2DFFFE,
+		"/bass_keyboard_3": {
+			color: 0x2CFEDD,
 			count: 3,
-			keys: [],
-			group: new THREE.Group()
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
+		},
+
+		"/bass_keyboard_4": {
+			color: 0x2DFFFE,
+			count: 4,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 	}
 
@@ -341,28 +373,33 @@ function ProjectionVisuals( options ) {
 
 		bassGroup.add( bass[i].group );
 
-		for(var j=0; j<bass[i].count; j++ ) {
+		for(var j=bass[i].firstNote; j<bass[i].firstNote + bass[i].count; j++ ) {
 
 			var m = new THREE.Mesh( boxGeometry, new LDProjectionKeyMaterial( {
 				color: bass[i].color 
 			} ) );
 
+			m.material.uniforms.fade.value = 0;
 
-			m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-				.to( {value: 1}, randf( 100, 250 ) )
-				.repeat( 100 )
-				.delay( randf( 250, 1000) )
-				.yoyo( true )
-				.onUpdate( function( value ) {
-					this.scale.z = 1. + this.material.uniforms.fade.value;
-				}.bind( m ))
-				.start();
+			if(bRandomTriggers) {
 
-			m.scale.x = .9;
+				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 100 )
+					.delay( randf( 250, 1000) )
+					.yoyo( true )
+					.onUpdate( function( value ) {
+						this.scale.z = 1. + this.material.uniforms.fade.value;
+					}.bind( m ))
+					.start();
+					
+			}
+
+			m.scale.x = keyWidthScale;
 
 			m.position.x = bass_index + .5;
 
-			bass[i].keys.push( m );
+			bass[i].keys[j] = m;
 
 			bass[i].group.add( m );
 
@@ -375,8 +412,10 @@ function ProjectionVisuals( options ) {
 	bassGroup.position.x -= HALF_WIDTH;
 
 	bassGroup.scale.x = WIDTH / bass_index;
-	bassGroup.scale.y = HEIGHT;// / 3;
+	bassGroup.scale.y = HEIGHT ;// / 3;
 	bassGroup.scale.z = HEIGHT * .5;
+
+	for(var i in bass)	oscMap[i] = bass[i];
 
 	// Drums
 	// drums1: Interface_1 - toggle
@@ -385,34 +424,31 @@ function ProjectionVisuals( options ) {
 	// drums4: Interface_4 - button
 	// drums5: Controls - mulitslider ( 15 sliders )
 	// drums6: Tilt - tilt
-	// 
+
+
 	var drums = {
 
-		Interface_1: {
-			color: 0xF70D1B,
-			count: 1,
-			keys: [],
-			group: new THREE.Group()
-		},
+		// "/drums_toggle_1": {
+		// 	color: 0xF71B24,
+		// 	m: undefined,
+		// 	group: new THREE.Group()
+		// },
 
-		Interface_2: {
+		"/drums_button_2": {
 			color: 0xF71B24,
-			count: 1,
-			keys: [],
+			m: undefined,
 			group: new THREE.Group()
 		},
 
-		Interface_3: {
+		"/drums_button_3": {
 			color: 0xF72C32,
-			count: 1,
-			keys: [],
+			m: undefined,
 			group: new THREE.Group()
 		},
 
-		Interface_4: {
+		"/drums_button_4": {
 			color: 0xF73E42,
-			count: 1,
-			keys: [],
+			m: "undefined",
 			group: new THREE.Group()
 		},
 	}
@@ -425,16 +461,20 @@ function ProjectionVisuals( options ) {
 
 		drumGroup.add( drums[i].group );
 
-		for(var j=0; j<drums[i].count; j++ ) {
+		// for(var j=0; j<drums[i].count; j++ ) {
 
 			var m = new THREE.Mesh( boxGeometry, new LDProjectionKeyMaterial( {
 				color: drums[i].color 
 			} ) );
 
-			m.scale.x = .9;
+			m.scale.x = keyWidthScale;
 
 			m.position.x = drum_index + .5;
 
+			m.material.uniforms.fade.value = 0;
+
+
+			if(bRandomTriggers) {
 			m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
 				.to( {value: 1}, (drum_index + 1) * 50 )
 				.repeat( 100 )
@@ -443,20 +483,19 @@ function ProjectionVisuals( options ) {
 				.onUpdate( function( value ) {
 					this.scale.z = 1. + this.material.uniforms.fade.value;
 				}.bind( m ))
-
 				.start();
+			}
 
-			drums[i].keys.push( m );
+			drums[i].m = m;
 
 			drums[i].group.add( m );
 
 			drum_index++;
-		}
-
+		// }
 
 	}
 
-	//	transform the keys as a whole
+	//	transform the keys as a whole for secret reasons
 	drumGroup.position.x -= HALF_WIDTH;
 	drumGroup.position.y += HEIGHT / 3;
 
@@ -464,22 +503,84 @@ function ProjectionVisuals( options ) {
 	drumGroup.scale.y = HEIGHT * 2 / 3;
 	drumGroup.scale.z = HEIGHT * .5;
 
+
+	for(var i in drums)	oscMap[i] = drums[i];
+
 	group.scale.y = -1;
 
 	rtScene.add( group );
 
+	console.log( 'oscMap', oscMap );
 
-	// Vocals
-	// voicefx: FX
+	/**
+	 * handle incoming osc messages
+	 * @param  {string} phoneName [description]
+	 * @param  {object} data      {[description]}
+	 */
+	function handleOSC( phoneName, data ) {
 
-	// Pre_Sampled Drums
-	// pre_drums1: Trigger_1
-	// pre_drums2: Trigger_2
-	// pre_drums3: Trigger_3
-	// pre_drums4: Trigger_4
-	// pre_drums5: Trigger_5
-	// pre_drums6: Tilt
+		data = data || {};
 
+
+		// if(p === undefined) {
+
+		// 	console.log( "couldn't find instrument named " + phoneName );
+
+		// 	return;
+
+		// }
+
+		switch ( phoneName ) {
+
+			case '/keys_keyboard_2':
+			case '/keys_keyboard_3':
+
+				//get the object
+				var p = oscMap[phoneName].keys[ data.note ]
+
+				//set it's value
+				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				else console.log(  "couldn't find instrument named " + phoneName  );
+
+				break;
+			
+			case '/bass_keyboard_1':
+			case '/bass_keyboard_2':
+			case '/bass_keyboard_3':
+			case '/bass_keyboard_4':
+
+				// get the object
+				var p = oscMap[phoneName].keys[ data.note ]
+
+				//	set it's value
+				if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				else console.log(  "couldn't find instrument named " + phoneName  );
+
+				break;
+
+			// case '/drums_toggle_1':
+			case '/drums_button_2':
+			case '/drums_button_3':
+			case '/drums_button_4':
+
+				//get the object
+				var p = oscMap[phoneName];
+
+				//set it's value
+				p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * [getLineGeometry description]
+	 * @param  {[type]} g [description]
+	 * @return {[type]}   [description]
+	 */
 	function getLineGeometry( g ) {
 
 		if( g === undefined )	g = new THREE.BufferGeometry();
@@ -578,7 +679,7 @@ function ProjectionVisuals( options ) {
 
 		var elapsedTime = clock.getElapsedTime();
 
-		if(linesMat)	linesMat.uniforms.time.value += timeScale / 60;
+		linesMat.uniforms.time.value += timeScale / 60;
 
 		// group.rotation.y += Math.pow(Math.abs(sin( elapsedTime )), 2 ) * .01;
 
@@ -589,6 +690,8 @@ function ProjectionVisuals( options ) {
 		renderer.render( rtScene, camera, rt, true );
 
 		renderer.render( scene, camera, null, true );
+		
+		// renderer.render( rtScene, camera, null, true );
 
 	}
 
@@ -727,23 +830,16 @@ function ProjectionVisuals( options ) {
 		animate();
 	}
 
-	var key_map = { 113 : "q", 119 : "w", 101 : "e", 114 : "r", 116 : "t", 121 : "y", 97 : "a", 115 : "s", 100 : "d", 102 : "f", 103 : "g", 104 : "h", 122 : "z", 120 : "x", 99 : "c", 118 : "v", 98 : "b", 110 : "n" };
-	
+	function onKeypressed( e ) {
 
-	function onKeypressed( e )
-	{
-		switch( e.which )
-		{
+		switch( e.which ) {
+
 			case 112: //'p'
 				logQueryStrings();
 				break;
 
-			// case undefined:
-			// 	console.log( e.which  + " not in key_map.");	
-			// 	break;
-
 			default:
-				console.log(key_map[e.which]);	
+				console.log( e.which );	
 				break;
 		}
 	}
@@ -758,6 +854,8 @@ function ProjectionVisuals( options ) {
 		begin: begin,
 
 		container: container,
+
+		handleOSC: handleOSC,
 
 		setLineWidth: function( value ) {
 			linesMat.uniforms.lineWidth.value = lineWidth = value;
