@@ -409,10 +409,18 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 								break;
 							case '4':
 								if(keyPos == 0) 
-									note = 40;
-								else 
-									note = 41;
-								
+										note = 40;
+									else 
+										note = 41;
+								if(songs[song].name = "summertearz"){//launch kick
+									if(keyPos == 0){
+										output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);//launch
+									}
+									else if(keyPos == 1){
+										output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//stop
+									}
+								}
+									// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
 								break;
 							case '5':
 								if(keyPos == 0) 
@@ -421,18 +429,13 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 									note = 43;
 								break;
 						}
-
-						output.sendMessage([MIDI.CH3.NOTEON, note, 1]);
+						
 						var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
 						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
 					}
 					
-					
-					
-					
-					
 				}
-				else if(data.press==0){
+				else if(data.on==0){
 					output.sendMessage([MIDI.CH3.NOTEOFF, note, 0]);
 				}
 					
@@ -710,7 +713,9 @@ stdin.on( 'data', function( key ){
 	
 	//multipurpose
 	if(key=='='){
-
+		// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
+		output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
+		// output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//OFF
 	}
 
 	//PROGRAM KEYS
