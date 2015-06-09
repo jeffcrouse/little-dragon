@@ -1,4 +1,16 @@
 
+/**
+ * NICE PRESETS:
+
+ &lineLength=128.25215918712954&lineWidth=8.510922946655377&lineOpacity=0.270956816257409&spacing=10&rotation=8.171865056585812&noiseScale=0.0075&noiseAmount=3.0347163420829806&timeScale=-3.48264182895851
+
+ &lineLength=7.470448772226926&lineWidth=3.1459779847586793&lineOpacity=1&spacing=10&rotation=8.171865056585812&noiseScale=0.0075&noiseAmount=3.0347163420829806&timeScale=-1.6401354784081286
+
+ &lineLength=39.822692633361555&lineWidth=34.262658763759525&lineOpacity=0.15173581710414902&spacing=10&rotation=0.6809887547154844&noiseScale=0.005707722269263337&noiseAmount=3.5549534292972056&timeScale=-0.881456392887384
+
+ */
+
+
 
 var LDProjectionKeyMaterial = function( params ) {
 
@@ -60,22 +72,7 @@ var LDProjectionKeyMaterial = function( params ) {
 
 		'	vec3 c = mix( fade_color, color, (1. - smootherstep( abs( vUv.y ) ) * .9) * fade);',
 
-		// '	vec3 c = mix( fade_color, color * min( pow(sin( vUv.y * 3.14), 2.) + .25, 1.), fade);',
-
 		'	gl_FragColor = vec4( c, opacity );',
-
-		// '	float grad = 1.;',
-
-		// '	if(vUv.x < start)	grad = mapLinear( vUv.x, start-fadeDistance, start, 0., 1. );',
-
-		// '	else if(vUv.x > stop)	grad = mapLinear( vUv.x, stop, stop+fadeDistance, 1., 0. );',
-
-
-		// // '	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
-
-		// '	grad = smootherstep( pow( max(0., grad), 1.5 ) );',
-
-		// '	gl_FragColor = vec4( vec3( grad ), 1. );',
 
 		'}'
 		].join('\n')
@@ -115,8 +112,8 @@ function ProjectionVisuals( options ) {
 
 	var PROJECTOR_NUM = options.num || 1;
 
-	var WIDTH = 1280;// options.width || window.innerWidth;
-	var HEIGHT = 720;//options.height || window.innerHeight;
+	var WIDTH =  options.width || window.innerWidth; // 1280;//
+	var HEIGHT = options.height || window.innerHeight; // 720;//
 	var ASPECT_RATIO = WIDTH / HEIGHT;
 
 	var HALF_WIDTH = WIDTH * .5;
@@ -162,6 +159,45 @@ function ProjectionVisuals( options ) {
 		camera = new THREE.OrthographicCamera( HALF_WIDTH, -HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
 	}
+
+	var cameraZoom = 1, minZoom = .1, maxZoom = 1;
+
+
+	function setCameraPositionX( value ){
+		camera.position.x = value * (1. - cameraZoom);//lerp( value, 0, cameraZoom );
+
+		camera.updateProjectionMatrix();
+	}
+
+	function setCameraPositionY( value ){
+		// camera.position.y = value;
+		camera.position.y = value * (1. - cameraZoom);//lerp( value, 0, cameraZoom );
+
+		camera.updateProjectionMatrix();
+	}
+
+	function setCameraZoom( zoom ) {
+		cameraZoom = clamp( zoom, minZoom, maxZoom );
+
+		camera.left = -HALF_WIDTH * cameraZoom;
+		camera.right = HALF_WIDTH * cameraZoom;
+		camera.top = HALF_HEIGHT * cameraZoom;
+		camera.bottom = -HALF_HEIGHT * cameraZoom;
+
+		setCameraPositionX( camera.position.x );
+		setCameraPositionY( camera.position.y );
+
+
+		// if( PROJECTOR_NUM === 1) {
+		// 	camera.left = HALF_WIDTH * cameraZoom;
+		// 	camera.right = -HALF_WIDTH * cameraZoom;
+		// } 
+
+		camera.updateProjectionMatrix();
+		
+	}
+
+
 	
 	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
 	// camera.position.z = -100;
@@ -203,6 +239,24 @@ function ProjectionVisuals( options ) {
 		debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
 	});
 
+	var distortionMaps = {}, distortionMapPaths = [ 'blur.jpg', 'circles.png', 'face.png', 'noiseDark.png', 'lines.gif', 'noise.jpg' ];
+
+	for(var i=0; i<distortionMapPaths.length; i++) {
+		textureLoader.load( "textures/distortionMaps/" + distortionMapPaths[i], function ( t, data ) {
+
+			// t.minFilter = THREE.LinearFilter;
+			// debugImage = t;
+			// t.wrapS = THREE.MirroredRepeatWrapping;  
+			t.wrapT = THREE.MirroredRepeatWrapping;  
+
+			var name = t.image.currentSrc.split('/');
+			name = name[name.length - 1];
+
+			distortionMaps[name] = t;
+		});
+	}
+
+
 	// OBJECTS
 	var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var baseColor = 0x111455;
@@ -211,7 +265,7 @@ function ProjectionVisuals( options ) {
 
 	var oscMap = {};
 
-	var bRandomTriggers = false;
+	var bRandomTriggers = getQueryVariable( "randomPattern" );
 
 	// Keys
 	// keys1: Controls - multislider( 4 sliders )
@@ -286,16 +340,19 @@ function ProjectionVisuals( options ) {
 			key_index++;
 
 
+			//debugging
 			if(bRandomTriggers) {
+
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 30, 150 ) )
-					.repeat( 100 )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 1000 )
 					.delay( randf( 250, 1000) )
 					.yoyo( true )
 					.onUpdate( function( value ) {
 						this.scale.z = 1. + this.material.uniforms.fade.value;
 					}.bind( m ))
 					.start();
+					
 			}
 
 		}
@@ -381,20 +438,6 @@ function ProjectionVisuals( options ) {
 
 			m.material.uniforms.fade.value = 0;
 
-			if(bRandomTriggers) {
-
-				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 100 )
-					.delay( randf( 250, 1000) )
-					.yoyo( true )
-					.onUpdate( function( value ) {
-						this.scale.z = 1. + this.material.uniforms.fade.value;
-					}.bind( m ))
-					.start();
-					
-			}
-
 			m.scale.x = keyWidthScale;
 
 			m.position.x = bass_index + .5;
@@ -404,6 +447,22 @@ function ProjectionVisuals( options ) {
 			bass[i].group.add( m );
 
 			bass_index++;
+
+
+			//debugging
+			if(bRandomTriggers) {
+
+				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 1000 )
+					.delay( randf( 250, 1000) )
+					.yoyo( true )
+					.onUpdate( function( value ) {
+						this.scale.z = 1. + this.material.uniforms.fade.value;
+					}.bind( m ))
+					.start();
+					
+			}
 		}
 
 	}
@@ -418,40 +477,51 @@ function ProjectionVisuals( options ) {
 	for(var i in bass)	oscMap[i] = bass[i];
 
 	// Drums
-	// drums1: Interface_1 - toggle
-	// drums2: Interface_2 - button
-	// drums3: Interface_3 - button
-	// drums4: Interface_4 - button
+	// drums1: Interface_1 - keyboard
+	// drums2: Interface_2 - keyboard
+	// drums3: Interface_3 - keyboard
+	// drums4: Interface_4 - keyboard
 	// drums5: Controls - mulitslider ( 15 sliders )
 	// drums6: Tilt - tilt
 
 
 	var drums = {
 
-		// "/drums_toggle_1": {
-		// 	color: 0xF71B24,
-		// 	m: undefined,
-		// 	group: new THREE.Group()
-		// },
-
-		"/drums_button_2": {
+		"/drums_keyboard_1": {
 			color: 0xF71B24,
-			m: undefined,
-			group: new THREE.Group()
+			count: 5,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		"/drums_button_3": {
+		"/drums_keyboard_2": {
 			color: 0xF72C32,
-			m: undefined,
-			group: new THREE.Group()
+			count: 2,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 
-		"/drums_button_4": {
+		"/drums_keyboard_3": {
 			color: 0xF73E42,
-			m: "undefined",
-			group: new THREE.Group()
+			count: 2,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
+		},
+
+		"/drums_keyboard_4": {
+			color: 0xF73E42,
+			count: 2,
+			keys: {},
+			group: new THREE.Group(),
+			firstNote: 48
 		},
 	}
+
+
+
 
 	var drumGroup = new THREE.Group();
 	group.add( drumGroup );
@@ -461,37 +531,39 @@ function ProjectionVisuals( options ) {
 
 		drumGroup.add( drums[i].group );
 
-		// for(var j=0; j<drums[i].count; j++ ) {
+		for(var j=drums[i].firstNote; j<drums[i].firstNote + drums[i].count; j++ ) {
 
 			var m = new THREE.Mesh( boxGeometry, new LDProjectionKeyMaterial( {
 				color: drums[i].color 
 			} ) );
 
+			m.material.uniforms.fade.value = 0;
+
 			m.scale.x = keyWidthScale;
 
 			m.position.x = drum_index + .5;
 
-			m.material.uniforms.fade.value = 0;
-
-
-			if(bRandomTriggers) {
-			m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-				.to( {value: 1}, (drum_index + 1) * 50 )
-				.repeat( 100 )
-				.delay( (drum_index + 1) * 200 )
-				.yoyo( true )
-				.onUpdate( function( value ) {
-					this.scale.z = 1. + this.material.uniforms.fade.value;
-				}.bind( m ))
-				.start();
-			}
-
-			drums[i].m = m;
+			drums[i].keys[j] = m;
 
 			drums[i].group.add( m );
 
 			drum_index++;
-		// }
+
+			//debugging
+			if(bRandomTriggers) {
+
+				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+					.to( {value: 1}, randf( 100, 250 ) )
+					.repeat( 1000 )
+					.delay( randf( 250, 1000) )
+					.yoyo( true )
+					.onUpdate( function( value ) {
+						this.scale.z = 1. + this.material.uniforms.fade.value;
+					}.bind( m ))
+					.start();
+					
+			}
+		}
 
 	}
 
@@ -539,6 +611,11 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//set it's value
+				// if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				// else console.log(  "couldn't find instrument named " + phoneName  );
+				// break;
+				
+				//set it's value
 				if(p)	{
 
 					//kill existing tween
@@ -577,6 +654,11 @@ function ProjectionVisuals( options ) {
 				var p = oscMap[phoneName].keys[ data.note ]
 
 				//	set it's value
+				// if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				// else console.log(  "couldn't find instrument named " + phoneName  );
+				// break;
+				
+				//set it's value
 				if(p)	{
 
 					//kill existing tween
@@ -607,17 +689,20 @@ function ProjectionVisuals( options ) {
 				break;
 
 			// case '/drums_toggle_1':
-			case '/drums_button_2':
-			case '/drums_button_3':
-			case '/drums_button_4':
+			case '/drums_keyboard_1':
+			case '/drums_keyboard_2':
+			case '/drums_keyboard_3':
+			case '/drums_keyboard_4':
 
-				//get the object
-				var p = oscMap[phoneName];
-
-				//set it's value
-				// p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
+				// get the object
+				var p = oscMap[phoneName].keys[ data.note ];
 
 				//	set it's value
+				// if(p)	p.material.uniforms.fade.value = parseFloat( data.on > 0 ? 1. : 0 );
+				// else console.log(  "couldn't find instrument named " + phoneName  );
+				// break;
+				
+				//set it's value
 				if(p)	{
 
 					//kill existing tween
@@ -626,15 +711,15 @@ function ProjectionVisuals( options ) {
 						TWEEN.remove( p.tween );
 					}
 
-					if( data.press == 1 ) {
+					if( data.on > 0 ) {
 
-						// p.m.material.uniforms.fade.value = 1.;
-						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+						// p.material.uniforms.fade.value = 1.;
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
 							.to({value: 1}, 50)
 							.start()
 
 					} else {
-						p.tween = new TWEEN.Tween(p.m.material.uniforms.fade )
+						p.tween = new TWEEN.Tween(p.material.uniforms.fade )
 							.to({value: 0}, 150)
 							.start()
 					}
@@ -644,6 +729,16 @@ function ProjectionVisuals( options ) {
 				else {
 					console.log(  "couldn't find instrument named " + phoneName  );
 				}
+
+				break;
+
+			case '/keys_button_1':
+
+				//get the object
+				var p = oscMap[phoneName];
+
+				//set it's value
+				p.m.material.uniforms.fade.value = parseFloat( data.press || 0 );
 
 				break;
 
@@ -734,10 +829,14 @@ function ProjectionVisuals( options ) {
 
 	function setup() {
 
+		linesMat.uniforms.distortionMap.value = distortionMaps["blur.jpg"];
+
 		//	LINES
 		linesGeometry = getLineGeometry();
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
+		linesMesh.frustumCulled = false;
+		
 		// var linesMesh1 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
 		// var linesMesh2 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
 
@@ -1020,7 +1119,43 @@ function ProjectionVisuals( options ) {
 
 		getGroupRotationZ: function() {
 			return group.rotation.z;
-		}
+		},
+
+		getCameraZoom: function(){
+			return cameraZoom;
+		},
+
+		setCameraZoom: setCameraZoom,
+
+		setDistortionMap: function( mapName ) {
+
+		},
+
+		getDistortionMaps: function(){
+			return distortionMaps
+		},
+
+		setDistortionMap: function( index ){
+			var count = 0;
+			for(var i in distortionMaps) {
+				if(count == index){
+					linesMat.uniforms.distortionMap.value = distortionMaps[i];
+				}
+				count ++;
+			}
+		},
+
+		getCameraPositionX: function(){
+			return camera.position.x;
+		},
+
+		getCameraPositionY: function(){
+			return camera.position.y;
+		},
+
+		setCameraPositionX: setCameraPositionX,
+
+		setCameraPositionY: setCameraPositionY
 
 	}
 }

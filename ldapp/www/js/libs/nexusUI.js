@@ -5223,7 +5223,7 @@ tilt.prototype.draw = function() {
 }
 
 tilt.prototype.click = function() {
-	this.active = !this.active;
+	//this.active = !this.active;
 }
 
 tilt.prototype.customDestroy = function() {

@@ -1,43 +1,58 @@
 var path = require('path');
 var util = require('util');
-var express = require('express');
-var bodyParser = require('body-parser');
-var osc = require('node-osc');
-var midi = require('midi');
 var teoria = require('teoria');
-var oscClient = require("./oscClient");
-//var leds = require("./leds")
+var midi = require('midi');
+var osc = require('node-osc');
 
 var song = "1";
-//for the bass, start in C. 
-
-var scalePinkCloudKeys = [
-	teoria.note("c3"),
-	teoria.note("d3"),
-	teoria.note("e3"),
-	teoria.note("f#3"),
-	teoria.note("g3"),
-	teoria.note("a3"),
-	teoria.note("b3"),
-
-	teoria.note("c#4"),
-	teoria.note("d4"),
-	teoria.note("e4"),
-	teoria.note("f#4"),
-	teoria.note("g4"),
-	teoria.note("a4"),
-	teoria.note("b4"),
-]
-
 var songs = {
-	"1": {"name":"pink cloud", "root":"e", "keysOctave":"2", "bassOctave":"2", "scale":"minor"}, 
-	"2": {"name":"summertearz", "root":"db", "keysOctave":"2", "bassOctave":"2", "scale":"major"},
-	"3": {"name":"test", "root":"f#", "keysOctave":"2", "bassOctave":"1", "scale":"minor"},
-	"4": {"name":"pretty girls", "root":"g", "keysOctave":"2", "bassOctave":"1", "scale":"minor"},
-	"5": {"name":"twice", "root":"bb", "keysOctave":"2", "bassOctave":"1", "scale":"major"}
+	"1": {	
+		"name":"pink cloud", 
+		"scaleBass": [
+						teoria.note("c"),
+						teoria.note("d"),
+						teoria.note("e"),
+						teoria.note("f#"),
+						teoria.note("g"),
+						teoria.note("a"),
+						teoria.note("b")
+					],
+		"scaleKeys": [
+						teoria.note("c3"),
+						teoria.note("d3"),
+						teoria.note("e3"),
+						teoria.note("f#3"),
+						teoria.note("g3"),
+						teoria.note("a3"),
+						teoria.note("b3")
+					]//second keyboard should replace C with teoria.note("c#3")
+	}, 
+	"2": {
+		"name":"summertearz", 
+		"scaleBass": teoria.note("db2").scale("major").notes(),
+		"scaleKeys": teoria.note("db1").scale("major").notes()
+	
+	},
+	"3": {
+		"name":"test", 
+		"scaleBass": teoria.note("f#2").scale("minor").notes(),
+		"scaleKeys": teoria.note("f#1").scale("minor").notes()
+	},
+	"4": {
+		"name":"pretty girls", 
+		"scaleBass": teoria.note("g2").scale("minor").notes(),
+		"scaleKeys": teoria.note("g1").scale("minor").notes()
+	},
+	"5": {
+		"name":"twice", 
+		"scaleBass": teoria.note("bb2").scale("major").notes(),
+		"scaleKeys": teoria.note("bb1").scale("major").notes()
+	}
 }
 
-// var notes = {"c3", "d3", "e3", "f#3", "g3", "a3", "b3", "c#3" };
+var scaleKeys = songs[song].scaleKeys;
+var scaleBass = songs[song].scaleBass;
+
 
 // Set up MIDI
 var output = new midi.output();
@@ -69,13 +84,7 @@ var lastRecEnd = 0;
 var lastRecDuration = 0;
 var recording = false;
 
-//pink dragon is in F#m + Eb
-var rootKeys = songs[song].root + songs[song].keysOctave;
-var rootBass = songs[song].root + songs[song].bassOctave;
-var scale = songs[song].scale;
 
-var scaleKeys = teoria.note(rootKeys).scale(scale);
-var scaleBass = teoria.note(rootBass).scale(scale);
 
 
 
@@ -88,18 +97,14 @@ var scaleBass = teoria.note(rootBass).scale(scale);
 ╚██████╔╝███████║╚██████╗
  ╚═════╝ ╚══════╝ ╚═════╝
 *************************/
-var http_port = 3000;
-var http_addr = null;
+
 var osc_port = 3333;
 require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
-	http_addr = util.format("http://%s:%s", addr, http_port);
-	console.log('http_addr', http_addr);
 	console.log("listening for osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
-	var oscClients = {};
-
+	//var oscClients = {};
 
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
@@ -108,8 +113,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		var data = JSON.parse(msg.shift());
 		var midiMessage;
 		
-		if(io) io.sockets.emit(addr, data);
-
 		/*
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
@@ -143,8 +146,11 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 		if(addr=="/keys_button_1"){
 			if(data.press == 1){
-				output.sendMessage([MIDI.CH1.NOTEON, 119, 10]);
-				output.sendMessage([MIDI.CH1.NOTEOFF, 119, 0]);
+				output.sendMessage([MIDI.CH1.CONTROL, 119, 127]);
+			}
+			else if(data.press ==0){
+				output.sendMessage([MIDI.CH1.CONTROL, 119, 0]);
+				// output.sendMessage([MIDI.CH1.NOTEOFF, 119, 0]);
 			}
 		}
 
@@ -169,28 +175,62 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 			var keyPos = addr.substring(15, 16);
 			var scalePos = data.note - 48; // re-map 48->54 (incoming midi note) to 0->7 (scale position)
-			var note = scaleKeys.notes()[scalePos];
+			var note = scaleKeys[scalePos];
+			var midiNote = note.midi();
 
 			switch(keyPos){
 				case '1':
 					note.octave = 1;
 					break;
-				case '2':
-					note.octave = 2;
+				case '2'://this is actually the first keyboard
+					// note.octave = 2;
+					midiNote += 24;
+					// console.log("note: " + note);
 					break;
-				case '3':
-					note.octave = 3;
+				case '3'://this is actually the second keyboard
+					midiNote += 36;
+					// console.log("note: " + note);
 					break;
 				case '4':
 					note.octave = 4;
 					break;
 			}
-			
-			sendNote(note.midi(), velocity, MIDI.CH1);
 
-			var fifth = note.interval('P5');
-			fifth.octave = note.octave;
-			sendNote(fifth.midi(), velocity, MIDI.CH1);
+			//particular case for pink cloud: second C should be #:
+			if(song == '1'){
+				if(keyPos == "3"){
+					switch(scalePos){
+						case 0:
+							note = teoria.note("c#4");
+							break;
+						case 1://this is actually the first keyboard
+							note = teoria.note("d4");
+							break;
+						case 2://this is actually the second keyboard
+							note = teoria.note("e4");
+							break;
+						case 3:
+							note = teoria.note("f#4");
+							break;
+						case 4:
+							note = teoria.note("g4");
+							break;
+						case 5:
+							note = teoria.note("a4");
+							break;
+						case 6:
+							note = teoria.note("b4");
+							break;
+					}
+					
+				}
+			}
+			
+			sendNote(midiNote, velocity, MIDI.CH1);
+
+			// var fifth = note.interval('P5');
+			// fifth.octave = note.octave;
+			// sendNote(fifth.midi(), velocity, MIDI.CH1);
 			
 		}
 
@@ -236,44 +276,33 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var velocity = data.on;
 
 			var keyboardNumber = addr.substring(15, 16); //phone 1, phone 2, phone 3, phone 4?
-			var keyPos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
-			var note;
+			var scalePos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
+			var midiNote;
+			
 
 			switch(keyboardNumber){
 				case '1':
-					if(keyPos == 0){
-						note = scaleBass.notes()[6];
-						note.octave = 0;
-					}
-					else{
-						note = scaleBass.notes()[keyPos - 1];
-						note.octave = 1;
-					}	
+					midiNote = scaleBass[scalePos].midi();
+					// note.octave = 1;
 					break;
 
 				case '2':
-					note = scaleBass.notes()[keyPos + 3];
-					note.octave = 1;
+					midiNote = scaleBass[scalePos + 3].midi();
+					// note.octave = 1;
 					break;
 
 				case '3':
-					if(keyPos == 0){
-						note = scaleBass.notes()[6];
-						note.octave = 1;
-					}
-					else{
-						note = scaleBass.notes()[keyPos - 1];
-						note.octave = 2;
-					}	
+					midiNote = scaleBass[scalePos].midi() + 12;
+					// note.octave = 2;
 					break;
 
 				case '4':
-					note = scaleBass.notes()[keyPos + 3];
-					note.octave = 2;
+					midiNote = scaleBass[scalePos + 3].midi() + 12;
+					// note.octave = 2;
 					break;
 			}
 			
-			sendNote(note.midi(), velocity, MIDI.CH2);
+			sendNote(midiNote, velocity, MIDI.CH2);
 		}
 
 		// else if(addr=="/bass_keyboard_1") {
@@ -286,52 +315,13 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// | |_|   ||    __  ||       ||       ||_____  |
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
-
-
-		//INSTRUMENT: PRE-SAMPLED DRUMS
-		else if(contains(addr, '/pre-drums')){
-			//message format: pre-drums_button_4 
-			var drum = addr.charAt(addr.length - 1);
-			
-			var note;
-			switch(drum){
-				case '1': 
-					note = 36;
-					// if(data.press==1)led_sections[0].blink();
-					break;
-				case '2': 
-					note = 37;
-					// if(data.press==1)led_sections[1].blink();
-					break;
-				case '3': 
-					note = 38;
-					// if(data.press==1)led_sections[2].blink();
-					break;
-				case '4': 
-					note = 39;
-					// if(data.press==1)led_sections[3].blink();
-					break;
-				case '5': 
-					note = 40;
-					// if(data.press==1)led_sections[3].blink();
-					break;
-			}
-
-			if(data.press==1){ // button down
-				//range y: 80 to 670 approx.
-				var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
-				output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
-			}
-			else if(data.press==0){
-				output.sendMessage([MIDI.CH3.NOTEOFF, note, velocity]);
-			}
-		}
+		
 
 		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
 		else if(contains(addr, '/drums')){
 			var drum = addr.charAt(addr.length - 1);
 			
-			if(drum == 1){//record button
+			if(drum == 0){//record button
 				if(data.press==1){ // button down
 					if(!recording){
 					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
@@ -368,42 +358,73 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 				}
 			}
 			else{ //actual triggers
-				if(data.press==1){ 
-					console.log("LAUNCH");
+				var keyPos = data.note - 48; //0 or 1
+				
+				if(data.on > 0){ 
 					var pitchShift = 0;
-					//note is just a plan B in case sampling fails: enable normal drum
-					var note;
-					switch(drum){
-						case '2':
+					// console.log("LAUNCH drum " + drum);
+					if(drum == '1'){//live sample triggers
+						// console.log("drum " + drum);
+					   if(keyPos == 0) 
 							pitchShift = 10;
-							note = 36;
-							break;
-						case '3':
+						if(keyPos == 1) 
 							pitchShift = 40;
-							note = 37;
-							break;
-						case '4':
+						if(keyPos == 2) 
 							pitchShift = 70;
-							note = 38;
-							break;
-						case '5':
+						if(keyPos == 3) 
 							pitchShift = 100;
-							note = 39;
-							break;
+						if(keyPos == 4) 
+							pitchShift = 110;
+
+						//send pitch message:
+						output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
+						//launch clip	
+						output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
 					}
-
-					//send pitch message:
-					output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
-
-					//plan B: pre-sampled drums
-					output.sendMessage([MIDI.CH3.NOTEON, note, 1]);
-					var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
-					output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+					else{//pre sampled triggers
+						var note;
+						switch(drum){
+							case '2':
+								if(keyPos == 0) 
+									note = 36;
+								else 
+									note = 37;
+								break;
+							case '3':
+								if(keyPos == 0) 
+									note = 38;
+								else 
+									note = 39;
+								break;
+							case '4':
+								if(keyPos == 0) 
+										note = 40;
+									else 
+										note = 41;
+								if(songs[song].name = "summertearz"){//launch kick
+									if(keyPos == 0){
+										output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);//launch
+									}
+									else if(keyPos == 1){
+										output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//stop
+									}
+								}
+									// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
+								break;
+							case '5':
+								if(keyPos == 0) 
+									note = 42;
+								else 
+									note = 43;
+								break;
+						}
+						
+						var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
+						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+					}
 					
-					//launch clip	
-					output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
 				}
-				else if(data.press==0){
+				else if(data.on==0){
 					output.sendMessage([MIDI.CH3.NOTEOFF, note, 0]);
 				}
 					
@@ -614,46 +635,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 
-/********************************************************
-███████╗██╗  ██╗██████╗ ██████╗ ███████╗███████╗███████╗
-██╔════╝╚██╗██╔╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝
-█████╗   ╚███╔╝ ██████╔╝██████╔╝█████╗  ███████╗███████╗
-██╔══╝   ██╔██╗ ██╔═══╝ ██╔══██╗██╔══╝  ╚════██║╚════██║
-███████╗██╔╝ ██╗██║     ██║  ██║███████╗███████║███████║
-╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
-********************************************************/
-// This is where the projector visuals will be served!
-
-
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-server.listen(http_port);
-
-app.get('/', function (req, res) {
-	var data = {"title": 'Little Dragon Server'};
-	res.render('index', data);
-});
-
-app.get('/projector/:num', function(req, res) {
-	var data = {"title": 'Little Dragon Projection', 'num': req.params.num};
-	res.render('projector', data);
-});
-
-app.get('/composer', function(req, res) {
-	var data = {"title": 'Little Dragon Composer'};
-	res.render('composer', data);
-});
-
-
-//io.on('connection', function (socket) {});
 
 
 
@@ -681,7 +662,9 @@ stdin.on( 'data', function( key ){
 	
 	//multipurpose
 	if(key=='='){
-
+		// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
+		output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
+		// output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//OFF
 	}
 
 	//PROGRAM KEYS
@@ -820,7 +803,6 @@ stdin.on( 'data', function( key ){
 	}
 
 
-
 	// ctrl-c ( end of text )
 	if ( key === '\u0003' ) {
 		output.closePort();
@@ -830,70 +812,6 @@ stdin.on( 'data', function( key ){
 	// write the key to stdout all normal like
 	//process.stdout.write( key );
 });
-
-
-
-
-
-/*******************************************************************
-███╗   ███╗██╗██████╗ ██╗    ██╗███╗   ██╗██████╗ ██╗   ██╗████████╗
-████╗ ████║██║██╔══██╗██║    ██║████╗  ██║██╔══██╗██║   ██║╚══██╔══╝
-██╔████╔██║██║██║  ██║██║    ██║██╔██╗ ██║██████╔╝██║   ██║   ██║   
-██║╚██╔╝██║██║██║  ██║██║    ██║██║╚██╗██║██╔═══╝ ██║   ██║   ██║   
-██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
-╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
-*******************************************************************/
-
-var input = new midi.input();
-
-var devices = {};
-for(var i=0; i<input.getPortCount(); i++) {
-	var name = input.getPortName(i);
-	devices[name] = i;
-	console.log(i, name);
-}
-
-if("USB Uno MIDI Interface" in devices)
-{
-	input.openPort(devices["USB Uno MIDI Interface"]);
-	input.on('message', function(deltaTime, message) {
-		if(!io) return;
-
-		var func = message[0];
-		var note = message[1];
-		var vel = message[2] / FULL_VELOCITY;
-		vel = parseFloat(vel.toFixed(3));
-		//console.log(func, note, vel);
-
-		if(func == MIDI.CH15.MODECHANGE) {
-			switch(note) {
-				case 0: io.sockets.emit('slider1', vel); break;
-				case 1: io.sockets.emit('slider2', vel); break;
-				case 2: io.sockets.emit('slider3', vel); break;
-				case 3: io.sockets.emit('slider4', vel); break;
-				case 4: io.sockets.emit('slider5', vel); break;
-				case 5: io.sockets.emit('slider6', vel); break;
-				case 18: io.sockets.emit("xfade", vel); break;
-				case 20: io.sockets.emit("knob1", vel); break;
-				case 21: io.sockets.emit("knob2", vel); break;
-				case 22: io.sockets.emit("knob3", vel); break;
-				case 23: io.sockets.emit("knob4", vel); break;
-				case 36: io.sockets.emit("y_axis", vel); break;
-				case 38: io.sockets.emit("x_axis", vel); break;
-			}
-		}
-		else if(func == MIDI.CH15.NOTEON) {
-			switch(note) {
-				case 8: io.sockets.emit("button1", vel); break;
-				case 9: io.sockets.emit("button2", vel); break;
-				case 10: io.sockets.emit("button3", vel); break;
-				case 11: io.sockets.emit("button4", vel); break;
-				case 12: io.sockets.emit("button5", vel); break;
-				case 13: io.sockets.emit("button6", vel); break;
-			}
-		}
-	});
-}
 
 
 

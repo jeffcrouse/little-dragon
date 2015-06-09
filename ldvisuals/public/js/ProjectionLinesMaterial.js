@@ -22,6 +22,8 @@ var ProjectionLinesMaterial = function( params ) {
 
 			pMap: {type: 't', value: params.pMap},
 
+			distortionMap: {type: 't', value: params.distortionMap},
+
 			colorRamp: {type: 't', value: params.colorRamp},
 
 			color: {type: 'c', value: params.color || new THREE.Color( 1, 1, 1 ) },
@@ -67,6 +69,8 @@ var ProjectionLinesMaterial = function( params ) {
 		'uniform sampler2D pMap;',
 
 		'uniform sampler2D colorRamp;',
+
+		'uniform sampler2D distortionMap;',
 
 		'attribute vec2 positions;',
 
@@ -116,7 +120,9 @@ var ProjectionLinesMaterial = function( params ) {
 
 		'	vec2 fUv = ( uv / vec2( WIDTH, HEIGHT ) ) + .5;',
 
-		'	vColor = texture2D( pMap, fUv ).xyz;', //vec3( d  );//
+		'	vColor = texture2D( pMap, fUv ).xyz;',
+
+		// '	vColor *= texture2D( distortionMap, fUv + vec2(0., time * .25) ).xyz;', 
 
 		'	float d = max( vColor.x, max( vColor.y, vColor.z ));',
 
@@ -124,17 +130,22 @@ var ProjectionLinesMaterial = function( params ) {
 
 		'	vec3 center = vec3( uv, 0.);',
 
-		'	float lineScale = min( d, 1.);',
+		'	float lineScale = max(0., min( d * 1.5 - .5, 1.) );',
 
-		'	vec3 pos = vec3( vec2( lineLength * lineScale * (d), lineWidth * lineScale ) * position.xy, 0.);',
+		'	vec3 pos = vec3( vec2( lineLength * lineScale, lineWidth * lineScale ) * position.xy, 0.);',
 
 		'	vUv = position.xy + .5;',
 
 
 		'	vAlpha = 1.;',
 
+		// '	float nVal = noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) );',
+
+		'	float nVal = noiseAmount * texture2D( distortionMap, (fUv + vec2(0., time * .25)) * vec2(1., HEIGHT / WIDTH ) ).x;',
+
 		'	vec4 q;',
-		'	float angle = (d + .5) * (restAngle + spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
+		'	float angle = (d + .5) * (restAngle + spriteRotation + nVal);',
+		// '	float angle = (d + .5) * (restAngle + spriteRotation + noiseAmount * noise3( center * noiseScale + vec3(0., time, 0.) ));',
 		'	q.x = 0.;',
 		'	q.y = 0.;',
 		'	q.z = sin(angle / 2.);',

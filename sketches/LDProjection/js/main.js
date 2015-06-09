@@ -34,12 +34,11 @@ $(window).bind("load", function() {
 		rotation: parseFloat(projection.getRotation()),
 		noiseScale: parseFloat(projection.getNoiseScale()),
 		noiseAmount: parseFloat(projection.getNoiseAmount()),
-		timeScale: parseFloat(projection.getTimeScale()),
+		timeScale: parseFloat( projection.getTimeScale() ) + .000,
 		groupRotationX: parseFloat(projection.getGroupRotationX()),
 		groupRotationY: parseFloat(projection.getGroupRotationY()),
 		groupRotationZ: parseFloat(projection.getGroupRotationZ())
 	}
-	console.log( 'guiControls', guiControls );
 
 	var gui = new dat.GUI();
 
@@ -77,7 +76,7 @@ $(window).bind("load", function() {
 		projection.setNoiseAmount( value );
 	});
 
-	gui.add( guiControls, "timeScale", -5.000, 5.000 ).listen().onChange( function(value) {
+	gui.add( guiControls, "timeScale", -5.000, 5.000 ).step(.001).listen().onChange( function(value) {
 		projection.setTimeScale( value );
 	})
 
@@ -94,33 +93,59 @@ $(window).bind("load", function() {
 		projection.setBlending( parseInt(value) );
 	})
 
-	// gui.add( guiControls, "groupRotationY", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
-	// 	projection.setGroupRotationY( value );
-	// })
-
-	// gui.add( guiControls, "groupRotationZ", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
-	// 	projection.setGroupRotationZ( value );
-	// })
-
-
-
-	// var projection = BlendParticles({
-	//   controller: {
-	//   	width: window.innerWidth,
-	//   	height: window.innerHeight,
-	//   	canvasID: "textureReference",
-	//   	texturePath: "images/rainbowGalaxy.jpeg"
-	//   },
-	//   spritePath: "textures/hexagon.png",
-	//   numSpritesX: 40,
-	//   spriteSize: 40,
-	//   spriteBlending: 2,
-	//   spriteOpacity: .34,
-	//   spriteRotation: Math.PI,
-	//   c0: new THREE.Color( 0x34FFFF ),
-	//   c1: new THREE.Color( 0xFF34FF ),
-	//   useSideBars: false,
-	//   showStats: false
+	// //SOCKETS
+	// //
+	// socket.on('/keys_range_1', function (data) {
+	// 	console.log(data);
 	// });
+	
+	
+	
+	setInterval( function(){
+		projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
+	}, 500);
+
+	setInterval( function(){
+		projection.handleOSC( "/keys_keyboard_2", {"on":0,"note":50,"midi":"50 0"} );
+	}, 750);
+
+
+	setInterval( function(){
+		projection.handleOSC( "/bass_keyboard_1", {"on":64,"note":49,"midi":"50 1"} );
+	}, 250);
+
+	setInterval( function(){
+		projection.handleOSC( "/bass_keyboard_1", {"on":0,"note":49,"midi":"50 0"} );
+	}, 850);
+
+	
+	setInterval( function(){
+		projection.handleOSC( "/drums_button_2", {"press":1} );
+	}, 500);
+
+	setInterval( function(){
+		projection.handleOSC( "/drums_button_2", {"press":0} );
+	}, 750);
+
+	setTimeout( function(){
+
+		setInterval( function(){
+			projection.handleOSC( "/drums_button_3", {"press":1} );
+		}, 500);
+
+		setInterval( function(){
+			projection.handleOSC( "/drums_button_3", {"press":0} );
+		}, 750);	
+	}, 250)
 
 });
+
+
+Math.clamp = function(num, min, max) {
+	if(min>max) console.warn("Math.clamp: min > max");
+	return Math.min(Math.max(num, min), max);
+};
+Math.map = function (value, istart, istop, ostart, ostop, clamp) {
+	var val = ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	return clamp ? Math.clamp(val, Math.min(ostart, ostop), Math.max(ostart, ostop)) : val;
+}

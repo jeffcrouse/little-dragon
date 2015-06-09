@@ -7,7 +7,7 @@ var oscListener = null;					// Receive OSC from the server
 var myIP = null;
 var ldInterface = null;					// WebGL layer (?)
 var iface = getQueryVariable("iface"); // which interface should we show?
-
+var tilt_throttle_dist = 0.2;
 
 
 
@@ -56,7 +56,7 @@ nx.onload = function() {
 		case "keys2":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
-			var control = createControl(instrumentName, "multislider", 5);
+			var control = createControl(instrumentName, "multislider", 1);
 			control.setNumberOfSliders(5);
 
 			ldInterface = TouchLines({
@@ -143,13 +143,12 @@ nx.onload = function() {
 			}
 
 			var last_data = null;
-			var min_dist = 0.3;
 			var throttle = function(data) {	
 				if(last_data==null) {
 					last_data = data;
 					return true;
 				}
-				if(dist(data, last_data) < min_dist)
+				if(dist(data, last_data) < tilt_throttle_dist)
 					return false;
 
 				last_data = data;
@@ -314,7 +313,6 @@ nx.onload = function() {
 			control.throttlePeriod = 50;
 			control.text = "pan";
 
-
 			ldInterface = TouchLines({
 			  MIN_ANGLE: -20,
 			  MAX_ANGLE: 20,
@@ -358,10 +356,9 @@ nx.onload = function() {
 
 		//PRE-SAMPLED DRUMS
 	    case "drums1":
-	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "toggle", 1);
+		    var control = createControl(instrumentName, "toggle", 0);
 		    // control.mode = "node"; //"node" is the actual name of the "aftertouch" mode described in the documentation.
 				
 			// ///rotation=6&noiseAmount=10&timeScale=2
@@ -382,99 +379,128 @@ nx.onload = function() {
 		   break;
 
 	    case "drums2":
-	    case "pre-drums1":
 	    	if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 2);
-		    // control.mode = "node";
+		    var control = createControl(instrumentName, "keyboard", 1);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w','w','w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-			  widthOverride: 1280,
-			  heightOverride: 720,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-2.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 		    break;
 
 		case "drums3":
-		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 3);
-		    // control.mode = "node";
+			var control = createControl(instrumentName, "keyboard", 2);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-			  widthOverride: 1280,
-			  heightOverride: 720,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-3.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
+
 		    break;
 
 		case "drums4":
-		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
 
-		    var control = createControl(instrumentName, "button", 4);
-		    // control.mode = "node";
+		    var control = createControl(instrumentName, "keyboard", 3);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-			  widthOverride: 1280,
-			  heightOverride: 720,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 		    break;
 
 
 		case "drums5":
-		case "pre-drums1":
 			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
-		    var control = createControl(instrumentName, "multislider", 1);
-		    // control.mode = "node";
+		    var control = createControl(instrumentName, "keyboard", 4);
+	 		control.octaves = 1;
+	 		control.multitouch = true;
+	 		control.keypattern = ['w','w'];
+			control.lineWidth = 20;
+	 		control.init();
 
-		    ldInterface = TouchLines({
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+	 		ldInterface = TouchLines({
+	 		  controller: control,
+	 		  colorRampPath: "textures/bass/bass3.jpg",
+	 		  lineWidth: 4,
+	 		  lineLength: 20,
+	 		  rotation: 3,
+	 		  noiseScale: .005
+	 		});
 		    
 		    break;
 		
 		case "drums6":
-		case "pre-drums6":
+
 			if(screen.lockOrientation)	screen.lockOrientation('portrait');
 
-		    var control = createControl(instrumentName, "tilt", 1);
-		    control.text = "something";
-		    break;
+			var dist = function (v1, v2) {
+				var dx = v1.x - v2.x;
+				var dy = v1.y - v2.y;
+				var dz = v1.z - v2.z;
+				return Math.sqrt(dx*dx+dy*dy+dz*dz);
+			}
 
+			var last_data = null;
+			
+			var throttle = function(data) {	
+				if(last_data==null) {
+					last_data = data;
+					return true;
+				}
+				if(dist(data, last_data) < tilt_throttle_dist)
+					return false;
 
-		    ldInterface = TouchLines({
+				last_data = data;
+				return true;
+			}
+
+			var options = {h: "1280px", w: "720px", throttle: throttle};
+			var control = createControl(instrumentName, "tilt", 1, options);
+			control.throttlePeriod = 50;
+			control.text = "reverb";
+
+			ldInterface = TouchLines({
 			  MIN_ANGLE: -20,
 			  MAX_ANGLE: 20,
-		      controller: control,
-		      colorRampPath: "textures/drums/drum-4.jpg",
-		      lineWidth: 4,
-		      lineLength: 20,
-		      rotation: 3,
-		      noiseScale: .005
-		    });
+			  controller: control,
+			  colorRampPath: "textures/drums/drum-6.jpg",
+			  lineWidth: 4,
+			  lineLength: 20,
+			  rotation: 3,
+			  noiseScale: .005
+			});
+
 		    break;
 
 
