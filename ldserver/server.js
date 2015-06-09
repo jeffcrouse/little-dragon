@@ -9,35 +9,55 @@ var oscClient = require("./oscClient");
 //var leds = require("./leds")
 
 var song = "1";
-//for the bass, start in C. 
-
-var scalePinkCloudKeys = [
-	teoria.note("c3"),
-	teoria.note("d3"),
-	teoria.note("e3"),
-	teoria.note("f#3"),
-	teoria.note("g3"),
-	teoria.note("a3"),
-	teoria.note("b3"),
-
-	teoria.note("c#4"),
-	teoria.note("d4"),
-	teoria.note("e4"),
-	teoria.note("f#4"),
-	teoria.note("g4"),
-	teoria.note("a4"),
-	teoria.note("b4"),
-]
-
 var songs = {
-	"1": {"name":"pink cloud", "root":"e", "keysOctave":"2", "bassOctave":"2", "scale":"minor"}, 
-	"2": {"name":"summertearz", "root":"db", "keysOctave":"2", "bassOctave":"2", "scale":"major"},
-	"3": {"name":"test", "root":"f#", "keysOctave":"2", "bassOctave":"1", "scale":"minor"},
-	"4": {"name":"pretty girls", "root":"g", "keysOctave":"2", "bassOctave":"1", "scale":"minor"},
-	"5": {"name":"twice", "root":"bb", "keysOctave":"2", "bassOctave":"1", "scale":"major"}
+	"1": {	
+		"name":"pink cloud", 
+		"scaleBass": [
+						teoria.note("c"),
+						teoria.note("d"),
+						teoria.note("e"),
+						teoria.note("f#"),
+						teoria.note("g"),
+						teoria.note("a"),
+						teoria.note("b")
+					],
+		"scaleKeys": [
+						teoria.note("c3"),
+						teoria.note("d3"),
+						teoria.note("e3"),
+						teoria.note("f#3"),
+						teoria.note("g3"),
+						teoria.note("a3"),
+						teoria.note("b3")
+					]//second keyboard should replace C with teoria.note("c#3")
+	}, 
+	"2": {
+		"name":"summertearz", 
+		"scaleBass": teoria.note("db2").scale("major").notes(),
+		"scaleKeys": teoria.note("db1").scale("major").notes()
+	
+	},
+	"3": {
+		"name":"test", 
+		"scaleBass": teoria.note("f#2").scale("minor").notes(),
+		"scaleKeys": teoria.note("f#1").scale("minor").notes()
+	},
+	"4": {
+		"name":"pretty girls", 
+		"scaleBass": teoria.note("g2").scale("minor").notes(),
+		"scaleKeys": teoria.note("g1").scale("minor").notes()
+	},
+	"5": {
+		"name":"twice", 
+		"scaleBass": teoria.note("bb2").scale("major").notes(),
+		"scaleKeys": teoria.note("bb1").scale("major").notes()
+	}
 }
 
-// var notes = {"c3", "d3", "e3", "f#3", "g3", "a3", "b3", "c#3" };
+var scaleKeys = songs[song].scaleKeys;
+var scaleBass = songs[song].scaleBass;
+
+
 
 // Set up MIDI
 var output = new midi.output();
@@ -69,13 +89,7 @@ var lastRecEnd = 0;
 var lastRecDuration = 0;
 var recording = false;
 
-//pink dragon is in F#m + Eb
-var rootKeys = songs[song].root + songs[song].keysOctave;
-var rootBass = songs[song].root + songs[song].bassOctave;
-var scale = songs[song].scale;
 
-var scaleKeys = teoria.note(rootKeys).scale(scale);
-var scaleBass = teoria.note(rootBass).scale(scale);
 
 
 
@@ -172,28 +186,62 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 			var keyPos = addr.substring(15, 16);
 			var scalePos = data.note - 48; // re-map 48->54 (incoming midi note) to 0->7 (scale position)
-			var note = scaleKeys.notes()[scalePos];
+			var note = scaleKeys[scalePos];
+			var midiNote = note.midi();
 
 			switch(keyPos){
 				case '1':
 					note.octave = 1;
 					break;
-				case '2':
-					note.octave = 2;
+				case '2'://this is actually the first keyboard
+					// note.octave = 2;
+					midiNote += 24;
+					// console.log("note: " + note);
 					break;
-				case '3':
-					note.octave = 3;
+				case '3'://this is actually the second keyboard
+					midiNote += 36;
+					// console.log("note: " + note);
 					break;
 				case '4':
 					note.octave = 4;
 					break;
 			}
-			
-			sendNote(note.midi(), velocity, MIDI.CH1);
 
-			var fifth = note.interval('P5');
-			fifth.octave = note.octave;
-			sendNote(fifth.midi(), velocity, MIDI.CH1);
+			//particular case for pink cloud: second C should be #:
+			if(song == '1'){
+				if(keyPos == "3"){
+					switch(scalePos){
+						case 0:
+							note = teoria.note("c#4");
+							break;
+						case 1://this is actually the first keyboard
+							note = teoria.note("d4");
+							break;
+						case 2://this is actually the second keyboard
+							note = teoria.note("e4");
+							break;
+						case 3:
+							note = teoria.note("f#4");
+							break;
+						case 4:
+							note = teoria.note("g4");
+							break;
+						case 5:
+							note = teoria.note("a4");
+							break;
+						case 6:
+							note = teoria.note("b4");
+							break;
+					}
+					
+				}
+			}
+			
+			sendNote(midiNote, velocity, MIDI.CH1);
+
+			// var fifth = note.interval('P5');
+			// fifth.octave = note.octave;
+			// sendNote(fifth.midi(), velocity, MIDI.CH1);
 			
 		}
 
@@ -239,44 +287,33 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var velocity = data.on;
 
 			var keyboardNumber = addr.substring(15, 16); //phone 1, phone 2, phone 3, phone 4?
-			var keyPos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
-			var note;
+			var scalePos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
+			var midiNote;
+			
 
 			switch(keyboardNumber){
 				case '1':
-					if(keyPos == 0){
-						note = scaleBass.notes()[6];
-						note.octave = 0;
-					}
-					else{
-						note = scaleBass.notes()[keyPos - 1];
-						note.octave = 1;
-					}	
+					midiNote = scaleBass[scalePos].midi();
+					// note.octave = 1;
 					break;
 
 				case '2':
-					note = scaleBass.notes()[keyPos + 3];
-					note.octave = 1;
+					midiNote = scaleBass[scalePos + 3].midi();
+					// note.octave = 1;
 					break;
 
 				case '3':
-					if(keyPos == 0){
-						note = scaleBass.notes()[6];
-						note.octave = 1;
-					}
-					else{
-						note = scaleBass.notes()[keyPos - 1];
-						note.octave = 2;
-					}	
+					midiNote = scaleBass[scalePos].midi() + 12;
+					// note.octave = 2;
 					break;
 
 				case '4':
-					note = scaleBass.notes()[keyPos + 3];
-					note.octave = 2;
+					midiNote = scaleBass[scalePos + 3].midi() + 12;
+					// note.octave = 2;
 					break;
 			}
 			
-			sendNote(note.midi(), velocity, MIDI.CH2);
+			sendNote(midiNote, velocity, MIDI.CH2);
 		}
 
 		// else if(addr=="/bass_keyboard_1") {
