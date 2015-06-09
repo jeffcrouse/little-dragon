@@ -8,7 +8,7 @@ var teoria = require('teoria');
 var oscClient = require("./oscClient");
 //var leds = require("./leds")
 
-var song = "2";
+var song = "1";
 var songs = {
 	"1": {	
 		"name":"pink cloud", 
@@ -33,7 +33,16 @@ var songs = {
 	}, 
 	"2": {
 		"name":"summertearz", 
-		"scaleBass": teoria.note("db2").scale("major").notes(),
+		"scaleBass": teoria.note("d").scale("major").notes(),
+		// "scaleBass": [
+		// 				teoria.note("g"),
+		// 				teoria.note("a"),
+		// 				teoria.note("c#"),
+		// 				teoria.note("d"),
+		// 				teoria.note("e"),
+		// 				teoria.note("g"),
+		// 				teoria.note("a")
+		// 			],
 		"scaleKeys": teoria.note("db1").scale("major").notes()
 	
 	},
@@ -44,12 +53,29 @@ var songs = {
 	},
 	"4": {
 		"name":"pretty girls", 
-		"scaleBass": teoria.note("g2").scale("minor").notes(),
-		"scaleKeys": teoria.note("g1").scale("minor").notes()
+		// "scaleBass": teoria.note("f2").scale("minor").notes(),
+		"scaleBass": [
+						teoria.note("c"),
+						teoria.note("db"),
+						teoria.note("eb"),
+						teoria.note("f"),
+						teoria.note("g"),
+						teoria.note("ab"),
+						teoria.note("bb")
+					],
+		"scaleKeys": teoria.note("f1").scale("minor").notes()
 	},
 	"5": {
 		"name":"twice", 
-		"scaleBass": teoria.note("bb2").scale("major").notes(),
+		"scaleBass": [
+						teoria.note("c"),
+						teoria.note("d"),
+						teoria.note("e"),
+						teoria.note("f"),
+						teoria.note("g"),
+						teoria.note("a"),
+						teoria.note("bb")
+					],
 		"scaleKeys": teoria.note("bb1").scale("major").notes()
 	}
 }
@@ -195,7 +221,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					break;
 				case '2'://this is actually the first keyboard
 					// note.octave = 2;
-					midiNote += 24;
+					midiNote += 12;
 					// console.log("note: " + note);
 					break;
 				case '3'://this is actually the second keyboard
@@ -209,28 +235,32 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 			//particular case for pink cloud: second C should be #:
 			if(song == '1'){
+				console.log("song: " + song);
+				console.log("keyboard: " + keyPos);
 				if(keyPos == "3"){
+					
 					switch(scalePos){
 						case 0:
-							note = teoria.note("c#4");
+							console.log("first note");
+							midiNote = teoria.note("c#4").midi() +12;
 							break;
 						case 1://this is actually the first keyboard
-							note = teoria.note("d4");
+							midiNote = teoria.note("d4").midi()+12;
 							break;
 						case 2://this is actually the second keyboard
-							note = teoria.note("e4");
+							midiNote = teoria.note("e4").midi()+12;
 							break;
 						case 3:
-							note = teoria.note("f#4");
+							midiNote = teoria.note("f#4").midi()+12;
 							break;
 						case 4:
-							note = teoria.note("g4");
+							midiNote = teoria.note("g4").midi()+12;
 							break;
 						case 5:
-							note = teoria.note("a4");
+							midiNote = teoria.note("a4").midi()+12;
 							break;
 						case 6:
-							note = teoria.note("b4");
+							midiNote = teoria.note("b4").midi()+12;
 							break;
 					}
 					
