@@ -117,7 +117,7 @@ void oscEvent(OscMessage theOscMessage) {
   String data = theOscMessage.get(0).toString();
   JSONObject json = JSONObject.parse(data);
   println(addr);
-  //  println(data);
+  println(data);
 
 
   if (addr.equals("/bass_multislider_1")) {
@@ -149,13 +149,13 @@ void oscEvent(OscMessage theOscMessage) {
   } else if (addr.equals("/drums_toggle_0")) {
     slots[12].on = json.getInt("value")==1;
   } else if (addr.equals("/drums_keyboard_1")) {
-    slots[13].on = json.getInt("press", -1)==1;
+    slots[13].on = json.getInt("on")>0;
   } else if (addr.equals("/drums_keyboard_2")) {
-    slots[14].on = json.getInt("press", -1)==1;
+    slots[14].on= json.getInt("on")>0;
   } else if (addr.equals("/drums_keyboard_3")) {
-    slots[15].on = json.getInt("press", -1)==1;
+    slots[15].on= json.getInt("on")>0;
   } else if (addr.equals("/drums_keyboard_4")) {
-    slots[16].on = json.getInt("press", -1)==1;
+    slots[16].on = json.getInt("on")>0;
   } else if (addr.equals("/drums_tilt_1")) {
     slots[17].blink();
   }
@@ -257,6 +257,11 @@ void keyPressed() {
   }
   if (key=='2') {
     slots[1].on = true;
+  }
+  if (key=='r') {
+    for (int i=0; i<slots.length; i++) {
+      slots[i].on = false;
+    }
   }
 }
 

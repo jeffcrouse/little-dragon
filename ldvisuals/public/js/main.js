@@ -194,10 +194,10 @@ setTimeout( function(){
 	socket.on('/drums_keyboard_2', function (data) {
 		projection.handleOSC( "/drums_keyboard_1", data );
 	});
-		socket.on('/drums_keyboard_3', function (data) {
+	socket.on('/drums_keyboard_3', function (data) {
 		projection.handleOSC( "/drums_keyboard_1", data );
 	});
-			socket.on('/drums_keyboard_4', function (data) {
+	socket.on('/drums_keyboard_4', function (data) {
 		projection.handleOSC( "/drums_keyboard_1", data );
 	});
 
@@ -257,10 +257,10 @@ setTimeout( function(){
 		guiControls.groupRotationX = value;
 		projection.setGroupRotationX( value );
 	});
+	
+	/*
 	socket.on('y_axis', function(data){
-		// var val =  Math.map(data, 0, 1, -250.0, 250.00);
-		// guiControls.offsetY = val;
-		// ldInterface.setOffsetY( val );
+
 	});
 	socket.on('button1', function(data){
 		console.log("button1", data);
@@ -280,6 +280,7 @@ setTimeout( function(){
 	socket.on('button6', function(data){
 		console.log("button6", data);
 	});
+	*/
 
 });
 
