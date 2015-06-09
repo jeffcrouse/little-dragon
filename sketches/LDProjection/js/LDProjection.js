@@ -1,18 +1,5 @@
 
 
-// var socket = io.connect();
-// socket.emit('hello', { my: 'data' });
-
-// socket.on('/keys_range_1', function (data) {
-// 	console.log(data);
-// });
-
-$(window).bind("load", function() {
-	
-	var projection = ProjectionVisuals();
-
-});
-
 var LDProjectionKeyMaterial = function( params ) {
 
 	params = params || {};
@@ -110,6 +97,8 @@ function ProjectionVisuals( options ) {
 
 	var lineWidth = getQueryVariable("lineWidth") || options.lineWidth || 4;	
 
+	var lineOpacity = getQueryVariable("lineOpacity") || options.lineOpacity || 1;	
+
 	var spacing = getQueryVariable("spacing") || options.spacing || 10;
 
 	var spriteRotation = getQueryVariable("rotation") || options.spriteRotation || Math.PI * 2;
@@ -119,6 +108,8 @@ function ProjectionVisuals( options ) {
 	var noiseAmount = getQueryVariable("noiseAmount") || options.noiseAmount || 2;
 
 	var timeScale = getQueryVariable("timeScale") || options.timeScale || -1;
+
+	var blending = getQueryVariable("blending") || options.blending || 1;
 
 	var numSpacers = 0;
 
@@ -549,24 +540,25 @@ function ProjectionVisuals( options ) {
 		return g;
 	}
 
+	var linesMatOptions = {
+		pMap: rt,
+		lineLength: lineLength,
+		lineWidth: lineWidth,
+		spriteRotation: spriteRotation,
+		noiseScale: noiseScale,
+		noiseAmount: noiseAmount,
+		WIDTH: WIDTH,
+		HEIGHT: HEIGHT,
+		opacity: lineOpacity,
+		blending: blending
+	}
+
+	linesMat = new ProjectionLinesMaterial( linesMatOptions);
+
 	function setup() {
 
 		//	LINES
 		linesGeometry = getLineGeometry();
-
-		var linesMatOptions = {
-			pMap: rt,
-			lineLength: lineLength,
-			lineWidth: lineWidth,
-			spriteRotation: spriteRotation,
-			noiseScale: noiseScale,
-			noiseAmount: noiseAmount,
-			WIDTH: WIDTH,
-			HEIGHT: HEIGHT,
-			opacity: 1
-		}
-
-		linesMat = new ProjectionLinesMaterial( linesMatOptions);
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
 		// var linesMesh1 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
@@ -586,7 +578,7 @@ function ProjectionVisuals( options ) {
 
 		var elapsedTime = clock.getElapsedTime();
 
-		if(linesMat)	linesMat.uniforms.time.value = elapsedTime * timeScale;
+		if(linesMat)	linesMat.uniforms.time.value += timeScale / 60;
 
 		// group.rotation.y += Math.pow(Math.abs(sin( elapsedTime )), 2 ) * .01;
 
@@ -706,9 +698,24 @@ function ProjectionVisuals( options ) {
 		container.append( renderer.domElement );
 	}
 
-	function savePreset() {
+	function logQueryStrings() {
+
+		var str = "";
+
+		str += "&lineLength=" + lineLength;
+		str += "&lineWidth=" + lineWidth;
+		str += "&lineOpacity=" + lineOpacity;
+		str += "&spacing=" + spacing;
+		str += "&rotation=" + spriteRotation;
+		str += "&noiseScale=" + noiseScale;
+		str += "&noiseAmount=" + noiseAmount;
+		str += "&timeScale=" + timeScale;
+
+		console.log( str );
 
 	}
+
+
 
 
 	function begin() {
@@ -725,11 +732,15 @@ function ProjectionVisuals( options ) {
 
 	function onKeypressed( e )
 	{
-		switch(key_map[e.which])
+		switch( e.which )
 		{
-			case undefined:
-				console.log( e.which  + " not in key_map.");	
+			case 112: //'p'
+				logQueryStrings();
 				break;
+
+			// case undefined:
+			// 	console.log( e.which  + " not in key_map.");	
+			// 	break;
 
 			default:
 				console.log(key_map[e.which]);	
@@ -741,12 +752,100 @@ function ProjectionVisuals( options ) {
 	$(document).keypress( onKeypressed );
 
 	return {
+
 		scope: scope,
 
 		begin: begin,
 
-		onMessage: function ( e ) {
-			console.log( onMessage );
+		container: container,
+
+		setLineWidth: function( value ) {
+			linesMat.uniforms.lineWidth.value = lineWidth = value;
+		},
+
+		getLineWidth: function(){
+			return lineWidth;
+		},
+
+		setLineLength: function( value ) {
+			linesMat.uniforms.lineLength.value = lineLength = value;
+		},
+
+		getLineLength: function(){
+			return lineLength;
+		},
+
+		setLineOpacity: function( value ) {
+			linesMat.uniforms.opacity.value = lineOpacity = value;
+		},
+
+		getLineOpacity: function(){
+			return linesMat.uniforms.opacity.value;
+		},
+
+		setBlending: function( value ) {
+			linesMat.blending = value;
+			console.log( linesMat );
+		},
+
+		getBlending: function(){
+			return linesMat.blending;
+		},
+
+		setRotation: function( value ) {
+			linesMat.uniforms.spriteRotation.value = spriteRotation = value;
+		},
+
+		getRotation: function(){
+			return spriteRotation;
+		},
+
+		setNoiseScale: function( value ) {
+			noiseScale = linesMat.uniforms.noiseScale.value = value;
+		},
+
+		getNoiseScale: function() {
+			return noiseScale;
+		},
+
+		setNoiseAmount: function( value ) {
+			noiseAmount = linesMat.uniforms.noiseAmount.value = value;
+		},
+
+		getNoiseAmount: function() {
+			return noiseAmount;
+		},
+
+		setTimeScale: function( value ) {
+			timeScale = value;
+		},
+
+		getTimeScale: function() {
+			return timeScale;
+		},
+
+		setGroupRotationX: function( value ) {
+			group.rotation.x = value;
+		},
+
+		getGroupRotationX: function() {
+			return group.rotation.x;
+		},
+
+		setGroupRotationY: function( value ) {
+			group.rotation.y = value;
+		},
+
+		getGroupRotationY: function() {
+			return group.rotation.y;
+		},
+
+		setGroupRotationZ: function( value ) {
+			group.rotation.z = value;
+		},
+
+		getGroupRotationZ: function() {
+			return group.rotation.z;
 		}
 
 	}

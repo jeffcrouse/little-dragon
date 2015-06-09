@@ -1,7 +1,7 @@
 // ProjectionLinesMaterial.js
 // 
 // 
-console.log( "WTF" );
+
 var ProjectionLinesMaterial = function( params ) {
 
 	params = params || {};
@@ -10,11 +10,10 @@ var ProjectionLinesMaterial = function( params ) {
 
 	var matParams = {
 		transparent: true,
-		blending: params.blending || 1,
-		depthTest: params.depthTest || true,
-		depthWrite: params.depthWrite !== undefined ? params.depthWrite : true,
-		side: params.side || 2,// 0 = backFaceCull, 1 = frontFaceCull, 2 = doubleSided
-		linewidth: 1,
+		blending: params.blending || 2,
+		depthTest: params.depthTest || false,
+		depthWrite: params.depthWrite !== undefined ? params.depthWrite : false,
+		side: params.side || 1,// 0 = backFaceCull, 1 = frontFaceCull, 2 = doubleSided
 
 		// TODO: if radius is staying at 1 lets remove it
 
@@ -121,6 +120,8 @@ var ProjectionLinesMaterial = function( params ) {
 
 		'	float d = max( vColor.x, max( vColor.y, vColor.z ));',
 
+		'	vAlpha = d;',
+
 		'	vec3 center = vec3( uv, 0.);',
 
 		'	float lineScale = min( d, 1.);',
@@ -174,7 +175,7 @@ var ProjectionLinesMaterial = function( params ) {
 		'void main()',
 		'{',
 
-		'	gl_FragColor = vec4( vColor * color, opacity);',
+		'	gl_FragColor = vec4( vColor * color, opacity * vAlpha);',
 
 		'}'
 		].join('\n')
