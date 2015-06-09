@@ -53,7 +53,7 @@ Software for the Little Dragon performance at the New Museum
 1. /drums_toggle_0
 	- {"value":1}
 	- {"value":0}
-1. /drums_keyboard_2
+1. /drums_keyboard_1
 	- {"on":115,"note":49,"midi":"49 1"}
 	- {"on":0,"note":49,"midi":"49 0"}
 	- 5 notes 48->52
