@@ -61,7 +61,7 @@ Software for the Little Dragon performance at the New Museum
 	- {"on":74,"note":48,"midi":"48 1"}
 	- {"on":0,"note":48,"midi":"48 0"}
 	- 2 notes 48->49
-1./drums_keyboard_3
+1. /drums_keyboard_3
 	- {"on":60,"note":49,"midi":"49 1"}
 	- {"on":0,"note":49,"midi":"49 0"}
 	- 2 notes 48->49
