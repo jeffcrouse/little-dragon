@@ -9,7 +9,7 @@ Software for the Little Dragon performance at the New Museum
 
 1. /keys_range_1 
 	- {"start":0.193,"stop":0.566}
-1. /keys_multislider_5 
+1. /keys_multislider_1 
 	- {"0":0.33,"list":{"0":0.33,"1":0.604,"2":0.342,"3":0.596,"4":0.521}}
 1. /keys_keyboard_2 
 	- {"on":0,"note":50,"midi":"50 0"}
