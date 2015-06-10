@@ -469,9 +469,10 @@ function ProjectionVisuals( options ) {
 
 	//	transform the keys as a whole
 	bassGroup.position.x -= HALF_WIDTH;
+	bassGroup.position.y += HEIGHT / 3;
 
 	bassGroup.scale.x = WIDTH / bass_index;
-	bassGroup.scale.y = HEIGHT ;// / 3;
+	bassGroup.scale.y = HEIGHT * 2 / 3;
 	bassGroup.scale.z = HEIGHT * .5;
 
 	for(var i in bass)	oscMap[i] = bass[i];
@@ -569,10 +570,10 @@ function ProjectionVisuals( options ) {
 
 	//	transform the keys as a whole for secret reasons
 	drumGroup.position.x -= HALF_WIDTH;
-	drumGroup.position.y += HEIGHT / 3;
+	// drumGroup.position.y += HEIGHT / 3;
 
 	drumGroup.scale.x = WIDTH / drum_index;
-	drumGroup.scale.y = HEIGHT * 2 / 3;
+	drumGroup.scale.y = HEIGHT;// * 2 / 3;
 	drumGroup.scale.z = HEIGHT * .5;
 
 
