@@ -4,7 +4,7 @@ var teoria = require('teoria');
 var midi = require('midi');
 var osc = require('node-osc');
 
-var song = "5";
+var song = "1";
 var songs = {
 	"1": {	
 		"name":"pink cloud", 
@@ -364,7 +364,18 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var drum = addr.charAt(addr.length - 1);
 
 			if(drum == 0){//record button
-				if(data.value==1){ // button down
+				if(song == "2"){//summertearz
+					output.sendMessage([MIDI.CH4.NOTEON, 127, 1]);
+					// if(data.value==1){
+					// 	console.log("start loop");
+					// 	output.sendMessage([MIDI.CH4.NOTEON, 127, 1]);
+					// }
+					// else{
+					// 	console.log("stop loop");
+					// 	output.sendMessage([MIDI.CH4.CONTROL, 126, 0]);
+					// }
+				}
+				else if(data.value==1){ // button down
 					console.log("record");
 					if(!recording){
 					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
@@ -375,13 +386,14 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 						// send NEW message and overwrite message to start recording new scene
 						// if(drum == '1')
 						output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-						
 
 						//send 'session record' to start recording
 						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
 						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
 						lastRecording = Date.now();
 						recording = true;
+
+
 					// }
 					}
 				}
@@ -725,7 +737,8 @@ stdin.on( 'data', function( key ){
 	if(key=='='){
 		
 		// output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
-		output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//OFF
+		// output.sendMessage([MIDI.CH1.CONTROL, 10, 127]);
+		output.sendMessage([MIDI.CH1.CONTROL, 11, 127]);
 	}
 
 	//PROGRAM KEYS
