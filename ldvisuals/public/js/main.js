@@ -27,17 +27,21 @@ $(window).bind("load", function() {
 
 
 	var guiControls = {
-		lineWidth: parseFloat(projection.getLineWidth()),
-		lineLength: parseFloat(projection.getLineLength()),
-		lineOpacity: parseFloat(projection.getLineOpacity()),
-		blending: parseInt(projection.getBlending()),
-		rotation: parseFloat(projection.getRotation()),
-		noiseScale: parseFloat(projection.getNoiseScale()),
-		noiseAmount: parseFloat(projection.getNoiseAmount()),
-		timeScale: parseFloat(projection.getTimeScale()),
-		groupRotationX: parseFloat(projection.getGroupRotationX()),
-		groupRotationY: parseFloat(projection.getGroupRotationY()),
-		groupRotationZ: parseFloat(projection.getGroupRotationZ())
+		lineWidth: parseFloat( projection.getLineWidth() ),
+		lineLength: parseFloat( projection.getLineLength() ),
+		lineOpacity: parseFloat( projection.getLineOpacity() ),
+		blending: parseInt( projection.getBlending() ),
+		rotation: parseFloat( projection.getRotation() ),
+		noiseScale: parseFloat( projection.getNoiseScale() ),
+		noiseAmount: parseFloat( projection.getNoiseAmount() ),
+		timeScale: parseFloat( projection.getTimeScale() ),
+		groupRotationX: parseFloat( projection.getGroupRotationX() ),
+		groupRotationY: parseFloat( projection.getGroupRotationY() ),
+		groupRotationZ: parseFloat( projection.getGroupRotationZ() ),
+		cameraPositionX: parseFloat( projection.getCameraPositionX() ),
+		cameraPositionY: parseFloat( projection.getCameraPositionY() ),
+		cameraZoom: parseFloat( projection.getCameraZoom() ),
+		distortionMaps: projection.getDistortionMaps()
 	}
 	console.log( 'guiControls', guiControls );
 
@@ -85,13 +89,28 @@ $(window).bind("load", function() {
 		projection.setGroupRotationX( value );
 	})
 
-
 	gui.add( guiControls, "lineOpacity", 0.00, 1.00 ).listen().onChange( function( value ){
 		projection.setLineOpacity( value );
 	})
 
+	gui.add( guiControls, "cameraZoom", 0.1, 1.00 ).listen().onChange( function( value ){
+		projection.setCameraZoom( value );
+	})
+
+	gui.add( guiControls, "cameraPositionX", -512, 512 ).listen().onChange( function( value ){
+		projection.setCameraPositionX( value );
+	})
+
+	
+	gui.add( guiControls, "cameraPositionY", -256, 256 ).listen().onChange( function( value ){
+		projection.setCameraPositionY( value );
+	})
 	gui.add( guiControls, "blending", { "0":0,"1":1, "2":2 } ).listen().onChange( function( value ){
 		projection.setBlending( parseInt(value) );
+	})
+
+	gui.add( guiControls, "distortionMaps", { "0":0,"1":1, "2":2, "3":3, "4":4, "5":5 } ).listen().onChange( function( value ){
+		projection.setDistortionMap( parseInt(value) );
 	})
 
 	// gui.add( guiControls, "groupRotationY", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
