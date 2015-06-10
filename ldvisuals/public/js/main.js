@@ -305,7 +305,7 @@ setTimeout( function(){
 	});
 	socket.on('button6', function(data){
 		guiControls.distortionMaps = 5;
-		projection.setDistortionMap( 6 );
+		projection.setDistortionMap( 5 );
 	});
 
 
