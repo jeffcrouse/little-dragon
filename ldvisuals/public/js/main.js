@@ -274,7 +274,7 @@ setTimeout( function(){
 	socket.on('x_axis', function(data){
 		var value = Math.map(data, 0, 1, -512, 512 );
 		guiControls.vameraPositionX = value;
-		projection.setCameraPositionY( value );
+		projection.setCameraPositionX( value );
 	});
 	socket.on('y_axis', function(data){
 		var value = Math.map(data, 0, 1, -256, 256 );
