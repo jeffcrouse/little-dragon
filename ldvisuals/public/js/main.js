@@ -232,10 +232,9 @@ setTimeout( function(){
 		projection.setLineLength( value );
 	});
 	socket.on('slider3', function (data) {
-		var value = Math.map(data, 0, 1, 0.5, 1.00);
-		guiControls.lineOpacity =  value;
-		projection.setLineOpacity( value );
-
+		var value = Math.map(data, 0, 1, 0.1, 1.00);
+		guiControls.cameraZoom =  value;
+		projection.setCameraZoom( value );
 	});
 	socket.on('slider4', function (data) {
 		var value = Math.map(data, 0, 1, 0, Math.PI * 4);
@@ -243,17 +242,18 @@ setTimeout( function(){
 		projection.setRotation( value );
 	});
 	socket.on('slider5', function (data) {
-		//console.log("slider5", data);
 		var value = Math.map(data, 0, 1, .0001, .02 );
 		guiControls.noiseScale = value;
 		projection.setNoiseScale( value );
 	});
 	socket.on('slider6', function (data) {
-		//console.log("slider6", data);
 		var value = Math.map(data, 0, 1, 0, 4 );
 		guiControls.noiseAmount = value;
 		projection.setNoiseAmount( value );
 	});
+
+
+
 	socket.on('knob1', function(data){
 		console.log("knob1", data);
 	});
@@ -272,34 +272,42 @@ setTimeout( function(){
 		projection.setTimeScale( value );
 	});
 	socket.on('x_axis', function(data){
-		var value = Math.map(data, 0, 1, 0, Math.PI*3 );
-		guiControls.groupRotationX = value;
-		projection.setGroupRotationX( value );
+		var value = Math.map(data, 0, 1, -512, 512 );
+		guiControls.vameraPositionX = value;
+		projection.setCameraPositionY( value );
 	});
-	
-	/*
 	socket.on('y_axis', function(data){
-
+		var value = Math.map(data, 0, 1, -256, 256 );
+		guiControls.vameraPositionY = value;
+		projection.setCameraPositionY( value );
 	});
+
 	socket.on('button1', function(data){
 		console.log("button1", data);
+		guiControls.distortionMaps = 0;
+		projection.setDistortionMap( 0 );
 	});
 	socket.on('button2', function(data){
-		console.log("button2", data);
+		guiControls.distortionMaps = 1;
+		projection.setDistortionMap( 1 );
 	});
 	socket.on('button3', function(data){
-		console.log("button3", data);
+		guiControls.distortionMaps = 2;
+		projection.setDistortionMap( 2 );
 	});
 	socket.on('button4', function(data){
-		console.log("button4", data);
+		guiControls.distortionMaps = 3;
+		projection.setDistortionMap( 3 );
 	});
 	socket.on('button5', function(data){
-		console.log("button5", data);
+		guiControls.distortionMaps = 4;
+		projection.setDistortionMap( 4 );
 	});
 	socket.on('button6', function(data){
-		console.log("button6", data);
+		guiControls.distortionMaps = 5;
+		projection.setDistortionMap( 6 );
 	});
-	*/
+
 
 });
 
