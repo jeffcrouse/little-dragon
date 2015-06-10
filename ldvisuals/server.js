@@ -76,7 +76,7 @@ app.get('/', function (req, res) {
 ██║ ╚═╝ ██║██║██████╔╝██║    ██║██║ ╚████║██║     ╚██████╔╝   ██║   
 ╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝    ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝    ╚═╝   
 *******************************************************************/
-/*
+
 var input = new midi.input();
 
 var devices = {};
@@ -127,7 +127,6 @@ if("USB Uno MIDI Interface" in devices)
 		}
 	});
 }
-*/
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
