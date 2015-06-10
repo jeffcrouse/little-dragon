@@ -9,8 +9,9 @@
 
 $(window).bind("load", function() {
 
+
 	console.log( " \n \n little dragon projection sketch \n \n " );
-	
+
 	var projection = ProjectionVisuals({
 		lineLength: 20,
 		lineWidth: 4,
@@ -26,7 +27,7 @@ $(window).bind("load", function() {
 
 	var bDoGUI = getQueryVariable("gui");
 
-	if(bDoGui) {
+	if(bDoGUI) {
 
 		var guiControls = {
 			lineWidth: parseFloat( projection.getLineWidth() ),
