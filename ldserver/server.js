@@ -268,8 +268,9 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 		else if(addr=="/keys_tilt_1") {
-			var pan = (data.x +1) * FULL_VELOCITY/2;
-			midiMessage = [MIDI.CH1.CONTROL, 5, pan];
+			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true);
+			console.log("tilt keys: " + reverb);
+			midiMessage = [MIDI.CH1.CONTROL, 5, reverb];
 			output.sendMessage(midiMessage);
 		}
 
@@ -298,9 +299,9 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		}
 
 		else if(addr=="/bass_tilt_1") {
-			var pan = Math.map(data.x, 0, 0.2, 127, 0, true); 
+			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true); 
 
-			midiMessage = [MIDI.CH2.CONTROL, 5, pan];
+			midiMessage = [MIDI.CH2.CONTROL, 5, reverb];
 			output.sendMessage(midiMessage);
 		}
 
@@ -349,11 +350,16 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 		
+		else if(addr=="/drums_tilt_1") {
+			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true);
+			console.log("drums tilt: " + reverb);
+			midiMessage = [MIDI.CH3.CONTROL, 5, reverb];
+			output.sendMessage(midiMessage);
+		}
 
-		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
+		
 		else if(contains(addr, '/drums')){
 			var drum = addr.charAt(addr.length - 1);
-			console.log("drum: " + drum);
 
 			if(drum == 0){//record button
 				if(data.value==1){ // button down
@@ -543,12 +549,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			
 		// }
 
-		else if(addr=="/drums_tilt_1") {
-			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
-			
-			midiMessage = [MIDI.CH3.CONTROL, 5, pan];
-			output.sendMessage(midiMessage);
-		}
+		
 
 
 
@@ -781,7 +782,7 @@ stdin.on( 'data', function( key ){
 	
 	//tilt
 	if(key=='g') {
-		output.sendMessage([MIDI.CH2.CONTROL, 5, 1]);
+		output.sendMessage([MIDI.CH3.CONTROL, 5, 1]);
 	}
 
 	//REC BUTTON
