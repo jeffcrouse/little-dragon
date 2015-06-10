@@ -32,7 +32,7 @@ float spinnerPos = 0;
 float spinnerWidth = 20;
 float vocalGlow = 0;
 
-
+color[] particleColors = new color[6];
 
 
 // -------------------------------
@@ -52,9 +52,16 @@ void setup()
   qheight = height / 4.0;
   qwidth = width / 4.0;
 
+  particleColors[0] = color(255, 0, 0);
+  particleColors[1] = color(250, 100, 100);
+  particleColors[2] = color(255, 255, 255);
+  particleColors[3] = color(200, 225, 240);
+  particleColors[4] = color(130, 200, 224);
+  particleColors[5] = color(0, 255, 180);
+
   color greenish = color(10, 255, 10);
   color white = color(255, 255, 255);
-  color red = color(255, 20, 50);
+  color red = color(250, 50, 50);
 
   slots[0] = new PhoneSlot(0.074, greenish);
   slots[1] = new PhoneSlot(0.1, greenish);
@@ -117,12 +124,12 @@ void setup()
 
   // https://github.com/scanlime/fadecandy/blob/master/doc/processing_opc_client.md
   opc.ledStrip(0, 240, qwidth, qheight, width / 450, 0, false); //RIGHT TOP
-  opc.ledStrip(256, 300, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
-  opc.ledStrip(576, 300, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
+  opc.ledStrip(251, 320, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
+  opc.ledStrip(576, 320, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
 
   opc.ledStrip(1024, 240, qwidth*3, qheight, width / 450, 0, true);  // LEFT TOP
-  opc.ledStrip(1280, 300, qwidth*3, qheight*2, width / 540, 0, true); // LEFT BOTTOM 1
-  opc.ledStrip(1600, 300, qwidth*3, qheight*3, width / 540, 0, true); // LEFT BOTTOM 2
+  opc.ledStrip(1280, 360, qwidth*3, qheight*2, width / 540, 0, true); // LEFT BOTTOM 1
+  opc.ledStrip(1600, 360, qwidth*3, qheight*3, width / 540, 0, true); // LEFT BOTTOM 2
 }
 
 
@@ -191,20 +198,20 @@ void pre() {
   int deltaTime = now - lastFrame;
   lastFrame = now;
 
+  float vocals = accessMic.left.level() + accessMic.right.level();
 
-//  if (keyPressed && key=='v') {
-//    if (vocalGlow < 240) vocalGlow += 10;
-//  } else {
-//    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
-//  }
+  vocalGlow = vocals * 2000;
+  /*
+  if (keyPressed && key=='v') {
+    if (vocalGlow < 240) vocalGlow += 10;
+  } else {
+    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
+  }
 
-
-
-//  if (keyPressed && key=='b') {
-//    vocalGlow=255;
-//  }
-
-  vocalGlow = accessMic.left.level() * 500;
+  if (keyPressed && key=='b') {
+    vocalGlow=255;
+  }
+*/
 
   float elapsed = (deltaTime / 1000.0);
   leftFade += fadeSpeed * elapsed;

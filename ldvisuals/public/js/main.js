@@ -22,7 +22,11 @@ $(window).bind("load", function() {
 		timeScale: -1,
 		spacing: 10,
 		lineOpacity: 1,
-		blending: 1
+		blending: 1,
+		left: getQueryVariable("left"),
+		top: getQueryVariable("top"),
+		width: getQueryVariable("width"),
+		height: getQueryVariable("height")
 	});
 
 	var bDoGUI = getQueryVariable("gui");
@@ -66,7 +70,7 @@ $(window).bind("load", function() {
 			projection.setLineWidth( value );
 		})
 
-		gui.add( guiControls, "lineLength", 1, 200 ).listen().onChange( function( value ){
+		gui.add( guiControls, "lineLength", 1, 700 ).listen().onChange( function( value ){
 			projection.setLineLength( value );
 		})
 

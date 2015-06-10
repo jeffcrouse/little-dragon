@@ -114,7 +114,11 @@ function ProjectionVisuals( options ) {
 
 	var WIDTH =  options.width || window.innerWidth; // 1280;//
 	var HEIGHT = options.height || window.innerHeight; // 720;//
+	var LEFT = options.left || 0;
+	var TOP = options.top || 0;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
+	console.log("LEFT", LEFT, "TOP", TOP);
+
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
@@ -137,15 +141,15 @@ function ProjectionVisuals( options ) {
 	var origin = v3(0,0,0);
 
 	//CONTAINER
-	var container = $("<div>", {id: "contianer"}).css({
+	var container = $("<div>", {id: "container"}).css({
 		position: "absolute",
-		left: 0,
-		top: 0,
 		width: WIDTH, // 1280, // WIDTH,
 		height: HEIGHT, // 800, // HEIGHT,
 		pointerEvents: "none",
 		backgroundColor: "rgba( 0, 0, 0, 1)"
 	}).appendTo( document.body );
+
+	container.offset({ top: TOP, left: LEFT})
 
 	//THREE
 	var scene, renderer, renderTarget, camera, group, clock = new THREE.Clock();
