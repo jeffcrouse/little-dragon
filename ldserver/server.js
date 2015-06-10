@@ -76,8 +76,7 @@ var songs = {
 	}
 }
 
-var scaleKeys = songs[song].scaleKeys;
-var scaleBass = songs[song].scaleBass;
+
 
 
 // Set up MIDI
@@ -134,6 +133,9 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
+
+		var scaleKeys = songs[song].scaleKeys;
+		var scaleBass = songs[song].scaleBass;
 		
 		var addr = msg.shift();
 		var data = JSON.parse(msg.shift());
@@ -696,6 +698,29 @@ stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
 	
+	//change song
+	if(key=='1'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 1. PINK CLOUD ~~~~~~~~~~~~~~~~");
+		song = "1";
+	}
+	if(key=='2'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 2. SUMMERTEARZ ~~~~~~~~~~~~~~~~");
+		song = "2";
+	}
+	if(key=='3'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 3. TEST ~~~~~~~~~~~~~~~~");
+		song = "3";
+	}
+	if(key=='4'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 4. PRETTY GIRLS ~~~~~~~~~~~~~~~~");
+		song = "4";
+	}
+	if(key=='5'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 5. TWICE ~~~~~~~~~~~~~~~~");
+		song = "5";
+	}
+
+
 	//multipurpose
 	if(key=='='){
 		
@@ -714,21 +739,21 @@ stdin.on( 'data', function( key ){
 
 
 	//multislider 
-	if(key=='1') {
+	if(key=='z') {
 		output.sendMessage([MIDI.CH1.CONTROL, 1, 1]);
 	}
-	if(key=='2') {
+	if(key=='x') {
 		output.sendMessage([MIDI.CH1.CONTROL, 2, 1]);
 	}
-	if(key=='3') {
+	if(key=='c') {
 		output.sendMessage([MIDI.CH1.CONTROL, 3, 1]);
 	}
-	if(key=='4') {
+	if(key=='v') {
 		output.sendMessage([MIDI.CH1.CONTROL, 4, 1]);
 	}
 
 	//tilt
-	if(key=='5') {
+	if(key=='b') {
 		output.sendMessage([MIDI.CH1.CONTROL, 5, 1]);
 	}
 
@@ -756,12 +781,12 @@ stdin.on( 'data', function( key ){
 	//PROGRAM VOICE
 	
 	//multislider 
-	if(key=='z') {
-		output.sendMessage([MIDI.CH4.CONTROL, 1, 1]);
-	}
-	if(key=='x') {
-		output.sendMessage([MIDI.CH4.CONTROL, 2, 1]);
-	}
+	// if(key=='z') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 1, 1]);
+	// }
+	// if(key=='x') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 2, 1]);
+	// }
 	
 
 	//PROGRAM DRUMS
