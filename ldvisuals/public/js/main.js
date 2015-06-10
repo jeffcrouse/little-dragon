@@ -192,13 +192,13 @@ setTimeout( function(){
 		projection.handleOSC( "/drums_keyboard_1", data );
 	});
 	socket.on('/drums_keyboard_2', function (data) {
-		projection.handleOSC( "/drums_keyboard_1", data );
+		projection.handleOSC( "/drums_keyboard_2", data );
 	});
 	socket.on('/drums_keyboard_3', function (data) {
-		projection.handleOSC( "/drums_keyboard_1", data );
+		projection.handleOSC( "/drums_keyboard_3", data );
 	});
 	socket.on('/drums_keyboard_4', function (data) {
-		projection.handleOSC( "/drums_keyboard_1", data );
+		projection.handleOSC( "/drums_keyboard_4", data );
 	});
 
 

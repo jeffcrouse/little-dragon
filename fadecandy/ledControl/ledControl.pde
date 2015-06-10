@@ -23,7 +23,7 @@ float rightFade = PI;
 float spinnerSpeed = 1.0;
 float spinnerPos = 0;
 float spinnerWidth = 20;
-
+float vocalGlow = 0;
 
 
 // -------------------------------
@@ -94,7 +94,7 @@ void setup()
       .setPosition(20, 170)
         .setRange(10, 2000)
           ;
-          
+
   cp5.addSlider("spinnerWidth")
     .setSize(100, 20)
       .setPosition(20, 200)
@@ -179,6 +179,16 @@ void pre() {
   lastFrame = now;
 
 
+  if (keyPressed && key=='v') {
+    if (vocalGlow < 240) vocalGlow += 10;
+  } else {
+    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
+  }
+
+  if (keyPressed && key=='b') {
+    vocalGlow=255;
+  }
+
   float elapsed = (deltaTime / 1000.0);
   leftFade += fadeSpeed * elapsed;
   rightFade += fadeSpeed * elapsed;
@@ -236,6 +246,11 @@ void draw()
     particles.get(i).draw();
   }
 
+
+  if (vocalGlow > 0) {
+    fill(10, 200, 50, vocalGlow);
+    rect(.875*width, qheight, 200, 20);
+  }
 
   if (positionBar) {
 
