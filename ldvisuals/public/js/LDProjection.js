@@ -390,7 +390,8 @@ function ProjectionVisuals( options ) {
 	var bass = {
 
 		"/bass_keyboard_1": {
-			color: 0x2BFCB7,
+			// color: 0x2BFCB7,
+			color: 0xF71B24,
 			count: 3,
 			keys: {},
 			group: new THREE.Group(),
@@ -398,7 +399,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_2": {
-			color: 0x2BFECA,
+			// color: 0x2BFECA,
+			color: 0xF72C32,
 			count: 4,
 			keys: {},
 			group: new THREE.Group(),
@@ -406,7 +408,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_3": {
-			color: 0x2CFEDD,
+			// color: 0x2CFEDD,
+			color: 0xF73E42,
 			count: 3,
 			keys: {},
 			group: new THREE.Group(),
@@ -414,7 +417,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_4": {
-			color: 0x2DFFFE,
+			// color: 0x2DFFFE,
+			color: 0xF73E42,
 			count: 4,
 			keys: {},
 			group: new THREE.Group(),
@@ -489,7 +493,8 @@ function ProjectionVisuals( options ) {
 	var drums = {
 
 		"/drums_keyboard_1": {
-			color: 0xF71B24,
+			color: 0x2BFCB7,
+			// color: 0xF71B24,
 			count: 5,
 			keys: {},
 			group: new THREE.Group(),
@@ -497,7 +502,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_2": {
-			color: 0xF72C32,
+			color: 0x2BFECA,
+			// color: 0xF72C32,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -505,7 +511,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_3": {
-			color: 0xF73E42,
+			color: 0x2CFEDD,
+			// color: 0xF73E42,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -513,7 +520,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_4": {
-			color: 0xF73E42,
+			color: 0x2DFFFE,
+			// color: 0xF73E42,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
