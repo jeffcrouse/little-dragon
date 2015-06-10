@@ -1,10 +1,17 @@
 import controlP5.*;
 import oscP5.*;
 import netP5.*;
+import ddf.minim.analysis.*;
+import ddf.minim.*;
+
 
 OPC opc;
 OscP5 oscP5;
 ControlP5 cp5;
+Minim       minim;
+AudioInput  accessMic;
+FFT         fft;
+
 
 float qheight;
 float qwidth;
@@ -26,6 +33,8 @@ float spinnerWidth = 20;
 float vocalGlow = 0;
 
 
+
+
 // -------------------------------
 void setup()
 {
@@ -35,6 +44,10 @@ void setup()
   opc = new OPC(this, "127.0.0.1", 7890);
   oscP5 = new OscP5(this, 3333);
   cp5 = new ControlP5(this);
+
+
+  minim = new Minim(this);
+  accessMic = minim.getLineIn();
 
   qheight = height / 4.0;
   qwidth = width / 4.0;
@@ -179,15 +192,19 @@ void pre() {
   lastFrame = now;
 
 
-  if (keyPressed && key=='v') {
-    if (vocalGlow < 240) vocalGlow += 10;
-  } else {
-    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
-  }
+//  if (keyPressed && key=='v') {
+//    if (vocalGlow < 240) vocalGlow += 10;
+//  } else {
+//    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
+//  }
 
-  if (keyPressed && key=='b') {
-    vocalGlow=255;
-  }
+
+
+//  if (keyPressed && key=='b') {
+//    vocalGlow=255;
+//  }
+
+  vocalGlow = accessMic.left.level() * 500;
 
   float elapsed = (deltaTime / 1000.0);
   leftFade += fadeSpeed * elapsed;

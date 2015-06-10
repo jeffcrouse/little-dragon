@@ -24,104 +24,104 @@ $(window).bind("load", function() {
 		blending: 1
 	});
 
+	var bDoGUI = getQueryVariable("gui");
 
+	if(bDoGui) {
 
-	var guiControls = {
-		lineWidth: parseFloat( projection.getLineWidth() ),
-		lineLength: parseFloat( projection.getLineLength() ),
-		lineOpacity: parseFloat( projection.getLineOpacity() ),
-		blending: parseInt( projection.getBlending() ),
-		rotation: parseFloat( projection.getRotation() ),
-		noiseScale: parseFloat( projection.getNoiseScale() ),
-		noiseAmount: parseFloat( projection.getNoiseAmount() ),
-		timeScale: parseFloat( projection.getTimeScale() ),
-		groupRotationX: parseFloat( projection.getGroupRotationX() ),
-		groupRotationY: parseFloat( projection.getGroupRotationY() ),
-		groupRotationZ: parseFloat( projection.getGroupRotationZ() ),
-		cameraPositionX: parseFloat( projection.getCameraPositionX() ),
-		cameraPositionY: parseFloat( projection.getCameraPositionY() ),
-		cameraZoom: parseFloat( projection.getCameraZoom() ),
-		distortionMaps: projection.getDistortionMaps()
+		var guiControls = {
+			lineWidth: parseFloat( projection.getLineWidth() ),
+			lineLength: parseFloat( projection.getLineLength() ),
+			lineOpacity: parseFloat( projection.getLineOpacity() ),
+			blending: parseInt( projection.getBlending() ),
+			rotation: parseFloat( projection.getRotation() ),
+			noiseScale: parseFloat( projection.getNoiseScale() ),
+			noiseAmount: parseFloat( projection.getNoiseAmount() ),
+			timeScale: parseFloat( projection.getTimeScale() ),
+			groupRotationX: parseFloat( projection.getGroupRotationX() ),
+			groupRotationY: parseFloat( projection.getGroupRotationY() ),
+			groupRotationZ: parseFloat( projection.getGroupRotationZ() ),
+			cameraPositionX: parseFloat( projection.getCameraPositionX() ),
+			cameraPositionY: parseFloat( projection.getCameraPositionY() ),
+			cameraZoom: parseFloat( projection.getCameraZoom() ),
+			distortionMaps: projection.getDistortionMaps()
+		}
+		console.log( 'guiControls', guiControls );
+
+		var gui = new dat.GUI();
+
+		// gui.remember( guiControls );
+
+		var guiContainer = $("<div>", {id: "GUIContainer"});
+		guiContainer.css({
+			position: "absolute",
+			left: "20px",
+			top: "20px",
+			pointerEvents: "auto"
+		});
+		$(projection.container).append( guiContainer );
+
+		//LINE WIDTH AND HEIGHT
+		gui.add( guiControls, "lineWidth", 1, 100 ).listen().onChange( function( value ){
+			projection.setLineWidth( value );
+		})
+
+		gui.add( guiControls, "lineLength", 1, 200 ).listen().onChange( function( value ){
+			projection.setLineLength( value );
+		})
+
+		// LINE ROTATION & NOISE
+		gui.add( guiControls, "rotation", 0, Math.PI * 4 ).listen().onChange( function( value ){
+			projection.setRotation( value );
+		});
+
+		gui.add( guiControls, "noiseScale", .0001, .02 ).listen().onChange( function( value ){
+			projection.setNoiseScale( value );
+		});
+
+		gui.add( guiControls, "noiseAmount", 0, 4 ).listen().onChange( function( value ){
+			projection.setNoiseAmount( value );
+		});
+
+		gui.add( guiControls, "timeScale", -5.000, 5.000 ).listen().onChange( function(value) {
+			projection.setTimeScale( value );
+		})
+
+		gui.add( guiControls, "groupRotationX", 0, Math.PI*3 ).step(.001).listen().onChange( function(value) {
+			projection.setGroupRotationX( value );
+		})
+
+		gui.add( guiControls, "lineOpacity", 0.00, 1.00 ).listen().onChange( function( value ){
+			projection.setLineOpacity( value );
+		})
+
+		gui.add( guiControls, "cameraZoom", 0.1, 1.00 ).listen().onChange( function( value ){
+			projection.setCameraZoom( value );
+		})
+
+		gui.add( guiControls, "cameraPositionX", -512, 512 ).listen().onChange( function( value ){
+			projection.setCameraPositionX( value );
+		})
+
+		
+		gui.add( guiControls, "cameraPositionY", -256, 256 ).listen().onChange( function( value ){
+			projection.setCameraPositionY( value );
+		})
+		gui.add( guiControls, "blending", { "0":0,"1":1, "2":2 } ).listen().onChange( function( value ){
+			projection.setBlending( parseInt(value) );
+		})
+
+		gui.add( guiControls, "distortionMaps", { "0":0,"1":1, "2":2, "3":3, "4":4, "5":5 } ).listen().onChange( function( value ){
+			projection.setDistortionMap( parseInt(value) );
+		})
+
+		// gui.add( guiControls, "groupRotationY", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
+		// 	projection.setGroupRotationY( value );
+		// })
+
+		// gui.add( guiControls, "groupRotationZ", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
+		// 	projection.setGroupRotationZ( value );
+		// })
 	}
-	console.log( 'guiControls', guiControls );
-
-	var gui = new dat.GUI();
-
-
-	// gui.remember( guiControls );
-
-	var guiContainer = $("<div>", {id: "GUIContainer"});
-	guiContainer.css({
-		position: "absolute",
-		left: "20px",
-		top: "20px",
-		pointerEvents: "auto"
-	});
-	$(projection.container).append( guiContainer );
-
-	//LINE WIDTH AND HEIGHT
-	gui.add( guiControls, "lineWidth", 1, 100 ).listen().onChange( function( value ){
-		projection.setLineWidth( value );
-	})
-
-	gui.add( guiControls, "lineLength", 1, 200 ).listen().onChange( function( value ){
-		projection.setLineLength( value );
-	})
-
-	// LINE ROTATION & NOISE
-	gui.add( guiControls, "rotation", 0, Math.PI * 4 ).listen().onChange( function( value ){
-		projection.setRotation( value );
-	});
-
-	gui.add( guiControls, "noiseScale", .0001, .02 ).listen().onChange( function( value ){
-		projection.setNoiseScale( value );
-	});
-
-	gui.add( guiControls, "noiseAmount", 0, 4 ).listen().onChange( function( value ){
-		projection.setNoiseAmount( value );
-	});
-
-	gui.add( guiControls, "timeScale", -5.000, 5.000 ).listen().onChange( function(value) {
-		projection.setTimeScale( value );
-	})
-
-	gui.add( guiControls, "groupRotationX", 0, Math.PI*3 ).step(.001).listen().onChange( function(value) {
-		projection.setGroupRotationX( value );
-	})
-
-	gui.add( guiControls, "lineOpacity", 0.00, 1.00 ).listen().onChange( function( value ){
-		projection.setLineOpacity( value );
-	})
-
-	gui.add( guiControls, "cameraZoom", 0.1, 1.00 ).listen().onChange( function( value ){
-		projection.setCameraZoom( value );
-	})
-
-	gui.add( guiControls, "cameraPositionX", -512, 512 ).listen().onChange( function( value ){
-		projection.setCameraPositionX( value );
-	})
-
-	
-	gui.add( guiControls, "cameraPositionY", -256, 256 ).listen().onChange( function( value ){
-		projection.setCameraPositionY( value );
-	})
-	gui.add( guiControls, "blending", { "0":0,"1":1, "2":2 } ).listen().onChange( function( value ){
-		projection.setBlending( parseInt(value) );
-	})
-
-	gui.add( guiControls, "distortionMaps", { "0":0,"1":1, "2":2, "3":3, "4":4, "5":5 } ).listen().onChange( function( value ){
-		projection.setDistortionMap( parseInt(value) );
-	})
-
-	// gui.add( guiControls, "groupRotationY", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
-	// 	projection.setGroupRotationY( value );
-	// })
-
-	// gui.add( guiControls, "groupRotationZ", -Math.PI*2, Math.PI*2 ).step(.001).listen().onChange( function(value) {
-	// 	projection.setGroupRotationZ( value );
-	// })
-
-
 
 	// var projection = BlendParticles({
 	//   controller: {
@@ -143,43 +143,38 @@ $(window).bind("load", function() {
 	// });
 
 
-/*
-setInterval( function(){
-	projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
-}, 500);
-=======
-// setInterval( function(){
-// 	projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
-// }, 500);
->>>>>>> edec331fe4b0b6f19dac04d319b6497c76d64701
-
-// setTimeout( function(){
-// 	setInterval( function(){
-// 		projection.handleOSC( "/keys_keyboard_2", {"on":0,"note":50,"midi":"50 1"} );
-// 	}, 500);
-// }, 300 )
-
-// setInterval( function(){
-// 	projection.handleOSC( "/bass_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
-// }, 500);
-
-// setTimeout( function(){
-// 	setInterval( function(){
-// 		projection.handleOSC( "/bass_keyboard_2", {"on":0,"note":50,"midi":"50 1"} );
-// 	}, 500);
-// }, 300 )
-
-
-// setInterval( function(){
-// 	projection.handleOSC( "/drums_keyboard_2", {"on":64,"note":48,"midi":"50 1"} );
-// }, 500);
-
-setTimeout( function(){
+	/*
 	setInterval( function(){
-		projection.handleOSC( "/drums_keyboard_2", {"on":0,"note":48,"midi":"50 1"} );
+		projection.handleOSC( "/keys_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
 	}, 500);
-}, 300 )
-*/
+
+	// setTimeout( function(){
+	// 	setInterval( function(){
+	// 		projection.handleOSC( "/keys_keyboard_2", {"on":0,"note":50,"midi":"50 1"} );
+	// 	}, 500);
+	// }, 300 )
+
+	// setInterval( function(){
+	// 	projection.handleOSC( "/bass_keyboard_2", {"on":64,"note":50,"midi":"50 1"} );
+	// }, 500);
+
+	// setTimeout( function(){
+	// 	setInterval( function(){
+	// 		projection.handleOSC( "/bass_keyboard_2", {"on":0,"note":50,"midi":"50 1"} );
+	// 	}, 500);
+	// }, 300 )
+
+
+	// setInterval( function(){
+	// 	projection.handleOSC( "/drums_keyboard_2", {"on":64,"note":48,"midi":"50 1"} );
+	// }, 500);
+
+	setTimeout( function(){
+		setInterval( function(){
+			projection.handleOSC( "/drums_keyboard_2", {"on":0,"note":48,"midi":"50 1"} );
+		}, 500);
+	}, 300 )
+	*/
 
 
 	//
@@ -223,37 +218,35 @@ setTimeout( function(){
 
 	socket.on('slider1', function (data) {
 		var value = Math.map(data, 0, 1, 2, 20);
-		guiControls.lineWidth =  value;
+		if(guiControls) guiControls.lineWidth =  value;
 		projection.setLineWidth( value );
 	});
 	socket.on('slider2', function (data) {
 		var value = Math.map(data, 0, 1, 1, 200);
-		guiControls.lineLength =  value;
+		if(guiControls) guiControls.lineLength =  value;
 		projection.setLineLength( value );
 	});
 	socket.on('slider3', function (data) {
 		var value = Math.map(data, 0, 1, 0.1, 1.00);
-		guiControls.cameraZoom =  value;
+		if(guiControls) guiControls.cameraZoom =  value;
 		projection.setCameraZoom( value );
 	});
 	socket.on('slider4', function (data) {
 		var value = Math.map(data, 0, 1, 0, Math.PI * 4);
-		guiControls.rotation = value;
+		if(guiControls) guiControls.rotation = value;
 		projection.setRotation( value );
 	});
 	socket.on('slider5', function (data) {
 		var value = Math.map(data, 0, 1, .0001, .02 );
-		guiControls.noiseScale = value;
+		if(guiControls) guiControls.noiseScale = value;
 		projection.setNoiseScale( value );
 	});
 	socket.on('slider6', function (data) {
 		var value = Math.map(data, 0, 1, 0, 4 );
-		guiControls.noiseAmount = value;
+		if(guiControls) guiControls.noiseAmount = value;
 		projection.setNoiseAmount( value );
 	});
-
-
-
+	/*
 	socket.on('knob1', function(data){
 		console.log("knob1", data);
 	});
@@ -266,48 +259,48 @@ setTimeout( function(){
 	socket.on('knob4', function(data){
 		console.log("knob4", data);
 	});
+	*/
 	socket.on('xfade', function(data){
 		var value = Math.map(data, 0, 1, -10, 10 );
-		guiControls.timeScale = value;
+		if(guiControls) guiControls.timeScale = value;
 		projection.setTimeScale( value );
 	});
 	socket.on('x_axis', function(data){
 		var value = Math.map(data, 0, 1, -512, 512 );
-		guiControls.vameraPositionX = value;
+		if(guiControls) guiControls.vameraPositionX = value;
 		projection.setCameraPositionX( value );
 	});
 	socket.on('y_axis', function(data){
 		var value = Math.map(data, 0, 1, -256, 256 );
-		guiControls.vameraPositionY = value;
+		if(guiControls) guiControls.vameraPositionY = value;
 		projection.setCameraPositionY( value );
 	});
 
 	socket.on('button1', function(data){
 		console.log("button1", data);
-		guiControls.distortionMaps = 0;
+		if(guiControls) guiControls.distortionMaps = 0;
 		projection.setDistortionMap( 0 );
 	});
 	socket.on('button2', function(data){
-		guiControls.distortionMaps = 1;
+		if(guiControls) guiControls.distortionMaps = 1;
 		projection.setDistortionMap( 1 );
 	});
 	socket.on('button3', function(data){
-		guiControls.distortionMaps = 2;
+		if(guiControls) guiControls.distortionMaps = 2;
 		projection.setDistortionMap( 2 );
 	});
 	socket.on('button4', function(data){
-		guiControls.distortionMaps = 3;
+		if(guiControls) guiControls.distortionMaps = 3;
 		projection.setDistortionMap( 3 );
 	});
 	socket.on('button5', function(data){
-		guiControls.distortionMaps = 4;
+		if(guiControls) guiControls.distortionMaps = 4;
 		projection.setDistortionMap( 4 );
 	});
 	socket.on('button6', function(data){
-		guiControls.distortionMaps = 5;
+		if(guiControls) guiControls.distortionMaps = 5;
 		projection.setDistortionMap( 5 );
 	});
-
 
 });
 
