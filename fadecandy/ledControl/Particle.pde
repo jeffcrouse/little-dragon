@@ -6,7 +6,8 @@ class Particle {
   color myColor;
 
   Particle() {
-    myColor = color(random(200, 255), random(100), random(100));
+    int r = (int)random(0, particleColors.length);
+    myColor = particleColors[r];
     pos.set(0, qheight*2.5);
     vel.x = 2.5;
   }

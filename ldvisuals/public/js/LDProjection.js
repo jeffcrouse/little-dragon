@@ -72,22 +72,7 @@ var LDProjectionKeyMaterial = function( params ) {
 
 		'	vec3 c = mix( fade_color, color, (1. - smootherstep( abs( vUv.y ) ) * .9) * fade);',
 
-		// '	vec3 c = mix( fade_color, color * min( pow(sin( vUv.y * 3.14), 2.) + .25, 1.), fade);',
-
 		'	gl_FragColor = vec4( c, opacity );',
-
-		// '	float grad = 1.;',
-
-		// '	if(vUv.x < start)	grad = mapLinear( vUv.x, start-fadeDistance, start, 0., 1. );',
-
-		// '	else if(vUv.x > stop)	grad = mapLinear( vUv.x, stop, stop+fadeDistance, 1., 0. );',
-
-
-		// // '	float grad = vUv.x < start ? vUv.x / start : vUv.x > stop ? (1. - vUv.x) / (1. - stop) : 1. ;',
-
-		// '	grad = smootherstep( pow( max(0., grad), 1.5 ) );',
-
-		// '	gl_FragColor = vec4( vec3( grad ), 1. );',
 
 		'}'
 		].join('\n')
@@ -127,9 +112,13 @@ function ProjectionVisuals( options ) {
 
 	var PROJECTOR_NUM = options.num || 1;
 
-	var WIDTH = 1280;// options.width || window.innerWidth;
-	var HEIGHT = 720;//options.height || window.innerHeight;
+	var WIDTH =  options.width || window.innerWidth; // 1280;//
+	var HEIGHT = options.height || window.innerHeight; // 720;//
+	var LEFT = options.left || 0;
+	var TOP = options.top || 0;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
+	console.log("LEFT", LEFT, "TOP", TOP);
+
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
@@ -152,15 +141,15 @@ function ProjectionVisuals( options ) {
 	var origin = v3(0,0,0);
 
 	//CONTAINER
-	var container = $("<div>", {id: "contianer"}).css({
+	var container = $("<div>", {id: "container"}).css({
 		position: "absolute",
-		left: 0,
-		top: 0,
 		width: WIDTH, // 1280, // WIDTH,
 		height: HEIGHT, // 800, // HEIGHT,
 		pointerEvents: "none",
 		backgroundColor: "rgba( 0, 0, 0, 1)"
 	}).appendTo( document.body );
+
+	container.offset({ top: TOP, left: LEFT})
 
 	//THREE
 	var scene, renderer, renderTarget, camera, group, clock = new THREE.Clock();
@@ -174,6 +163,45 @@ function ProjectionVisuals( options ) {
 		camera = new THREE.OrthographicCamera( HALF_WIDTH, -HALF_WIDTH, HALF_HEIGHT, -HALF_HEIGHT, -1000, 1000 ); // 
 
 	}
+
+	var cameraZoom = 1, minZoom = .1, maxZoom = 1;
+
+
+	function setCameraPositionX( value ){
+		camera.position.x = value * (1. - cameraZoom);//lerp( value, 0, cameraZoom );
+
+		camera.updateProjectionMatrix();
+	}
+
+	function setCameraPositionY( value ){
+		// camera.position.y = value;
+		camera.position.y = value * (1. - cameraZoom);//lerp( value, 0, cameraZoom );
+
+		camera.updateProjectionMatrix();
+	}
+
+	function setCameraZoom( zoom ) {
+		cameraZoom = clamp( zoom, minZoom, maxZoom );
+
+		camera.left = -HALF_WIDTH * cameraZoom;
+		camera.right = HALF_WIDTH * cameraZoom;
+		camera.top = HALF_HEIGHT * cameraZoom;
+		camera.bottom = -HALF_HEIGHT * cameraZoom;
+
+		setCameraPositionX( camera.position.x );
+		setCameraPositionY( camera.position.y );
+
+
+		// if( PROJECTOR_NUM === 1) {
+		// 	camera.left = HALF_WIDTH * cameraZoom;
+		// 	camera.right = -HALF_WIDTH * cameraZoom;
+		// } 
+
+		camera.updateProjectionMatrix();
+		
+	}
+
+
 	
 	// camera = new THREE.PerspectiveCamera( 60, ASPECT_RATIO, 1, 10000 );
 	// camera.position.z = -100;
@@ -215,6 +243,24 @@ function ProjectionVisuals( options ) {
 		debugImage.wrapS = debugImage.wrapT = THREE.MirroredRepeatWrapping;
 	});
 
+	var distortionMaps = {}, distortionMapPaths = [ 'blur.jpg', 'circles.png', 'face.png', 'noiseDark.png', 'lines.gif', 'noise.jpg' ];
+
+	for(var i=0; i<distortionMapPaths.length; i++) {
+		textureLoader.load( "textures/distortionMaps/" + distortionMapPaths[i], function ( t, data ) {
+
+			// t.minFilter = THREE.LinearFilter;
+			// debugImage = t;
+			// t.wrapS = THREE.MirroredRepeatWrapping;  
+			t.wrapT = THREE.MirroredRepeatWrapping;  
+
+			var name = t.image.currentSrc.split('/');
+			name = name[name.length - 1];
+
+			distortionMaps[name] = t;
+		});
+	}
+
+
 	// OBJECTS
 	var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var baseColor = 0x111455;
@@ -223,7 +269,7 @@ function ProjectionVisuals( options ) {
 
 	var oscMap = {};
 
-	var bRandomTriggers = false;
+	var bRandomTriggers = getQueryVariable( "randomPattern" );
 
 	// Keys
 	// keys1: Controls - multislider( 4 sliders )
@@ -348,7 +394,8 @@ function ProjectionVisuals( options ) {
 	var bass = {
 
 		"/bass_keyboard_1": {
-			color: 0x2BFCB7,
+			// color: 0x2BFCB7,
+			color: 0xF71B24,
 			count: 3,
 			keys: {},
 			group: new THREE.Group(),
@@ -356,7 +403,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_2": {
-			color: 0x2BFECA,
+			// color: 0x2BFECA,
+			color: 0xF72C32,
 			count: 4,
 			keys: {},
 			group: new THREE.Group(),
@@ -364,7 +412,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_3": {
-			color: 0x2CFEDD,
+			// color: 0x2CFEDD,
+			color: 0xF73E42,
 			count: 3,
 			keys: {},
 			group: new THREE.Group(),
@@ -372,7 +421,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_4": {
-			color: 0x2DFFFE,
+			// color: 0x2DFFFE,
+			color: 0xF73E42,
 			count: 4,
 			keys: {},
 			group: new THREE.Group(),
@@ -427,9 +477,10 @@ function ProjectionVisuals( options ) {
 
 	//	transform the keys as a whole
 	bassGroup.position.x -= HALF_WIDTH;
+	bassGroup.position.y += HEIGHT / 3;
 
 	bassGroup.scale.x = WIDTH / bass_index;
-	bassGroup.scale.y = HEIGHT ;// / 3;
+	bassGroup.scale.y = HEIGHT * 2 / 3;
 	bassGroup.scale.z = HEIGHT * .5;
 
 	for(var i in bass)	oscMap[i] = bass[i];
@@ -446,7 +497,8 @@ function ProjectionVisuals( options ) {
 	var drums = {
 
 		"/drums_keyboard_1": {
-			color: 0xF71B24,
+			color: 0x2BFCB7,
+			// color: 0xF71B24,
 			count: 5,
 			keys: {},
 			group: new THREE.Group(),
@@ -454,7 +506,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_2": {
-			color: 0xF72C32,
+			color: 0x2BFECA,
+			// color: 0xF72C32,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -462,7 +515,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_3": {
-			color: 0xF73E42,
+			color: 0x2CFEDD,
+			// color: 0xF73E42,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -470,7 +524,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_4": {
-			color: 0xF73E42,
+			color: 0x2DFFFE,
+			// color: 0xF73E42,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -527,10 +582,10 @@ function ProjectionVisuals( options ) {
 
 	//	transform the keys as a whole for secret reasons
 	drumGroup.position.x -= HALF_WIDTH;
-	drumGroup.position.y += HEIGHT / 3;
+	// drumGroup.position.y += HEIGHT / 3;
 
 	drumGroup.scale.x = WIDTH / drum_index;
-	drumGroup.scale.y = HEIGHT * 2 / 3;
+	drumGroup.scale.y = HEIGHT;// * 2 / 3;
 	drumGroup.scale.z = HEIGHT * .5;
 
 
@@ -787,10 +842,14 @@ function ProjectionVisuals( options ) {
 
 	function setup() {
 
+		linesMat.uniforms.distortionMap.value = distortionMaps["blur.jpg"];
+
 		//	LINES
 		linesGeometry = getLineGeometry();
 
 		var linesMesh = new THREE.Mesh( linesGeometry, linesMat );
+		linesMesh.frustumCulled = false;
+		
 		// var linesMesh1 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
 		// var linesMesh2 = new THREE.Mesh( linesGeometry, new ProjectionLinesMaterial( linesMatOptions) );
 
@@ -1073,7 +1132,43 @@ function ProjectionVisuals( options ) {
 
 		getGroupRotationZ: function() {
 			return group.rotation.z;
-		}
+		},
+
+		getCameraZoom: function(){
+			return cameraZoom;
+		},
+
+		setCameraZoom: setCameraZoom,
+
+		setDistortionMap: function( mapName ) {
+
+		},
+
+		getDistortionMaps: function(){
+			return distortionMaps
+		},
+
+		setDistortionMap: function( index ){
+			var count = 0;
+			for(var i in distortionMaps) {
+				if(count == index){
+					linesMat.uniforms.distortionMap.value = distortionMaps[i];
+				}
+				count ++;
+			}
+		},
+
+		getCameraPositionX: function(){
+			return camera.position.x;
+		},
+
+		getCameraPositionY: function(){
+			return camera.position.y;
+		},
+
+		setCameraPositionX: setCameraPositionX,
+
+		setCameraPositionY: setCameraPositionY
 
 	}
 }
