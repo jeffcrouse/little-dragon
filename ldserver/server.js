@@ -228,8 +228,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 			//particular case for pink cloud: second C should be #:
 			if(song == '1'){
-				console.log("song: " + song);
-				console.log("keyboard: " + keyPos);
+				// console.log("song: " + song);
+				// console.log("keyboard: " + keyPos);
 				if(keyPos == "3"){
 					
 					switch(scalePos){
@@ -271,7 +271,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 		else if(addr=="/keys_tilt_1") {
 			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true);
-			console.log("tilt keys: " + reverb);
+			// console.log("tilt keys: " + reverb);
 			midiMessage = [MIDI.CH1.CONTROL, 5, reverb];
 			output.sendMessage(midiMessage);
 		}
@@ -354,7 +354,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		
 		else if(addr=="/drums_tilt_1") {
 			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true);
-			console.log("drums tilt: " + reverb);
+			// console.log("drums tilt: " + reverb);
 			midiMessage = [MIDI.CH3.CONTROL, 5, reverb];
 			output.sendMessage(midiMessage);
 		}
@@ -364,7 +364,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var drum = addr.charAt(addr.length - 1);
 
 			if(drum == 0){//record button
-				if(song == "2"){//summertearz
+				if(song == "2" || song == "3"){//summertearz
 					output.sendMessage([MIDI.CH4.NOTEON, 127, 1]);
 					// if(data.value==1){
 					// 	console.log("start loop");
@@ -376,7 +376,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					// }
 				}
 				else if(data.value==1){ // button down
-					console.log("record");
+					// console.log("record");
 					if(!recording){
 					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
 						console.log("RECORD");
@@ -474,8 +474,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 								break;
 						}
 						
-						var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
-						output.sendMessage([MIDI.CH3.NOTEON, note, 127]);
+						var velocity = Math.map(data.on, 0, 100, 40, 127, true); 
+						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
 					}
 					
 				}
@@ -735,10 +735,10 @@ stdin.on( 'data', function( key ){
 
 	//multipurpose
 	if(key=='='){
-		
+		console.log("~~~~~~~~~~~~~~~~ current SONG: " + song + ". " + songs[song].name + "~~~~~~~~~~~~~~~~ ");
 		// output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
 		// output.sendMessage([MIDI.CH1.CONTROL, 10, 127]);
-		output.sendMessage([MIDI.CH1.CONTROL, 11, 127]);
+		// output.sendMessage([MIDI.CH1.CONTROL, 11, 127]);
 	}
 
 	//PROGRAM KEYS
