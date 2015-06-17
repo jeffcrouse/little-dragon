@@ -29,29 +29,54 @@ var songs = {
 	}, 
 	"2": {
 		"name":"summertearz", 
-		"scaleBass": teoria.note("db2").scale("major").notes(),
-		"scaleKeys": teoria.note("db1").scale("major").notes()
+		"scaleBass": teoria.note("f").scale("major").notes(),
+		// "scaleBass": [
+		// 				teoria.note("g"),
+		// 				teoria.note("a"),
+		// 				teoria.note("c#"),
+		// 				teoria.note("d"),
+		// 				teoria.note("e"),
+		// 				teoria.note("g"),
+		// 				teoria.note("a")
+		// 			],
+		"scaleKeys": teoria.note("f").scale("major").notes()
 	
 	},
 	"3": {
 		"name":"test", 
 		"scaleBass": teoria.note("f#2").scale("minor").notes(),
-		"scaleKeys": teoria.note("f#1").scale("minor").notes()
+		"scaleKeys": teoria.note("bb").scale("minor").notes()
 	},
 	"4": {
 		"name":"pretty girls", 
-		"scaleBass": teoria.note("g2").scale("minor").notes(),
-		"scaleKeys": teoria.note("g1").scale("minor").notes()
+		// "scaleBass": teoria.note("f2").scale("minor").notes(),
+		"scaleBass": [
+						teoria.note("c"),
+						teoria.note("db"),
+						teoria.note("eb"),
+						teoria.note("f"),
+						teoria.note("g"),
+						teoria.note("ab"),
+						teoria.note("bb")
+					],
+		"scaleKeys": teoria.note("f1").scale("minor").notes()
 	},
 	"5": {
 		"name":"twice", 
-		"scaleBass": teoria.note("bb2").scale("major").notes(),
+		"scaleBass": [
+						teoria.note("c"),
+						teoria.note("d"),
+						teoria.note("e"),
+						teoria.note("f"),
+						teoria.note("g"),
+						teoria.note("a"),
+						teoria.note("bb")
+					],
 		"scaleKeys": teoria.note("bb1").scale("major").notes()
 	}
 }
 
-var scaleKeys = songs[song].scaleKeys;
-var scaleBass = songs[song].scaleBass;
+
 
 
 // Set up MIDI
@@ -108,6 +133,9 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
+
+		var scaleKeys = songs[song].scaleKeys;
+		var scaleBass = songs[song].scaleBass;
 		
 		var addr = msg.shift();
 		var data = JSON.parse(msg.shift());
@@ -162,6 +190,8 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			var pitchFine = data.list["3"] * FULL_VELOCITY;
 			var crossfade = data.list["4"] * FULL_VELOCITY;
 
+			// console.log(data.list["3"]);
+
 			output.sendMessage([MIDI.CH1.CONTROL, 1, spray]);
 			output.sendMessage([MIDI.CH1.CONTROL, 2, decay]);
 			output.sendMessage([MIDI.CH1.CONTROL, 3, pitchCoarse]);
@@ -184,11 +214,11 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					break;
 				case '2'://this is actually the first keyboard
 					// note.octave = 2;
-					midiNote += 24;
+					midiNote += 12;
 					// console.log("note: " + note);
 					break;
 				case '3'://this is actually the second keyboard
-					midiNote += 36;
+					midiNote += 24;
 					// console.log("note: " + note);
 					break;
 				case '4':
@@ -198,28 +228,32 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 			//particular case for pink cloud: second C should be #:
 			if(song == '1'){
+				// console.log("song: " + song);
+				// console.log("keyboard: " + keyPos);
 				if(keyPos == "3"){
+					
 					switch(scalePos){
 						case 0:
-							note = teoria.note("c#4");
+							console.log("first note");
+							midiNote = teoria.note("c#4").midi() +12;
 							break;
 						case 1://this is actually the first keyboard
-							note = teoria.note("d4");
+							midiNote = teoria.note("d4").midi()+12;
 							break;
 						case 2://this is actually the second keyboard
-							note = teoria.note("e4");
+							midiNote = teoria.note("e4").midi()+12;
 							break;
 						case 3:
-							note = teoria.note("f#4");
+							midiNote = teoria.note("f#4").midi()+12;
 							break;
 						case 4:
-							note = teoria.note("g4");
+							midiNote = teoria.note("g4").midi()+12;
 							break;
 						case 5:
-							note = teoria.note("a4");
+							midiNote = teoria.note("a4").midi()+12;
 							break;
 						case 6:
-							note = teoria.note("b4");
+							midiNote = teoria.note("b4").midi()+12;
 							break;
 					}
 					
@@ -236,8 +270,9 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 		else if(addr=="/keys_tilt_1") {
-			var pan = (data.x +1) * FULL_VELOCITY/2;
-			midiMessage = [MIDI.CH1.CONTROL, 5, pan];
+			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true);
+			// console.log("tilt keys: " + reverb);
+			midiMessage = [MIDI.CH1.CONTROL, 5, reverb];
 			output.sendMessage(midiMessage);
 		}
 
@@ -266,14 +301,15 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		}
 
 		else if(addr=="/bass_tilt_1") {
-			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
+			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true); 
 
-			midiMessage = [MIDI.CH2.CONTROL, 5, pan];
+			midiMessage = [MIDI.CH2.CONTROL, 5, reverb];
 			output.sendMessage(midiMessage);
 		}
 
 		else if(addr.substring(0,15)=="/bass_keyboard_"){
 			var velocity = data.on;
+
 
 			var keyboardNumber = addr.substring(15, 16); //phone 1, phone 2, phone 3, phone 4?
 			var scalePos = (data.note - 48); // re-map 48->54 (incoming midi note) to 0->4 (key position)
@@ -301,7 +337,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					// note.octave = 2;
 					break;
 			}
-			
+			// console.log(midiNote);
 			sendNote(midiNote, velocity, MIDI.CH2);
 		}
 
@@ -316,33 +352,53 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		// |       ||   |  | ||       || ||_|| | _____| |
 		// |______| |___|  |_||_______||_|   |_||_______|
 		
+		else if(addr=="/drums_tilt_1") {
+			var reverb = Math.map(data.y, 0.019, 0.458, 127, 0, true);
+			// console.log("drums tilt: " + reverb);
+			midiMessage = [MIDI.CH3.CONTROL, 5, reverb];
+			output.sendMessage(midiMessage);
+		}
 
-		//INSTRUMENT: LIVE SAMPLED DRUMS (1 sample, 4 triggers with different pitches)
+		
 		else if(contains(addr, '/drums')){
 			var drum = addr.charAt(addr.length - 1);
-			
+
 			if(drum == 0){//record button
-				if(data.press==1){ // button down
+				if(song == "2" || song == "3"){//summertearz
+					output.sendMessage([MIDI.CH4.NOTEON, 127, 1]);
+					// if(data.value==1){
+					// 	console.log("start loop");
+					// 	output.sendMessage([MIDI.CH4.NOTEON, 127, 1]);
+					// }
+					// else{
+					// 	console.log("stop loop");
+					// 	output.sendMessage([MIDI.CH4.CONTROL, 126, 0]);
+					// }
+				}
+				else if(data.value==1){ // button down
+					// console.log("record");
 					if(!recording){
 					// if(Date.now() - lastRecording > minTimeBetweenRecordings){
-						// console.log("RECORD");
+						console.log("RECORD");
 						//send ARM track
 						output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 
 						// send NEW message and overwrite message to start recording new scene
 						// if(drum == '1')
 						output.sendMessage([MIDI.CH3.CONTROL, 6, 1]);
-						
 
 						//send 'session record' to start recording
 						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
 						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
 						lastRecording = Date.now();
 						recording = true;
+
+
 					// }
 					}
-					else if(recording){
-						// console.log("STOP");
+				}
+				else if(recording){
+						console.log("STOP");
 						// STOP session recording
 						output.sendMessage([MIDI.CH3.NOTEON, 110, 1]);
 						output.sendMessage([MIDI.CH3.NOTEOFF, 110, 1]);
@@ -354,7 +410,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 						//un-arm track
 						output.sendMessage([MIDI.CH3.NOTEON, 40, 1]);
 						recording = false;
-					}
 				}
 			}
 			else{ //actual triggers
@@ -366,7 +421,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 					if(drum == '1'){//live sample triggers
 						// console.log("drum " + drum);
 					   if(keyPos == 0) 
-							pitchShift = 10;
+							pitchShift = 20;
 						if(keyPos == 1) 
 							pitchShift = 40;
 						if(keyPos == 2) 
@@ -419,7 +474,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 								break;
 						}
 						
-						var velocity = Math.map(data.y, 80, 670, 40, 127, true); 
+						var velocity = Math.map(data.on, 0, 100, 40, 127, true); 
 						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
 					}
 					
@@ -508,12 +563,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			
 		// }
 
-		else if(addr=="/drums_tilt_1") {
-			var pan = Math.map(data.x, 0, 0.3, 127, 0, true); 
-			
-			midiMessage = [MIDI.CH3.CONTROL, 5, pan];
-			output.sendMessage(midiMessage);
-		}
+		
 
 
 
@@ -660,11 +710,35 @@ stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
 	
+	//change song
+	if(key=='1'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 1. PINK CLOUD ~~~~~~~~~~~~~~~~");
+		song = "1";
+	}
+	if(key=='2'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 2. SUMMERTEARZ ~~~~~~~~~~~~~~~~");
+		song = "2";
+	}
+	if(key=='3'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 3. TEST ~~~~~~~~~~~~~~~~");
+		song = "3";
+	}
+	if(key=='4'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 4. PRETTY GIRLS ~~~~~~~~~~~~~~~~");
+		song = "4";
+	}
+	if(key=='5'){
+		console.log("~~~~~~~~~~~~~~~~ SONG: 5. TWICE ~~~~~~~~~~~~~~~~");
+		song = "5";
+	}
+
+
 	//multipurpose
 	if(key=='='){
-		// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
-		output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
-		// output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//OFF
+		console.log("~~~~~~~~~~~~~~~~ current SONG: " + song + ". " + songs[song].name + "~~~~~~~~~~~~~~~~ ");
+		// output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);
+		// output.sendMessage([MIDI.CH1.CONTROL, 10, 127]);
+		// output.sendMessage([MIDI.CH1.CONTROL, 11, 127]);
 	}
 
 	//PROGRAM KEYS
@@ -678,21 +752,21 @@ stdin.on( 'data', function( key ){
 
 
 	//multislider 
-	if(key=='1') {
+	if(key=='z') {
 		output.sendMessage([MIDI.CH1.CONTROL, 1, 1]);
 	}
-	if(key=='2') {
+	if(key=='x') {
 		output.sendMessage([MIDI.CH1.CONTROL, 2, 1]);
 	}
-	if(key=='3') {
+	if(key=='c') {
 		output.sendMessage([MIDI.CH1.CONTROL, 3, 1]);
 	}
-	if(key=='4') {
+	if(key=='v') {
 		output.sendMessage([MIDI.CH1.CONTROL, 4, 1]);
 	}
 
 	//tilt
-	if(key=='5') {
+	if(key=='b') {
 		output.sendMessage([MIDI.CH1.CONTROL, 5, 1]);
 	}
 
@@ -720,12 +794,12 @@ stdin.on( 'data', function( key ){
 	//PROGRAM VOICE
 	
 	//multislider 
-	if(key=='z') {
-		output.sendMessage([MIDI.CH4.CONTROL, 1, 1]);
-	}
-	if(key=='x') {
-		output.sendMessage([MIDI.CH4.CONTROL, 2, 1]);
-	}
+	// if(key=='z') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 1, 1]);
+	// }
+	// if(key=='x') {
+	// 	output.sendMessage([MIDI.CH4.CONTROL, 2, 1]);
+	// }
 	
 
 	//PROGRAM DRUMS
@@ -746,7 +820,7 @@ stdin.on( 'data', function( key ){
 	
 	//tilt
 	if(key=='g') {
-		output.sendMessage([MIDI.CH2.CONTROL, 5, 1]);
+		output.sendMessage([MIDI.CH3.CONTROL, 5, 1]);
 	}
 
 	//REC BUTTON

@@ -1,10 +1,17 @@
 import controlP5.*;
 import oscP5.*;
 import netP5.*;
+import ddf.minim.analysis.*;
+import ddf.minim.*;
+
 
 OPC opc;
 OscP5 oscP5;
 ControlP5 cp5;
+Minim       minim;
+AudioInput  accessMic;
+FFT         fft;
+
 
 float qheight;
 float qwidth;
@@ -22,7 +29,10 @@ float leftFade = 0;
 float rightFade = PI;
 float spinnerSpeed = 1.0;
 float spinnerPos = 0;
+float spinnerWidth = 20;
+float vocalGlow = 0;
 
+color[] particleColors = new color[6];
 
 
 // -------------------------------
@@ -35,12 +45,23 @@ void setup()
   oscP5 = new OscP5(this, 3333);
   cp5 = new ControlP5(this);
 
+
+  minim = new Minim(this);
+  accessMic = minim.getLineIn();
+
   qheight = height / 4.0;
   qwidth = width / 4.0;
 
+  particleColors[0] = color(255, 0, 0);
+  particleColors[1] = color(250, 100, 100);
+  particleColors[2] = color(255, 255, 255);
+  particleColors[3] = color(200, 225, 240);
+  particleColors[4] = color(130, 200, 224);
+  particleColors[5] = color(0, 255, 180);
+
   color greenish = color(10, 255, 10);
   color white = color(255, 255, 255);
-  color red = color(255, 20, 50);
+  color red = color(250, 50, 50);
 
   slots[0] = new PhoneSlot(0.074, greenish);
   slots[1] = new PhoneSlot(0.1, greenish);
@@ -91,19 +112,24 @@ void setup()
   cp5.addSlider("spinnerSpeed")
     .setSize(100, 20)
       .setPosition(20, 170)
-        .setRange(10, 1000)
+        .setRange(10, 2000)
           ;
 
+  cp5.addSlider("spinnerWidth")
+    .setSize(100, 20)
+      .setPosition(20, 200)
+        .setRange(10, 100)
+          ;
   cp5.loadProperties("leds.properties");
 
   // https://github.com/scanlime/fadecandy/blob/master/doc/processing_opc_client.md
   opc.ledStrip(0, 240, qwidth, qheight, width / 450, 0, false); //RIGHT TOP
-  opc.ledStrip(256, 300, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
-  opc.ledStrip(576, 300, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
+  opc.ledStrip(251, 320, qwidth, qheight*2, width / 540, 0, false); // RIGHT BOTTOM 1
+  opc.ledStrip(576, 320, qwidth, qheight*3, width / 540, 0, false); // RIGHT BOTTOM 2
 
   opc.ledStrip(1024, 240, qwidth*3, qheight, width / 450, 0, true);  // LEFT TOP
-  opc.ledStrip(1280, 300, qwidth*3, qheight*2, width / 540, 0, true); // LEFT BOTTOM 1
-  opc.ledStrip(1600, 300, qwidth*3, qheight*3, width / 540, 0, true); // LEFT BOTTOM 2
+  opc.ledStrip(1280, 360, qwidth*3, qheight*2, width / 540, 0, true); // LEFT BOTTOM 1
+  opc.ledStrip(1600, 360, qwidth*3, qheight*3, width / 540, 0, true); // LEFT BOTTOM 2
 }
 
 
@@ -116,8 +142,8 @@ void oscEvent(OscMessage theOscMessage) {
   String addr = theOscMessage.addrPattern();
   String data = theOscMessage.get(0).toString();
   JSONObject json = JSONObject.parse(data);
-  println(addr);
-  println(data);
+  //println(addr);
+  //println(data);
 
 
   if (addr.equals("/bass_multislider_1")) {
@@ -172,6 +198,20 @@ void pre() {
   int deltaTime = now - lastFrame;
   lastFrame = now;
 
+  float vocals = accessMic.left.level() + accessMic.right.level();
+
+  vocalGlow = vocals * 2000;
+  /*
+  if (keyPressed && key=='v') {
+    if (vocalGlow < 240) vocalGlow += 10;
+  } else {
+    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
+  }
+
+  if (keyPressed && key=='b') {
+    vocalGlow=255;
+  }
+*/
 
   float elapsed = (deltaTime / 1000.0);
   leftFade += fadeSpeed * elapsed;
@@ -220,7 +260,7 @@ void draw()
   float b = map(noise(t, 1.0), 0.0, 1.0, 0.0, 100.0);
   fill(r, g, b);
   rectMode(CENTER);
-  rect(spinnerPos, qheight, 20, 20);
+  rect(spinnerPos, qheight, spinnerWidth, 20);
 
   for (int i=0; i<slots.length; i++) {
     slots[i].draw();
@@ -230,6 +270,11 @@ void draw()
     particles.get(i).draw();
   }
 
+
+  if (vocalGlow > 0) {
+    fill(10, 200, 50, vocalGlow);
+    rect(.875*width, qheight, 200, 20);
+  }
 
   if (positionBar) {
 
@@ -259,6 +304,7 @@ void keyPressed() {
     slots[1].on = true;
   }
   if (key=='r') {
+    println("reset");
     for (int i=0; i<slots.length; i++) {
       slots[i].on = false;
     }

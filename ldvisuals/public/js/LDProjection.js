@@ -114,7 +114,11 @@ function ProjectionVisuals( options ) {
 
 	var WIDTH =  options.width || window.innerWidth; // 1280;//
 	var HEIGHT = options.height || window.innerHeight; // 720;//
+	var LEFT = options.left || 0;
+	var TOP = options.top || 0;
 	var ASPECT_RATIO = WIDTH / HEIGHT;
+	console.log("LEFT", LEFT, "TOP", TOP);
+
 
 	var HALF_WIDTH = WIDTH * .5;
 	var HALF_HEIGHT = HEIGHT * .5;
@@ -137,15 +141,15 @@ function ProjectionVisuals( options ) {
 	var origin = v3(0,0,0);
 
 	//CONTAINER
-	var container = $("<div>", {id: "contianer"}).css({
+	var container = $("<div>", {id: "container"}).css({
 		position: "absolute",
-		left: 0,
-		top: 0,
 		width: WIDTH, // 1280, // WIDTH,
 		height: HEIGHT, // 800, // HEIGHT,
 		pointerEvents: "none",
 		backgroundColor: "rgba( 0, 0, 0, 1)"
 	}).appendTo( document.body );
+
+	container.offset({ top: TOP, left: LEFT})
 
 	//THREE
 	var scene, renderer, renderTarget, camera, group, clock = new THREE.Clock();
@@ -390,7 +394,8 @@ function ProjectionVisuals( options ) {
 	var bass = {
 
 		"/bass_keyboard_1": {
-			color: 0x2BFCB7,
+			// color: 0x2BFCB7,
+			color: 0xF71B24,
 			count: 3,
 			keys: {},
 			group: new THREE.Group(),
@@ -398,7 +403,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_2": {
-			color: 0x2BFECA,
+			// color: 0x2BFECA,
+			color: 0xF72C32,
 			count: 4,
 			keys: {},
 			group: new THREE.Group(),
@@ -406,7 +412,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_3": {
-			color: 0x2CFEDD,
+			// color: 0x2CFEDD,
+			color: 0xF73E42,
 			count: 3,
 			keys: {},
 			group: new THREE.Group(),
@@ -414,7 +421,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/bass_keyboard_4": {
-			color: 0x2DFFFE,
+			// color: 0x2DFFFE,
+			color: 0xF73E42,
 			count: 4,
 			keys: {},
 			group: new THREE.Group(),
@@ -469,9 +477,10 @@ function ProjectionVisuals( options ) {
 
 	//	transform the keys as a whole
 	bassGroup.position.x -= HALF_WIDTH;
+	bassGroup.position.y += HEIGHT / 3;
 
 	bassGroup.scale.x = WIDTH / bass_index;
-	bassGroup.scale.y = HEIGHT ;// / 3;
+	bassGroup.scale.y = HEIGHT * 2 / 3;
 	bassGroup.scale.z = HEIGHT * .5;
 
 	for(var i in bass)	oscMap[i] = bass[i];
@@ -488,7 +497,8 @@ function ProjectionVisuals( options ) {
 	var drums = {
 
 		"/drums_keyboard_1": {
-			color: 0xF71B24,
+			color: 0x2BFCB7,
+			// color: 0xF71B24,
 			count: 5,
 			keys: {},
 			group: new THREE.Group(),
@@ -496,7 +506,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_2": {
-			color: 0xF72C32,
+			color: 0x2BFECA,
+			// color: 0xF72C32,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -504,7 +515,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_3": {
-			color: 0xF73E42,
+			color: 0x2CFEDD,
+			// color: 0xF73E42,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -512,7 +524,8 @@ function ProjectionVisuals( options ) {
 		},
 
 		"/drums_keyboard_4": {
-			color: 0xF73E42,
+			color: 0x2DFFFE,
+			// color: 0xF73E42,
 			count: 2,
 			keys: {},
 			group: new THREE.Group(),
@@ -569,10 +582,10 @@ function ProjectionVisuals( options ) {
 
 	//	transform the keys as a whole for secret reasons
 	drumGroup.position.x -= HALF_WIDTH;
-	drumGroup.position.y += HEIGHT / 3;
+	// drumGroup.position.y += HEIGHT / 3;
 
 	drumGroup.scale.x = WIDTH / drum_index;
-	drumGroup.scale.y = HEIGHT * 2 / 3;
+	drumGroup.scale.y = HEIGHT;// * 2 / 3;
 	drumGroup.scale.z = HEIGHT * .5;
 
 
