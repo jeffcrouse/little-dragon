@@ -182,130 +182,130 @@ $(window).bind("load", function() {
 	*/
 
 
-	//
-	//	Socket messages from MIDI controller and from phone data
-	//
-	var socket = io.connect();
-	socket.on('/keys_keyboard_1', function (data) {
-		projection.handleOSC( "/keys_keyboard_1", data );
-	});
-	socket.on('/keys_keyboard_2', function (data) {
-		projection.handleOSC( "/keys_keyboard_2", data );
-	});
-	socket.on('/keys_keyboard_3', function (data) {
-		projection.handleOSC( "/keys_keyboard_3", data );
-	});
-	socket.on('/bass_keyboard_1', function (data) {
-		projection.handleOSC( "/bass_keyboard_1", data );
-	});
-	socket.on('/bass_keyboard_2', function (data) {
-		projection.handleOSC( "/bass_keyboard_2", data );
-	});
-	socket.on('/bass_keyboard_3', function (data) {
-		projection.handleOSC( "/bass_keyboard_3", data );
-	});
-	socket.on('/bass_keyboard_4', function (data) {
-		projection.handleOSC( "/bass_keyboard_4", data );
-	});
-	socket.on('/drums_keyboard_1', function (data) {
-		projection.handleOSC( "/drums_keyboard_1", data );
-	});
-	socket.on('/drums_keyboard_2', function (data) {
-		projection.handleOSC( "/drums_keyboard_2", data );
-	});
-	socket.on('/drums_keyboard_3', function (data) {
-		projection.handleOSC( "/drums_keyboard_3", data );
-	});
-	socket.on('/drums_keyboard_4', function (data) {
-		projection.handleOSC( "/drums_keyboard_4", data );
-	});
+	// //
+	// //	Socket messages from MIDI controller and from phone data
+	// //
+	// var socket = io.connect();
+	// socket.on('/keys_keyboard_1', function (data) {
+	// 	projection.handleOSC( "/keys_keyboard_1", data );
+	// });
+	// socket.on('/keys_keyboard_2', function (data) {
+	// 	projection.handleOSC( "/keys_keyboard_2", data );
+	// });
+	// socket.on('/keys_keyboard_3', function (data) {
+	// 	projection.handleOSC( "/keys_keyboard_3", data );
+	// });
+	// socket.on('/bass_keyboard_1', function (data) {
+	// 	projection.handleOSC( "/bass_keyboard_1", data );
+	// });
+	// socket.on('/bass_keyboard_2', function (data) {
+	// 	projection.handleOSC( "/bass_keyboard_2", data );
+	// });
+	// socket.on('/bass_keyboard_3', function (data) {
+	// 	projection.handleOSC( "/bass_keyboard_3", data );
+	// });
+	// socket.on('/bass_keyboard_4', function (data) {
+	// 	projection.handleOSC( "/bass_keyboard_4", data );
+	// });
+	// socket.on('/drums_keyboard_1', function (data) {
+	// 	projection.handleOSC( "/drums_keyboard_1", data );
+	// });
+	// socket.on('/drums_keyboard_2', function (data) {
+	// 	projection.handleOSC( "/drums_keyboard_2", data );
+	// });
+	// socket.on('/drums_keyboard_3', function (data) {
+	// 	projection.handleOSC( "/drums_keyboard_3", data );
+	// });
+	// socket.on('/drums_keyboard_4', function (data) {
+	// 	projection.handleOSC( "/drums_keyboard_4", data );
+	// });
 
 
-	socket.on('slider1', function (data) {
-		var value = Math.map(data, 0, 1, 2, 20);
-		if(guiControls) guiControls.lineWidth =  value;
-		projection.setLineWidth( value );
-	});
-	socket.on('slider2', function (data) {
-		var value = Math.map(data, 0, 1, 1, 200);
-		if(guiControls) guiControls.lineLength =  value;
-		projection.setLineLength( value );
-	});
-	socket.on('slider3', function (data) {
-		var value = Math.map(data, 0, 1, 0.1, 1.00);
-		if(guiControls) guiControls.cameraZoom =  value;
-		projection.setCameraZoom( value );
-	});
-	socket.on('slider4', function (data) {
-		var value = Math.map(data, 0, 1, 0, Math.PI * 4);
-		if(guiControls) guiControls.rotation = value;
-		projection.setRotation( value );
-	});
-	socket.on('slider5', function (data) {
-		var value = Math.map(data, 0, 1, .0001, .02 );
-		if(guiControls) guiControls.noiseScale = value;
-		projection.setNoiseScale( value );
-	});
-	socket.on('slider6', function (data) {
-		var value = Math.map(data, 0, 1, 0, 4 );
-		if(guiControls) guiControls.noiseAmount = value;
-		projection.setNoiseAmount( value );
-	});
-	/*
-	socket.on('knob1', function(data){
-		console.log("knob1", data);
-	});
-	socket.on('knob2', function(data){
-		console.log("knob2", data);
-	});
-	socket.on('knob3', function(data){
-		console.log("knob3", data);
-	});
-	socket.on('knob4', function(data){
-		console.log("knob4", data);
-	});
-	*/
-	socket.on('xfade', function(data){
-		var value = Math.map(data, 0, 1, -10, 10 );
-		if(guiControls) guiControls.timeScale = value;
-		projection.setTimeScale( value );
-	});
-	socket.on('x_axis', function(data){
-		var value = Math.map(data, 0, 1, -512, 512 );
-		if(guiControls) guiControls.vameraPositionX = value;
-		projection.setCameraPositionX( value );
-	});
-	socket.on('y_axis', function(data){
-		var value = Math.map(data, 0, 1, -256, 256 );
-		if(guiControls) guiControls.vameraPositionY = value;
-		projection.setCameraPositionY( value );
-	});
+	// socket.on('slider1', function (data) {
+	// 	var value = Math.map(data, 0, 1, 2, 20);
+	// 	if(guiControls) guiControls.lineWidth =  value;
+	// 	projection.setLineWidth( value );
+	// });
+	// socket.on('slider2', function (data) {
+	// 	var value = Math.map(data, 0, 1, 1, 200);
+	// 	if(guiControls) guiControls.lineLength =  value;
+	// 	projection.setLineLength( value );
+	// });
+	// socket.on('slider3', function (data) {
+	// 	var value = Math.map(data, 0, 1, 0.1, 1.00);
+	// 	if(guiControls) guiControls.cameraZoom =  value;
+	// 	projection.setCameraZoom( value );
+	// });
+	// socket.on('slider4', function (data) {
+	// 	var value = Math.map(data, 0, 1, 0, Math.PI * 4);
+	// 	if(guiControls) guiControls.rotation = value;
+	// 	projection.setRotation( value );
+	// });
+	// socket.on('slider5', function (data) {
+	// 	var value = Math.map(data, 0, 1, .0001, .02 );
+	// 	if(guiControls) guiControls.noiseScale = value;
+	// 	projection.setNoiseScale( value );
+	// });
+	// socket.on('slider6', function (data) {
+	// 	var value = Math.map(data, 0, 1, 0, 4 );
+	// 	if(guiControls) guiControls.noiseAmount = value;
+	// 	projection.setNoiseAmount( value );
+	// });
+	// /*
+	// socket.on('knob1', function(data){
+	// 	console.log("knob1", data);
+	// });
+	// socket.on('knob2', function(data){
+	// 	console.log("knob2", data);
+	// });
+	// socket.on('knob3', function(data){
+	// 	console.log("knob3", data);
+	// });
+	// socket.on('knob4', function(data){
+	// 	console.log("knob4", data);
+	// });
+	// */
+	// socket.on('xfade', function(data){
+	// 	var value = Math.map(data, 0, 1, -10, 10 );
+	// 	if(guiControls) guiControls.timeScale = value;
+	// 	projection.setTimeScale( value );
+	// });
+	// socket.on('x_axis', function(data){
+	// 	var value = Math.map(data, 0, 1, -512, 512 );
+	// 	if(guiControls) guiControls.vameraPositionX = value;
+	// 	projection.setCameraPositionX( value );
+	// });
+	// socket.on('y_axis', function(data){
+	// 	var value = Math.map(data, 0, 1, -256, 256 );
+	// 	if(guiControls) guiControls.vameraPositionY = value;
+	// 	projection.setCameraPositionY( value );
+	// });
 
-	socket.on('button1', function(data){
-		console.log("button1", data);
-		if(guiControls) guiControls.distortionMaps = 0;
-		projection.setDistortionMap( 0 );
-	});
-	socket.on('button2', function(data){
-		if(guiControls) guiControls.distortionMaps = 1;
-		projection.setDistortionMap( 1 );
-	});
-	socket.on('button3', function(data){
-		if(guiControls) guiControls.distortionMaps = 2;
-		projection.setDistortionMap( 2 );
-	});
-	socket.on('button4', function(data){
-		if(guiControls) guiControls.distortionMaps = 3;
-		projection.setDistortionMap( 3 );
-	});
-	socket.on('button5', function(data){
-		if(guiControls) guiControls.distortionMaps = 4;
-		projection.setDistortionMap( 4 );
-	});
-	socket.on('button6', function(data){
-		if(guiControls) guiControls.distortionMaps = 5;
-		projection.setDistortionMap( 5 );
-	});
+	// socket.on('button1', function(data){
+	// 	console.log("button1", data);
+	// 	if(guiControls) guiControls.distortionMaps = 0;
+	// 	projection.setDistortionMap( 0 );
+	// });
+	// socket.on('button2', function(data){
+	// 	if(guiControls) guiControls.distortionMaps = 1;
+	// 	projection.setDistortionMap( 1 );
+	// });
+	// socket.on('button3', function(data){
+	// 	if(guiControls) guiControls.distortionMaps = 2;
+	// 	projection.setDistortionMap( 2 );
+	// });
+	// socket.on('button4', function(data){
+	// 	if(guiControls) guiControls.distortionMaps = 3;
+	// 	projection.setDistortionMap( 3 );
+	// });
+	// socket.on('button5', function(data){
+	// 	if(guiControls) guiControls.distortionMaps = 4;
+	// 	projection.setDistortionMap( 4 );
+	// });
+	// socket.on('button6', function(data){
+	// 	if(guiControls) guiControls.distortionMaps = 5;
+	// 	projection.setDistortionMap( 5 );
+	// });
 
 });
 
