@@ -313,11 +313,13 @@ function ProjectionVisuals( options ) {
 
 	}
 
+	var rndDelay = getQueryVariable('rndDelay') || 300;
+	var rndSpeed = getQueryVariable('rndSpeed') || 200;
 
 	function tweenRandomPress( m ){
 
 		m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-			.to( {value: 1}, randf( 50, 150 ) )
+			.to( {value: 1}, rndSpeed )
 			.repeat( 1000 )
 			.delay( randf( 200, 400) )
 			.yoyo( true )
