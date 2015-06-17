@@ -314,6 +314,19 @@ function ProjectionVisuals( options ) {
 	}
 
 
+	function tweenRandomPress( m ){
+
+		m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
+			.to( {value: 1}, randf( 50, 150 ) )
+			.repeat( 1000 )
+			.delay( randf( 200, 400) )
+			.yoyo( true )
+			.onUpdate( function( value ) {
+				this.scale.z = 1. + this.material.uniforms.fade.value;
+			}.bind( m ))
+			.start(randf( 100, 10000));
+	}
+
 
 	
 	var keysGroup = new THREE.Group();
@@ -347,15 +360,7 @@ function ProjectionVisuals( options ) {
 			//debugging
 			if(bRandomTriggers) {
 
-				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 2000 )
-					.delay( randf( 1000, 2500) )
-					.yoyo( true )
-					.onUpdate( function( value ) {
-						this.scale.z = 1. + this.material.uniforms.fade.value;
-					}.bind( m ))
-					.start();
+				tweenRandomPress( m );
 					
 			}
 
@@ -460,15 +465,7 @@ function ProjectionVisuals( options ) {
 			//debugging
 			if(bRandomTriggers) {
 
-				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 1000 )
-					.delay( randf( 250, 1000) )
-					.yoyo( true )
-					.onUpdate( function( value ) {
-						this.scale.z = 1. + this.material.uniforms.fade.value;
-					}.bind( m ))
-					.start();
+				tweenRandomPress( m );
 					
 			}
 		}
@@ -565,15 +562,7 @@ function ProjectionVisuals( options ) {
 			//debugging
 			if(bRandomTriggers) {
 
-				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
-					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 1000 )
-					.delay( randf( 250, 1000) )
-					.yoyo( true )
-					.onUpdate( function( value ) {
-						this.scale.z = 1. + this.material.uniforms.fade.value;
-					}.bind( m ))
-					.start();
+				tweenRandomPress( m );
 					
 			}
 		}
