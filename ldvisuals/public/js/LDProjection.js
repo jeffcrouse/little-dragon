@@ -349,8 +349,8 @@ function ProjectionVisuals( options ) {
 
 				m.fadeTween = new TWEEN.Tween( m.material.uniforms.fade )
 					.to( {value: 1}, randf( 100, 250 ) )
-					.repeat( 1000 )
-					.delay( randf( 250, 1000) )
+					.repeat( 2000 )
+					.delay( randf( 1000, 2500) )
 					.yoyo( true )
 					.onUpdate( function( value ) {
 						this.scale.z = 1. + this.material.uniforms.fade.value;
