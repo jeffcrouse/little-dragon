@@ -326,7 +326,7 @@ function ProjectionVisuals( options ) {
 			.onUpdate( function( value ) {
 				this.scale.z = 1. + this.material.uniforms.fade.value;
 			}.bind( m ))
-			.start(randf( 100, 10000));
+			.start(THREE.Math.randInt( 1, 10) * 1000 + clock.getElapsedTime() * 1000);
 	}
 
 
