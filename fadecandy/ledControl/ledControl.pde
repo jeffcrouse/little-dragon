@@ -34,6 +34,9 @@ float vocalGlow = 0;
 
 color[] particleColors = new color[6];
 
+String currentUsersHomeDir = System.getProperty("user.home");
+String propertiesFile = currentUsersHomeDir+"/Desktop/leds.properties";
+
 
 // -------------------------------
 void setup()
@@ -120,7 +123,7 @@ void setup()
       .setPosition(20, 200)
         .setRange(10, 100)
           ;
-  cp5.loadProperties("leds.properties");
+  cp5.loadProperties(propertiesFile);
 
   // https://github.com/scanlime/fadecandy/blob/master/doc/processing_opc_client.md
   opc.ledStrip(0, 240, qwidth, qheight, width / 450, 0, false); //RIGHT TOP
@@ -295,7 +298,7 @@ void keyPressed() {
     else cp5.show();
   }
   if (key=='s') {
-    cp5.saveProperties(("leds.properties"));
+    cp5.saveProperties(propertiesFile);
   }
   if (key=='1') {
     slots[0].blink();

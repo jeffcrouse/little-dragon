@@ -131,6 +131,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 	var oscServer = new osc.Server(osc_port, addr);
 	//var oscClients = {};
 
+
 	oscServer.on("message", function (msg, rinfo) {
 		console.log(msg);
 
@@ -705,6 +706,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 */
 
 var stdin = process.stdin;
+/*
 stdin.setRawMode( true );
 stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
@@ -886,7 +888,7 @@ stdin.on( 'data', function( key ){
 	// write the key to stdout all normal like
 	//process.stdout.write( key );
 });
-
+*/
 
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
