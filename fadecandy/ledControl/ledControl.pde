@@ -34,6 +34,8 @@ float vocalGlow = 0;
 
 color[] particleColors = new color[6];
 
+float blackout = 0;
+
 
 // -------------------------------
 void setup()
@@ -83,6 +85,7 @@ void setup()
   slots[17] = new PhoneSlot(0.72, red);
 
 
+
   cp5.addSlider("particleSpeed")
     .setSize(100, 20)
       .setPosition(20, 10)
@@ -120,6 +123,14 @@ void setup()
       .setPosition(20, 200)
         .setRange(10, 100)
           ;
+
+
+  cp5.addSlider("blackout")
+    .setSize(100, 20)
+      .setPosition(20, 230)
+        .setRange(0, 255)
+          ;
+
   cp5.loadProperties("leds.properties");
 
   // https://github.com/scanlime/fadecandy/blob/master/doc/processing_opc_client.md
@@ -200,18 +211,12 @@ void pre() {
 
   float vocals = accessMic.left.level() + accessMic.right.level();
 
-  vocalGlow = vocals * 2000;
-  /*
-  if (keyPressed && key=='v') {
-    if (vocalGlow < 240) vocalGlow += 10;
+ 
+  if(keyPressed && key=='v') {
+    vocalGlow += 50;
   } else {
-    if (vocalGlow > 0) vocalGlow -= (vocalGlow / 20.0);
+     vocalGlow = vocals * 2000;
   }
-
-  if (keyPressed && key=='b') {
-    vocalGlow=255;
-  }
-*/
 
   float elapsed = (deltaTime / 1000.0);
   leftFade += fadeSpeed * elapsed;
@@ -244,11 +249,11 @@ void draw()
 
   // FADES
   rectMode(CORNER);
-  float left = map(cos(leftFade), -1, 1, 0, 150);
+  float left = map(cos(leftFade), -1, 1, 0, 50);
   fill(left);
   rect(0, 50, width/2, 40);
 
-  float right = map(cos(rightFade), -1, 1, 0, 150);
+  float right = map(cos(rightFade), -1, 1, 0, 50);
   fill(right);
   rect(width/2, 50, width/2, 40);
 
@@ -275,6 +280,13 @@ void draw()
     fill(10, 200, 50, vocalGlow);
     rect(.875*width, qheight, 200, 20);
   }
+
+
+  rectMode(CORNER);
+  fill(0, 0, 0, blackout);
+  rect(0, 0, width, height);
+
+
 
   if (positionBar) {
 
