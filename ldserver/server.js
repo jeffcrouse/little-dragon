@@ -134,7 +134,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 	oscServer.on("message", function (msg, rinfo) {
 		
-		oscClient.send.apply(this, msg);
+		
 
 		console.log(msg);
 
@@ -142,7 +142,11 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		var scaleBass = songs[song].scaleBass;
 		
 		var addr = msg.shift();
-		var data = JSON.parse(msg.shift());
+		var data = msg.shift();
+
+		oscClient.send(addr, data);
+
+		data = JSON.parse(data);
 		var midiMessage;
 
 		/*

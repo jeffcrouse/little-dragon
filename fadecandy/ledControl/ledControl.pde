@@ -36,8 +36,8 @@ color[] particleColors = new color[6];
 
 
 float blackout = 0;
-String currentUsersHomeDir = System.getProperty("user.home");
-String propertiesFile = currentUsersHomeDir+"/Desktop/leds.properties";
+//String currentUsersHomeDir = System.getProperty("user.home");
+String propertiesFile = "leds.properties"; //currentUsersHomeDir+"/Desktop/leds.properties";
 
 
 // -------------------------------
