@@ -47,7 +47,7 @@ void setup()
   frameRate(60);
   size(1200, 300);
   opc = new OPC(this, "127.0.0.1", 7890);
-  oscP5 = new OscP5(this, 3333);
+  oscP5 = new OscP5(this, 3334);
   cp5 = new ControlP5(this);
 
 

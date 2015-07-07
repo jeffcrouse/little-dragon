@@ -129,10 +129,13 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 	console.log("listening for osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
-	//var oscClients = {};
+	var oscClient = new osc.Client('127.0.0.1', 3334);
 
 
 	oscServer.on("message", function (msg, rinfo) {
+		
+		oscClient.send.apply(this, msg);
+
 		console.log(msg);
 
 		var scaleKeys = songs[song].scaleKeys;
@@ -141,7 +144,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 		var addr = msg.shift();
 		var data = JSON.parse(msg.shift());
 		var midiMessage;
-		
+
 		/*
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
