@@ -129,18 +129,26 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 	console.log("listening for osc", addr, osc_port);
 
 	var oscServer = new osc.Server(osc_port, addr);
-	//var oscClients = {};
+	var oscClient = new osc.Client('127.0.0.1', 3334);
+
 
 	oscServer.on("message", function (msg, rinfo) {
+		
+		
+
 		console.log(msg);
 
 		var scaleKeys = songs[song].scaleKeys;
 		var scaleBass = songs[song].scaleBass;
 		
 		var addr = msg.shift();
-		var data = JSON.parse(msg.shift());
+		var data = msg.shift();
+
+		oscClient.send(addr, data);
+
+		data = JSON.parse(data);
 		var midiMessage;
-		
+
 		/*
 		if(addr == "/join") {
 			oscClients[data.iface] = new oscClient(data);
@@ -705,6 +713,7 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 */
 
 var stdin = process.stdin;
+/*
 stdin.setRawMode( true );
 stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
@@ -886,7 +895,7 @@ stdin.on( 'data', function( key ){
 	// write the key to stdout all normal like
 	//process.stdout.write( key );
 });
-
+*/
 
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
