@@ -3,6 +3,8 @@
 killall fcserver-osx
 killall ledControl
 killall ldserver
+kill -9 `lsof -t -i udp:3333`
+osascript -e 'quit app "Ableton Live 9 Standard"'
 
 echo "=== LAUNCHING fcserver-osx ==="
 cd "${HOME}/Developer/little-dragon/fadecandy/"
