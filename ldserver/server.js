@@ -90,7 +90,7 @@ var MIDI = {
 	CH2: { NOTEON: 145, NOTEOFF: 129, CONTROL: 177, PITCHBEND: 225 },	// BASS
 	CH3: { NOTEON: 146, NOTEOFF: 130, CONTROL: 178, PITCHBEND: 226 },	// DRUMS
 	CH4: { NOTEON: 147, NOTEOFF: 131, CONTROL: 179, PITCHBEND: 227 },	// VOCALS
-	CH15:{ NOTEON: 158, NOTEOFF: 142, MODECHANGE: 190 }				// FADERFOX CONTROLLER INPUT
+	CH15:{ NOTEON: 158, NOTEOFF: 142, CONTROL: 190 }				// FADERFOX CONTROLLER INPUT
 }
 
 var FULL_VELOCITY = 127;
@@ -111,7 +111,10 @@ var recording = false;
 
 
 
-
+setTimeout(function autoPlay(){
+	console.log("===PLAYING!!");
+	output.sendMessage([MIDI.CH15.CONTROL, 1, FULL_VELOCITY]);
+}, 1000*30);
 
 
 /************************
@@ -133,8 +136,6 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 
 
 	oscServer.on("message", function (msg, rinfo) {
-		
-		
 
 		console.log(msg);
 
@@ -711,14 +712,17 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 * This makes it easier to do the mapping in Ableton
 * http://stackoverflow.com/questions/5006821/nodejs-how-to-read-keystrokes-from-stdin
 */
-
-var stdin = process.stdin;
 /*
+var stdin = process.stdin;
 stdin.setRawMode( true );
 stdin.resume();
 stdin.setEncoding( 'utf8' ); // i don't want binary, do you?
 stdin.on( 'data', function( key ){
-	
+	// PLAY!
+	if(key==' ') {
+		output.sendMessage([MIDI.CH15.CONTROL, 1, FULL_VELOCITY]);
+	}
+
 	//change song
 	if(key=='1'){
 		console.log("~~~~~~~~~~~~~~~~ SONG: 1. PINK CLOUD ~~~~~~~~~~~~~~~~");
