@@ -182,7 +182,7 @@ nx.onload = function() {
 		// |_______||__| |__||_______||_______|
 	
 		case "bass1":
-			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 	 		var control = createControl(instrumentName, "multislider", 1);
 			control.setNumberOfSliders(2);
@@ -199,7 +199,7 @@ nx.onload = function() {
 	 		break;
 
 		case "bass2":
-			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 1);
 			control.multitouch = true;
@@ -220,7 +220,7 @@ nx.onload = function() {
 			break;
 
 		case "bass3":
-			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 2);
 	 		control.octaves = 1;
@@ -241,7 +241,7 @@ nx.onload = function() {
 			break;
 
 		case "bass4":
-			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 3);
 	 		control.octaves = 1;
@@ -263,7 +263,7 @@ nx.onload = function() {
 			  
 
 		case "bass5":
-			if(screen.lockOrientation)	screen.lockOrientation('landscape-primary');
+			if(screen.lockOrientation)	screen.lockOrientation('landscape-secondary');
 
 			var control = createControl(instrumentName, "keyboard", 4);
 	 		control.octaves = 1;
