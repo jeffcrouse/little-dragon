@@ -20,9 +20,9 @@ echo "=== LAUNCHING ldserver ==="
 cd "${HOME}/Developer/little-dragon/ldserver"
 node server.js >> ${HOME}/Desktop/server.log 2>&1 &
 
-echo "=== LAUNCHING 1_pink_cloud.als  ==="
-cd "${HOME}/Developer/little-dragon/songs/1_pink_cloud Project"
-open -g 1_pink_cloud.als
+echo "=== LAUNCHING red bull songs/2_summertearz.als  ==="
+cd "${HOME}/Developer/little-dragon/red bull songs/2_summertearz Project"
+open -g 2_summertearz.als
 
 echo "=== DONE  ==="
 sleep 5
