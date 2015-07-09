@@ -4,7 +4,7 @@ var teoria = require('teoria');
 var midi = require('midi');
 var osc = require('node-osc');
 
-var song = "1";
+var song = "2";
 var songs = {
 	"1": {	
 		"name":"pink cloud", 
