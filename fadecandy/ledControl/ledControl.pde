@@ -68,22 +68,23 @@ void setup()
   color white = color(255, 255, 255);
   color red = color(250, 50, 50);
 
-  slots[0] = new PhoneSlot(0.074, greenish);
-  slots[1] = new PhoneSlot(0.1, greenish);
-  slots[2] = new PhoneSlot(0.123, greenish);
-  slots[3] = new PhoneSlot(0.147, greenish);
-  slots[4] = new PhoneSlot(0.171, greenish);
-  slots[5] = new PhoneSlot(0.193, greenish);
-  slots[6] = new PhoneSlot(0.277, white);
-  slots[7] = new PhoneSlot(0.304, white);
-  slots[8] = new PhoneSlot(0.329, white);
-  slots[9] = new PhoneSlot(0.352, white);
-  slots[10] = new PhoneSlot(0.376, white);
+  slots[0] = new PhoneSlot(0.195, greenish);
+  slots[1] = new PhoneSlot(0.172, greenish);
+  slots[2] = new PhoneSlot(0.144, greenish);
+  slots[3] = new PhoneSlot(0.122, greenish);
+  slots[4] = new PhoneSlot(0.097, greenish);
+  slots[5] = new PhoneSlot(0.216, greenish);
+  slots[6] = new PhoneSlot(0.280, white);
+  slots[7] = new PhoneSlot(0.314, white);
+  slots[8] = new PhoneSlot(0.337, white);
+  slots[9] = new PhoneSlot(0.363, white);
+  slots[10] = new PhoneSlot(0.385, white);
   slots[11] = new PhoneSlot(0.399, white);
   slots[12] = new PhoneSlot(0.599, red);
   slots[13] = new PhoneSlot(0.623, red);
   slots[14] = new PhoneSlot(0.647, red);
   slots[15] = new PhoneSlot(0.672, red);
+
   slots[16] = new PhoneSlot(0.695, red);
   slots[17] = new PhoneSlot(0.72, red);
 
@@ -214,11 +215,11 @@ void pre() {
 
   float vocals = accessMic.left.level() + accessMic.right.level();
 
- 
-  if(keyPressed && key=='v') {
+
+  if (keyPressed && key=='v') {
     vocalGlow += 50;
   } else {
-     vocalGlow = vocals * 2000;
+    vocalGlow = vocals * 2000;
   }
 
   float elapsed = (deltaTime / 1000.0);
@@ -285,9 +286,9 @@ void draw()
   }
 
 
-  rectMode(CORNER);
-  fill(0, 0, 0, blackout);
-  rect(0, 0, width, height);
+  //  rectMode(CORNER);
+  //  fill(0, 0, 0, blackout);
+  //  rect(0, 0, width, height);
 
 
 

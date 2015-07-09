@@ -423,69 +423,60 @@ require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
 			}
 			else{ //actual triggers
 				var keyPos = data.note - 48; //0 or 1
-				
 				if(data.on > 0){ 
-					var pitchShift = 0;
-					// console.log("LAUNCH drum " + drum);
-					if(drum == '1'){//live sample triggers
-						// console.log("drum " + drum);
-					   if(keyPos == 0) 
-							pitchShift = 20;
-						if(keyPos == 1) 
-							pitchShift = 40;
-						if(keyPos == 2) 
-							pitchShift = 70;
-						if(keyPos == 3) 
-							pitchShift = 100;
-						if(keyPos == 4) 
-							pitchShift = 110;
-
-						//send pitch message:
-						output.sendMessage([MIDI.CH3.CONTROL, 126, pitchShift]);
-						//launch clip	
-						output.sendMessage([MIDI.CH3.NOTEON, 127, 1]);
-					}
-					else{//pre sampled triggers
-						var note;
-						switch(drum){
-							case '2':
-								if(keyPos == 0) 
-									note = 36;
+					var note;
+					console.log("drum: " + drum);
+					switch(drum){
+						case '1':
+						 	if(keyPos == 0)		
+						 		note = 42;						
+							if(keyPos == 1) 
+								note = 43;
+							if(keyPos == 2) 
+								note = 44;
+							if(keyPos == 3) 
+								note = 45;
+							if(keyPos == 4) 
+								note = 46;
+							break;
+						case '2':
+							if(keyPos == 0) 
+								note = 36;
+							else 
+								note = 37;
+							break;
+						case '3':
+							if(keyPos == 0) 
+								note = 38;
+							else 
+								note = 39;
+							break;
+						case '4':
+							if(keyPos == 0) 
+									note = 40;
 								else 
-									note = 37;
-								break;
-							case '3':
-								if(keyPos == 0) 
-									note = 38;
-								else 
-									note = 39;
-								break;
-							case '4':
-								if(keyPos == 0) 
-										note = 40;
-									else 
-										note = 41;
-								if(songs[song].name = "summertearz"){//launch kick
-									if(keyPos == 0){
-										output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);//launch
-									}
-									else if(keyPos == 1){
-										output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//stop
-									}
+									note = 41;
+							if(songs[song].name = "summertearz"){//launch kick
+								if(keyPos == 0){
+									output.sendMessage([MIDI.CH3.NOTEON, 118, 127]);//launch
 								}
-									// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
-								break;
-							case '5':
-								if(keyPos == 0) 
-									note = 42;
-								else 
-									note = 43;
-								break;
-						}
-						
-						var velocity = Math.map(data.on, 0, 100, 40, 127, true); 
-						output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
+								else if(keyPos == 1){
+									output.sendMessage([MIDI.CH3.NOTEON, 113, 127]);//stop
+								}
+							}
+								// output.sendMessage([MIDI.CH3.CONTROL, 118, 127]);
+							break;
+						case '5':
+							if(keyPos == 0) 
+								note = 42;
+							else 
+								note = 43;
+							break;
 					}
+					
+					console.log("note: " + note);
+					var velocity = Math.map(data.on, 0, 100, 40, 127, true); 
+					output.sendMessage([MIDI.CH3.NOTEON, note, velocity]);
 					
 				}
 				else if(data.on==0){
